@@ -9,68 +9,42 @@ package Entidades;
  * @author chris
  */
 public class Medico {
-
-    private int idMedico;
-    private String nombre;
-    private String apellidoPaterno;
-    private String apellidoMaterno;
+//
+//      id_medico INT AUTO_INCREMENT PRIMARY KEY,
+//    especialidad VARCHAR(100) NOT NULL,
+//    cedula VARCHAR(50) UNIQUE NOT NULL,
+//    id_usuario INT UNIQUE NOT NULL,
+    private int id_medico;
     private String especialidad;
-    private String celuda;
-    private String estado;
-    private String contrasenia;
+    private String cedula;
+    private String id_usuario;
 
-    public Medico(int idMedico, String nombre, String apellidoPaterno, String apellidoMaterno, String especialidad, String celuda, String estado, String contrasenia) {
-        this.idMedico = idMedico;
-        this.nombre = nombre;
-        this.apellidoPaterno = apellidoPaterno;
-        this.apellidoMaterno = apellidoMaterno;
+    // constructor vacio
+    public Medico() {
+    }
+
+    // constructor con todo
+    public Medico(int id_medico, String especialidad, String cedula, String id_usuario) {
+        this.id_medico = id_medico;
         this.especialidad = especialidad;
-        this.celuda = celuda;
-        this.estado = estado;
-        this.contrasenia = contrasenia;
+        this.cedula = cedula;
+        this.id_usuario = id_usuario;
     }
-
-    //CONSTRUCOTR SIN ID
-    public Medico(String nombre, String apellidoPaterno, String apellidoMaterno, String especialidad, String celuda, String estado, String contrasenia) {
-        this.nombre = nombre;
-        this.apellidoPaterno = apellidoPaterno;
-        this.apellidoMaterno = apellidoMaterno;
+    
+    // constructor con todo menos el id
+    public Medico(String especialidad, String cedula, String id_usuario) {
         this.especialidad = especialidad;
-        this.celuda = celuda;
-        this.estado = estado;
-        this.contrasenia = contrasenia;
+        this.cedula = cedula;
+        this.id_usuario = id_usuario;
     }
 
-    public int getIdMedico() {
-        return idMedico;
+    // gets y sets
+    public int getId_medico() {
+        return id_medico;
     }
 
-    public void setIdMedico(int idMedico) {
-        this.idMedico = idMedico;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellidoPaterno() {
-        return apellidoPaterno;
-    }
-
-    public void setApellidoPaterno(String apellidoPaterno) {
-        this.apellidoPaterno = apellidoPaterno;
-    }
-
-    public String getApellidoMaterno() {
-        return apellidoMaterno;
-    }
-
-    public void setApellidoMaterno(String apellidoMaterno) {
-        this.apellidoMaterno = apellidoMaterno;
+    public void setId_medico(int id_medico) {
+        this.id_medico = id_medico;
     }
 
     public String getEspecialidad() {
@@ -81,34 +55,26 @@ public class Medico {
         this.especialidad = especialidad;
     }
 
-    public String getCeluda() {
-        return celuda;
+    public String getCedula() {
+        return cedula;
     }
 
-    public void setCeluda(String celuda) {
-        this.celuda = celuda;
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
     }
 
-    public String getEstado() {
-        return estado;
+    public String getId_usuario() {
+        return id_usuario;
     }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public String getContrasenia() {
-        return contrasenia;
-    }
-
-    public void setContrasenia(String contrasenia) {
-        this.contrasenia = contrasenia;
+    public void setId_usuario(String id_usuario) {
+        this.id_usuario = id_usuario;
     }
 
     @Override
     public String toString() {
-        return "Medico{" + "idMedico=" + idMedico + ", nombre=" + nombre + ", apellidoPaterno=" + apellidoPaterno + ", apellidoMaterno=" + apellidoMaterno + ", especialidad=" + especialidad + ", celuda=" + celuda + ", estado=" + estado + ", contrasenia=" + contrasenia + '}';
+        return "Medico{" + "id_medico=" + id_medico + ", especialidad=" + especialidad + ", cedula=" + cedula + ", id_usuario=" + id_usuario + '}';
     }
-    
+
     
 }
