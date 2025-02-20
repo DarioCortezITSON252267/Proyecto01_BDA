@@ -6,7 +6,7 @@ package com.mycompany.capapersistenciaclinica;
 
 /**
  *
- * @author chris
+ * @author Angel
  */
 public class CapaPersistenciaClinica {
 
