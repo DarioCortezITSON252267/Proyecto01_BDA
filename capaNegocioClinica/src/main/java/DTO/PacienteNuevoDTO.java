@@ -18,18 +18,20 @@ public class PacienteNuevoDTO {
     private String telefono;
     private LocalDate fechaNacimiento;
     private String correo;
+    private String contrasenia;
     
     public PacienteNuevoDTO(){
         
     }
 
-    public PacienteNuevoDTO(String nombre, String apellidoPaterno, String apellidoMaterno, String telefono, LocalDate fechaNacimiento, String correo) {
+    public PacienteNuevoDTO(String nombre, String apellidoPaterno, String apellidoMaterno, String telefono, LocalDate fechaNacimiento, String correo, String contrasenia) {
         this.nombre = nombre;
         this.apellidoPaterno = apellidoPaterno;
         this.apellidoMaterno = apellidoMaterno;
         this.telefono = telefono;
         this.fechaNacimiento = fechaNacimiento;
         this.correo = correo;
+        this.contrasenia = contrasenia;
     }
 
     public String getNombre() {
@@ -79,6 +81,15 @@ public class PacienteNuevoDTO {
     public void setCorreo(String correo) {
         this.correo = correo;
     }
+
+    public String getContrasenia() {
+        return contrasenia;
+    }
+
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
+    }
+    
 
     @Override
     public String toString() {
