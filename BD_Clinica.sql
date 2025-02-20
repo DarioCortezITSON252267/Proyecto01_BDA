@@ -2,94 +2,115 @@
 CREATE DATABASE IF NOT EXISTS clinica;
 USE clinica;
 
--- Crear tabla USUARIOS
+-- Tabla USUARIOS
 CREATE TABLE Usuarios (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     apellido_paterno VARCHAR(50) NOT NULL,
-    apellido_materno VARCHAR(50) NOT NULL
+    apellido_materno VARCHAR(50) NOT NULL,
+    correo VARCHAR(100) UNIQUE NULL,
+    contraseña VARCHAR(255) NOT NULL,
+    tipo_usuario ENUM('paciente', 'medico') NOT NULL
 );
 
--- Crear tabla PACIENTES
+-- Tabla DIRECCIONES
+CREATE TABLE Direcciones (
+    id_direccion INT AUTO_INCREMENT PRIMARY KEY,
+    calle VARCHAR(100) NOT NULL,
+    numero VARCHAR(10) NOT NULL,
+    colonia VARCHAR(50) NOT NULL,
+    codigo_postal INT NOT NULL,
+    id_usuario INT UNIQUE NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE
+);
+
+-- Tabla TELEFONOS
+CREATE TABLE Telefonos (
+    id_telefono INT AUTO_INCREMENT PRIMARY KEY,
+    numero VARCHAR(10) NOT NULL,
+    id_usuario INT NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE
+);
+
+-- Tabla PACIENTES
 CREATE TABLE Pacientes (
     id_paciente INT AUTO_INCREMENT PRIMARY KEY,
-    edad INT NOT NULL,
     fecha_nacimiento DATE NOT NULL,
-    direccion VARCHAR(200) NOT NULL,
-    telefonos VARCHAR(10) NOT NULL,
-    id_usuario INT NOT NULL,
-    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+    id_usuario INT UNIQUE NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE
 );
 
--- Crear tabla MEDICOS
+-- Tabla MÉDICOS
 CREATE TABLE Medicos (
     id_medico INT AUTO_INCREMENT PRIMARY KEY,
-    especialidad VARCHAR(20) NOT NULL,
-    cedula VARCHAR(20) NOT NULL,
-    id_usuario INT NOT NULL,
-    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+    especialidad VARCHAR(50) NOT NULL,
+    cedula VARCHAR(20) UNIQUE NOT NULL,
+    id_usuario INT UNIQUE NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE
 );
--- Crear tabla Horarios
+
+-- Tabla HORARIOS
 CREATE TABLE Horarios (
     id_horario INT AUTO_INCREMENT PRIMARY KEY,
     horaInicial TIME NOT NULL,
     horaFinal TIME NOT NULL,
     dias VARCHAR(50) NOT NULL,
-	id_medico INT NOT NULL,
-    FOREIGN KEY (id_medico) REFERENCES Medicos(id_medico) ON DELETE CASCADE ON UPDATE CASCADE
+    id_medico INT NOT NULL,
+    FOREIGN KEY (id_medico) REFERENCES Medicos(id_medico) ON DELETE CASCADE
 );
 
--- Crear tabla CITAS
+-- Tabla CITAS
 CREATE TABLE Cita (
     id_cita INT AUTO_INCREMENT PRIMARY KEY,
-    estado VARCHAR(20) NOT NULL,
+    estado ENUM('pendiente', 'confirmada', 'cancelada') NOT NULL DEFAULT 'pendiente',
     fechahora DATETIME NOT NULL,
+    nota TEXT NULL,
     id_paciente INT NOT NULL,
     id_medico INT NOT NULL,
-    FOREIGN KEY (id_paciente) REFERENCES Pacientes(id_paciente) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_medico) REFERENCES Medicos(id_medico) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (id_paciente) REFERENCES Pacientes(id_paciente) ON DELETE CASCADE,
+    FOREIGN KEY (id_medico) REFERENCES Medicos(id_medico) ON DELETE CASCADE
 );
 
--- Crear tabla CONSULTA
+-- Tabla CONSULTA
 CREATE TABLE Consulta (
     id_consulta INT AUTO_INCREMENT PRIMARY KEY,
+    motivo TEXT NOT NULL,
     diagnostico TEXT NOT NULL,
     tratamiento TEXT NOT NULL,
-    motivo TEXT NOT NULL,
-     id_medico INT NOT NULL,
-    id_cita INT NOT NULL,
-    FOREIGN KEY (id_medico) REFERENCES Medicos(id_medico) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_cita) REFERENCES Cita(id_cita) ON DELETE CASCADE ON UPDATE CASCADE
+    id_cita INT UNIQUE NOT NULL,
+    FOREIGN KEY (id_cita) REFERENCES Cita(id_cita) ON DELETE CASCADE
 );
 
--- Crear tabla CONSULTASINCITA
+-- Tabla CONSULTA SIN CITA
 CREATE TABLE ConsultaSinCita (
     id_consulta INT AUTO_INCREMENT PRIMARY KEY,
-    folio VARCHAR(20) NOT NULL, 
+    folio VARCHAR(20) UNIQUE NOT NULL, 
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
+    motivo TEXT NOT NULL,
     id_medico INT NOT NULL,
     id_paciente INT NOT NULL,
-    FOREIGN KEY (id_medico) REFERENCES Medicos(id_medico) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_paciente) REFERENCES Pacientes(id_paciente) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (id_medico) REFERENCES Medicos(id_medico) ON DELETE CASCADE,
+    FOREIGN KEY (id_paciente) REFERENCES Pacientes(id_paciente) ON DELETE CASCADE
 );
--- Insertar usuarios (Médicos)
-INSERT INTO Usuarios (nombre, apellido_paterno, apellido_materno) VALUES
-('Gregory', 'House', 'Laurie'),
-('Ana', 'López', 'Martínez'),
-('Javier', 'Ramírez', 'Díaz'),
-('María', 'González', 'Fernández'),
-('Fernando', 'Torres', 'Sánchez');
 
--- Insertar médicos asociados a los usuarios
-INSERT INTO Medicos (especialidad, cedula,id_usuario) VALUES
-('Neurología', '12345678',1),
-('General', '87654321',2),
-('Hematologia', '23456789',3),
-('General', '34567890',4),
-('Cardiologia', '45678901',5);
+-- Insertar Médicos (Usuarios + Médicos)
+INSERT INTO Usuarios (nombre, apellido_paterno, apellido_materno, correo, contraseña, tipo_usuario) VALUES
+('Gregory', 'House', 'Laurie', NULL, 'house123', 'medico'),
+('Ana', 'López', 'Martínez', NULL, 'ana456', 'medico'),
+('Javier', 'Ramírez', 'Díaz', NULL, 'javier789', 'medico'),
+('María', 'González', 'Fernández', NULL, 'maria101', 'medico'),
+('Fernando', 'Torres', 'Sánchez', NULL, 'fernando202', 'medico');
 
--- Insertar horarios de los médicos
+-- Asociar médicos a los usuarios
+INSERT INTO Medicos (especialidad, cedula, id_usuario) VALUES
+('Neurología', '12345678', 1),
+('General', '87654321', 2),
+('Hematología', '23456789', 3),
+('General', '34567890', 4),
+('Cardiología', '45678901', 5);
+
+-- Insertar Horarios para los médicos
 INSERT INTO Horarios (horaInicial, horaFinal, dias, id_medico) VALUES
 ('08:00:00', '14:00:00', 'Lunes a Viernes', 1),
 ('09:00:00', '15:00:00', 'Lunes a Sábado', 2),
@@ -97,15 +118,44 @@ INSERT INTO Horarios (horaInicial, horaFinal, dias, id_medico) VALUES
 ('12:00:00', '18:00:00', 'Miércoles a Viernes', 4),
 ('14:00:00', '20:00:00', 'Lunes, Miércoles y Viernes', 5);
 
+-- Trigger para registrar la cancelacion de una cita.
+DELIMITER $$
 
--- Verificar Usuarios
-SELECT * FROM Usuarios;
+CREATE TRIGGER registrar_cancelacion
+AFTER UPDATE ON Cita
+FOR EACH ROW
+BEGIN
+    IF NEW.estado = 'Cancelada' THEN
+        INSERT INTO HistorialCancelaciones (id_cita, id_paciente, fecha_cancelacion)
+        VALUES (NEW.id_cita, NEW.id_paciente, NOW());
+    END IF;
+END$$
 
--- Verificar Medicos
-SELECT * FROM Medicos;
+DELIMITER ;
 
--- Verificar Horarios
-SELECT * FROM Horarios;
+-- Trigger  para evitar doble cita en el mismo horario
+DELIMITER $$
+
+CREATE TRIGGER evitar_doble_cita
+BEFORE INSERT ON Cita
+FOR EACH ROW
+BEGIN
+    DECLARE existe INT;
+    
+    -- Contamos cuántas citas tiene el paciente en la misma fecha
+    SELECT COUNT(*) INTO existe
+    FROM Cita
+    WHERE id_paciente = NEW.id_paciente AND DATE(fechahora) = DATE(NEW.fechahora)
+    AND estado NOT IN ('Cancelada');
+
+    -- Si ya tiene una cita, lanzamos un error
+    IF existe > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El paciente ya tiene una cita en esta fecha';
+    END IF;
+END$$
+
+DELIMITER ;
 
 INSERT INTO Usuarios(nombre, apellido_paterno, apellido_materno, telefono, correo) 
 VALUES ('Angel','Servin de la mora','Vazquez','6441545454','angel.ser@gmail.com');
