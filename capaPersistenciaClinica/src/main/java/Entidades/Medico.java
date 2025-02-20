@@ -6,43 +6,71 @@ package Entidades;
 
 /**
  *
- * @author Angel
+ * @author chris
  */
 public class Medico {
-    
-//    
-//    id_medico INT AUTO_INCREMENT PRIMARY KEY,
-//    especialidad VARCHAR(100) NOT NULL,
-//    cedula VARCHAR(50) UNIQUE NOT NULL,
-//    id_usuario INT UNIQUE NOT NULL,
-    
-    private int id_medico;
+
+    private int idMedico;
+    private String nombre;
+    private String apellidoPaterno;
+    private String apellidoMaterno;
     private String especialidad;
-    private String cedula;
-    private int id_usuario;
+    private String celuda;
+    private String estado;
+    private String contrasenia;
 
-    public Medico() {
-    }
-
-    public Medico(int id_medico, String especialidad, String cedula, int id_usuario) {
-        this.id_medico = id_medico;
+    public Medico(int idMedico, String nombre, String apellidoPaterno, String apellidoMaterno, String especialidad, String celuda, String estado, String contrasenia) {
+        this.idMedico = idMedico;
+        this.nombre = nombre;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
         this.especialidad = especialidad;
-        this.cedula = cedula;
-        this.id_usuario = id_usuario;
+        this.celuda = celuda;
+        this.estado = estado;
+        this.contrasenia = contrasenia;
     }
 
-    public Medico(String especialidad, String cedula, int id_usuario) {
+    //CONSTRUCOTR SIN ID
+    public Medico(String nombre, String apellidoPaterno, String apellidoMaterno, String especialidad, String celuda, String estado, String contrasenia) {
+        this.nombre = nombre;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
         this.especialidad = especialidad;
-        this.cedula = cedula;
-        this.id_usuario = id_usuario;
+        this.celuda = celuda;
+        this.estado = estado;
+        this.contrasenia = contrasenia;
     }
 
-    public int getId_medico() {
-        return id_medico;
+    public int getIdMedico() {
+        return idMedico;
     }
 
-    public void setId_medico(int id_medico) {
-        this.id_medico = id_medico;
+    public void setIdMedico(int idMedico) {
+        this.idMedico = idMedico;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellidoPaterno() {
+        return apellidoPaterno;
+    }
+
+    public void setApellidoPaterno(String apellidoPaterno) {
+        this.apellidoPaterno = apellidoPaterno;
+    }
+
+    public String getApellidoMaterno() {
+        return apellidoMaterno;
+    }
+
+    public void setApellidoMaterno(String apellidoMaterno) {
+        this.apellidoMaterno = apellidoMaterno;
     }
 
     public String getEspecialidad() {
@@ -53,25 +81,34 @@ public class Medico {
         this.especialidad = especialidad;
     }
 
-    public String getCedula() {
-        return cedula;
+    public String getCeluda() {
+        return celuda;
     }
 
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
+    public void setCeluda(String celuda) {
+        this.celuda = celuda;
     }
 
-    public int getId_usuario() {
-        return id_usuario;
+    public String getEstado() {
+        return estado;
     }
 
-    public void setId_usuario(int id_usuario) {
-        this.id_usuario = id_usuario;
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getContrasenia() {
+        return contrasenia;
+    }
+
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
     }
 
     @Override
     public String toString() {
-        return "Medico{" + "id_medico=" + id_medico + ", especialidad=" + especialidad + ", cedula=" + cedula + ", id_usuario=" + id_usuario + '}';
+        return "Medico{" + "idMedico=" + idMedico + ", nombre=" + nombre + ", apellidoPaterno=" + apellidoPaterno + ", apellidoMaterno=" + apellidoMaterno + ", especialidad=" + especialidad + ", celuda=" + celuda + ", estado=" + estado + ", contrasenia=" + contrasenia + '}';
     }
+    
     
 }

@@ -4,6 +4,10 @@
  */
 package BO;
 
+import DTO.PacienteNuevoDTO;
+import Exception.NegocioException;
+import java.time.LocalDate;
+
 /**
  *
  * @author chris
