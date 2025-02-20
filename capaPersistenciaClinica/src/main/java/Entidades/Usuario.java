@@ -22,10 +22,13 @@ public class Usuario {
     private String apellido_materno;
     private String telefono;
     private String correo;
+   
 
+    // constructor vacio
     public Usuario() {
     }
 
+    // constructor con todo
     public Usuario(int id_usuario, String nombre, String apellido_paterno, String apellido_materno, String telefono, String correo) {
         this.id_usuario = id_usuario;
         this.nombre = nombre;
@@ -35,6 +38,7 @@ public class Usuario {
         this.correo = correo;
     }
 
+    // constructor con todo menos el id
     public Usuario(String nombre, String apellido_paterno, String apellido_materno, String telefono, String correo) {
         this.nombre = nombre;
         this.apellido_paterno = apellido_paterno;
@@ -43,6 +47,7 @@ public class Usuario {
         this.correo = correo;
     }
 
+    // gets y sets
     public int getId_usuario() {
         return id_usuario;
     }

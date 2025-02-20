@@ -14,7 +14,7 @@ import Exception.PersistenciaException;
 public interface IPacienteDAO {
     
     //    public Activista agregarActivista(Activista activista) throws PersistenciaException;
-    public Paciente agendarCita(Paciente paciente) throws PersistenciaException;
+    public Paciente registrarPaciente(Paciente paciente) throws PersistenciaException;
     
 
 } 

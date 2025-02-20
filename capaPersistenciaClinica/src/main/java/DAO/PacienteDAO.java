@@ -7,6 +7,7 @@ package DAO;
 import Conexion.IConexionBD;
 import Entidades.Paciente;
 import Exception.PersistenciaException;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -28,23 +29,51 @@ public class PacienteDAO implements IPacienteDAO {
     }
     private static final Logger logger = Logger.getLogger(PacienteDAO.class.getName());
 
+//    @Override
+//    public Paciente agendarCita(Paciente paciente) throws PersistenciaException {
+//
+//        String sentenciaSQL = "INSERT INTO Pacientes(fecha_nacimiento, id_usuario, id_direccion) VALUES (?,?,?)";
+//        try (Connection con = conexion.crearConexion(); PreparedStatement ps = con.prepareStatement(sentenciaSQL, Statement.RETURN_GENERATED_KEYS)) {
+//
+//            ps.setDate(1, Date.valueOf(paciente.getFecha_nacimiento()));
+//            ps.setInt(2, paciente.getId_usuario());
+//            ps.setInt(3, paciente.getId_direccion());
+//
+//        } catch (SQLException ex) {
+//            Logger.getLogger(PacienteDAO.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
+//}
     @Override
-    public Paciente agendarCita(Paciente paciente) throws PersistenciaException {
+    public Paciente registrarPaciente(Paciente paciente) throws PersistenciaException {
 
-        String sentenciaSQL = "INSERT INTO Pacientes(fecha_nacimiento, id_usuario, id_direccion) VALUES (?,?,?)";
-        try (Connection con = conexion.crearConexion(); PreparedStatement ps = con.prepareStatement(sentenciaSQL, Statement.RETURN_GENERATED_KEYS)) {
+        String sql = "{CALL RegistrarPaciente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 
-            ps.setDate(1, Date.valueOf(paciente.getFecha_nacimiento()));
-            ps.setInt(2, paciente.getId_usuario());
-            ps.setInt(3, paciente.getId_direccion());
+        try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
+
+            // Convertir fecha de String a java.sql.Date
+            Date fechaNacimiento = Date.valueOf(paciente.getFecha_nacimiento());
+
+            // Establecer parámetros en el procedimiento almacenado
+            cs.setString(1, paciente.getUsuario().getNombre()); // Nombre
+            cs.setString(2, paciente.getUsuario().getApellido_paterno()); // Apellido Paterno
+            cs.setString(3, paciente.getUsuario().getApellido_materno()); // Apellido Materno
+            cs.setString(4, paciente.getUsuario().getTelefono()); // Teléfono
+            cs.setString(5, paciente.getUsuario().getCorreo()); // Correo Electrónico
+            cs.setDate(6, fechaNacimiento); // Fecha de nacimiento
+            cs.setString(7, paciente.getDireccion().getCalle()); // Calle
+            cs.setString(8, paciente.getDireccion().getNumero()); // Número de casa
+            cs.setString(9, paciente.getDireccion().getColonia()); // Colonia
+            cs.setInt(10, paciente.getDireccion().getCodigo_postal()); // Código postal
+
+            cs.execute();
+            System.out.println("✅ Paciente registrado exitosamente");
 
         } catch (SQLException ex) {
-            Logger.getLogger(PacienteDAO.class.getName()).log(Level.SEVERE, null, ex);
+            throw new PersistenciaException("Error al registrar el paciente", ex);
         }
+
+        return paciente; // Retorna el paciente registrado
     }
-
- 
-    
-
 
 }

@@ -24,9 +24,11 @@ public class ConsultaSinCita {
     private Time hora;
     private int id_consulta;
 
+    // constructor vacio
     public ConsultaSinCita() {
     }
 
+    // constructor con todo
     public ConsultaSinCita(int id_consin, int folio, Date fecha, Time hora, int id_consulta) {
         this.id_consin = id_consin;
         this.folio = folio;
@@ -35,6 +37,7 @@ public class ConsultaSinCita {
         this.id_consulta = id_consulta;
     }
 
+    // constructor con todo menos el id
     public ConsultaSinCita(int folio, Date fecha, Time hora, int id_consulta) {
         this.folio = folio;
         this.fecha = fecha;
@@ -42,6 +45,7 @@ public class ConsultaSinCita {
         this.id_consulta = id_consulta;
     }
 
+    // gets y sets
     public int getId_consin() {
         return id_consin;
     }
