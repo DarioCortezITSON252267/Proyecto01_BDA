@@ -12,6 +12,7 @@ import Entidades.Paciente;
 import Entidades.Usuario;
 import Exception.PersistenciaException;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 /**
@@ -73,7 +74,7 @@ public class CapaPersistenciaClinica {
         Direccion direccion = new Direccion(calle, numero, colonia, codigoPostal);
 
         // Crear objeto Paciente con Usuario y Dirección
-        Paciente paciente = new Paciente(fechaNacimiento.toString(), direccion, usuario);
+        Paciente paciente = new Paciente(LocalDate.of(2002,10,8), direccion, usuario);
 
         // Intentar registrar el paciente
         try {

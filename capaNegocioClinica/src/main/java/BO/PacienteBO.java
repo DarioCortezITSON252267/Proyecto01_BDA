@@ -4,8 +4,13 @@
  */
 package BO;
 
+import Conexion.IConexionBD;
+import DAO.IPacienteDAO;
+import DAO.PacienteDAO;
 import DTO.PacienteNuevoDTO;
+import Entidades.Paciente;
 import Exception.NegocioException;
+import Exception.PersistenciaException;
 import Mapper.PacienteMapper;
 import java.time.LocalDate;
 import java.util.logging.Level;

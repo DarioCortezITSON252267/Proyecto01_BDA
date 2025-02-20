@@ -17,7 +17,7 @@ public class Paciente {
 //    id_usuario INT UNIQUE NOT NULL,
 //    id_direccion INT NOT NULL,
     private int id_paciente;
-    private String fecha_nacimiento;
+    private LocalDate fecha_nacimiento;
     private Direccion direccion;
     private Usuario usuario;
 
@@ -26,14 +26,14 @@ public class Paciente {
     }
 
     // constructor con todo
-    public Paciente(int id_paciente, String fecha_nacimiento, Direccion direccion, Usuario usuario) {
+    public Paciente(int id_paciente, LocalDate fecha_nacimiento, Direccion direccion, Usuario usuario) {
         this.id_paciente = id_paciente;
         this.fecha_nacimiento = fecha_nacimiento;
         this.direccion = direccion;
         this.usuario = usuario;
     }
 
-    public Paciente(String fecha_nacimiento, Direccion direccion, Usuario usuario) {
+    public Paciente(LocalDate fecha_nacimiento, Direccion direccion, Usuario usuario) {
         this.fecha_nacimiento = fecha_nacimiento;
         this.direccion = direccion;
         this.usuario = usuario;
@@ -47,11 +47,11 @@ public class Paciente {
         this.id_paciente = id_paciente;
     }
 
-    public String getFecha_nacimiento() {
+    public LocalDate getFecha_nacimiento() {
         return fecha_nacimiento;
     }
 
-    public void setFecha_nacimiento(String fecha_nacimiento) {
+    public void setFecha_nacimiento(LocalDate fecha_nacimiento) {
         this.fecha_nacimiento = fecha_nacimiento;
     }
 
