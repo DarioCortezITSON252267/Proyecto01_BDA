@@ -10,35 +10,32 @@ import java.time.LocalDate;
  *
  * @author chris
  */
-public class Paciente {
-
-//        id_paciente INT AUTO_INCREMENT PRIMARY KEY,
-//    fecha_nacimiento DATE NOT NULL,
-//    id_usuario INT UNIQUE NOT NULL,
-//    id_direccion INT NOT NULL,
-    private int id_paciente;
+public class Paciente extends Usuario{
+   private int id_paciente;
     private LocalDate fecha_nacimiento;
     private Direccion direccion;
-    private Usuario usuario;
 
-    // constructor vacio
-    public Paciente() {
-    }
+    // Constructor vacío
+    public Paciente() {}
 
-    // constructor con todo
-    public Paciente(int id_paciente, LocalDate fecha_nacimiento, Direccion direccion, Usuario usuario) {
+    // Constructor completo
+    public Paciente(int id_paciente, String nombre, String apellidoPaterno, String apellidoMaterno,
+                    String telefono, String correo, LocalDate fechaNacimiento, Direccion direccion) {
+        super(nombre, apellidoPaterno, apellidoMaterno, telefono, correo); // Llamada al constructor de Usuario
         this.id_paciente = id_paciente;
-        this.fecha_nacimiento = fecha_nacimiento;
+        this.fecha_nacimiento = fechaNacimiento;
         this.direccion = direccion;
-        this.usuario = usuario;
     }
 
-    public Paciente(LocalDate fecha_nacimiento, Direccion direccion, Usuario usuario) {
-        this.fecha_nacimiento = fecha_nacimiento;
+    // Constructor sin ID (para nuevos registros)
+    public Paciente(String nombre, String apellidoPaterno, String apellidoMaterno,
+                    String telefono, String correo, LocalDate fechaNacimiento, Direccion direccion) {
+        super(nombre, apellidoPaterno, apellidoMaterno, telefono, correo); // Llamada al constructor de Usuario
+        this.fecha_nacimiento = fechaNacimiento;
         this.direccion = direccion;
-        this.usuario = usuario;
     }
 
+    // Getters y Setters
     public int getId_paciente() {
         return id_paciente;
     }
@@ -63,17 +60,13 @@ public class Paciente {
         this.direccion = direccion;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
     @Override
     public String toString() {
-        return "Paciente{" + "id_paciente=" + id_paciente + ", fecha_nacimiento=" + fecha_nacimiento + ", direccion=" + direccion + ", usuario=" + usuario + '}';
-    }
+        return "Paciente{" +
+               "id_paciente=" + id_paciente +
+               ", fecha_nacimiento=" + fecha_nacimiento +
+               ", direccion=" + direccion +
+               ", " + super.toString() +  // Llama al toString() de Usuario
+               '}';
 
-}
+}}
