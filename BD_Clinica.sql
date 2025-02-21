@@ -5,11 +5,8 @@ USE clinica;
 -- Tabla USUARIOS
 CREATE TABLE Usuarios (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL,
-    apellido_paterno VARCHAR(50) NOT NULL,
-    apellido_materno VARCHAR(50) NOT NULL,
-    correo VARCHAR(100) UNIQUE NULL,
-    contraseña VARCHAR(255) NOT NULL,
+    usuario VARCHAR(50) UNIQUE NOT NULL,
+    contraseña VARCHAR(100) NOT NULL,
     tipo_usuario ENUM('paciente', 'medico') NOT NULL
 );
 
@@ -24,18 +21,16 @@ CREATE TABLE Direcciones (
     FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE
 );
 
--- Tabla TELEFONOS
-CREATE TABLE Telefonos (
-    id_telefono INT AUTO_INCREMENT PRIMARY KEY,
-    numero VARCHAR(10) NOT NULL,
-    id_usuario INT NOT NULL,
-    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE
-);
 
 -- Tabla PACIENTES
 CREATE TABLE Pacientes (
     id_paciente INT AUTO_INCREMENT PRIMARY KEY,
     fecha_nacimiento DATE NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    apellido_paterno VARCHAR(50) NOT NULL,
+    apellido_materno VARCHAR(50) NOT NULL,
+    correo VARCHAR(100) UNIQUE NULL,
+    telefono VARCHAR(20) NOT NULL,
     id_usuario INT UNIQUE NOT NULL,
     FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE
 );
@@ -94,66 +89,81 @@ CREATE TABLE ConsultaSinCita (
     FOREIGN KEY (id_paciente) REFERENCES Pacientes(id_paciente) ON DELETE CASCADE
 );
 
--- Insertar Médicos (Usuarios + Médicos)
-INSERT INTO Usuarios (nombre, apellido_paterno, apellido_materno, correo, contraseña, tipo_usuario) VALUES
-('Gregory', 'House', 'Laurie', NULL, 'house123', 'medico'),
-('Ana', 'López', 'Martínez', NULL, 'ana456', 'medico'),
-('Javier', 'Ramírez', 'Díaz', NULL, 'javier789', 'medico'),
-('María', 'González', 'Fernández', NULL, 'maria101', 'medico'),
-('Fernando', 'Torres', 'Sánchez', NULL, 'fernando202', 'medico');
+-- Tabla Auditoria
+CREATE TABLE Auditoria (
+    id_auditoria INT AUTO_INCREMENT PRIMARY KEY,
+    tabla_afectada ENUM('Cita', 'Consulta', 'ConsultaSinCita') NOT NULL,
+    accion ENUM('insertar', 'actualizar', 'eliminar') NOT NULL,
+    fecha_hora DATETIME NOT NULL,
+    datos_anteriores TEXT NULL, 
+    datos_nuevos TEXT NULL,
+	id_cita INT NULL,
+    id_consulta INT NULL,
+    id_consultasincita INT NULL
+);
 
--- Asociar médicos a los usuarios
-INSERT INTO Medicos (especialidad, cedula, id_usuario) VALUES
-('Neurología', '12345678', 1),
-('General', '87654321', 2),
-('Hematología', '23456789', 3),
-('General', '34567890', 4),
-('Cardiología', '45678901', 5);
-
--- Insertar Horarios para los médicos
-INSERT INTO Horarios (horaInicial, horaFinal, dias, id_medico) VALUES
-('08:00:00', '14:00:00', 'Lunes a Viernes', 1),
-('09:00:00', '15:00:00', 'Lunes a Sábado', 2),
-('10:00:00', '16:00:00', 'Martes a Jueves', 3),
-('12:00:00', '18:00:00', 'Miércoles a Viernes', 4),
-('14:00:00', '20:00:00', 'Lunes, Miércoles y Viernes', 5);
-
--- Trigger para registrar la cancelacion de una cita.
+-- TRIGGERS PARA AUDITORÍA
 DELIMITER $$
 
-CREATE TRIGGER registrar_cancelacion
-AFTER UPDATE ON Cita
-FOR EACH ROW
+-- Trigger para insertar en Cita
+CREATE TRIGGER insertar_cita
+AFTER INSERT ON Cita FOR EACH ROW
 BEGIN
-    IF NEW.estado = 'Cancelada' THEN
-        INSERT INTO HistorialCancelaciones (id_cita, id_paciente, fecha_cancelacion)
-        VALUES (NEW.id_cita, NEW.id_paciente, NOW());
-    END IF;
-END$$
+    INSERT INTO Auditoria (tabla_afectada, id_cita, accion, fecha_hora, datos_nuevos) 
+    VALUES ('Cita', NEW.id_cita, 'insertar', NOW(), 
+    CONCAT('estado:', NEW.estado, ', fechahora:', NEW.fechahora, ', id_paciente:', NEW.id_paciente, ', id_medico:', NEW.id_medico, ', nota:', NEW.nota));
+END $$
 
-DELIMITER ;
-
--- Trigger  para evitar doble cita en el mismo horario
-DELIMITER $$
-
-CREATE TRIGGER evitar_doble_cita
-BEFORE INSERT ON Cita
-FOR EACH ROW
+-- Trigger para actualizar en Cita
+CREATE TRIGGER actualizar_cita
+AFTER UPDATE ON Cita FOR EACH ROW
 BEGIN
-    DECLARE existe INT;
-    
-    -- Contamos cuántas citas tiene el paciente en la misma fecha
-    SELECT COUNT(*) INTO existe
-    FROM Cita
-    WHERE id_paciente = NEW.id_paciente AND DATE(fechahora) = DATE(NEW.fechahora)
-    AND estado NOT IN ('Cancelada');
+    INSERT INTO Auditoria (tabla_afectada, id_cita, accion, fecha_hora, datos_anteriores, datos_nuevos) 
+    VALUES ('Cita', NEW.id_cita, 'actualizar', NOW(), 
+    CONCAT('estado:', OLD.estado, ', fechahora:', OLD.fechahora, ', id_paciente:', OLD.id_paciente, ', id_medico:', OLD.id_medico, ', nota:', OLD.nota), 
+    CONCAT('estado:', NEW.estado, ', fechahora:', NEW.fechahora, ', id_paciente:', NEW.id_paciente, ', id_medico:', NEW.id_medico, ', nota:', NEW.nota));
+END $$
 
-    -- Si ya tiene una cita, lanzamos un error
-    IF existe > 0 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'El paciente ya tiene una cita en esta fecha';
-    END IF;
-END$$
+
+-- Trigger para insertar en Consulta
+CREATE TRIGGER insertar_consulta
+AFTER INSERT ON Consulta FOR EACH ROW
+BEGIN
+    INSERT INTO Auditoria (tabla_afectada, id_consulta, accion, fecha_hora, datos_nuevos) 
+    VALUES ('Consulta', NEW.id_consulta, 'insertar', NOW(), 
+    CONCAT('motivo:', NEW.motivo, ', diagnostico:', NEW.diagnostico, ', tratamiento:', NEW.tratamiento, ', id_cita:', NEW.id_cita));
+END $$
+
+-- Trigger para actualizar en Consulta
+CREATE TRIGGER actualizar_consulta
+AFTER UPDATE ON Consulta FOR EACH ROW
+BEGIN
+    INSERT INTO Auditoria (tabla_afectada, id_consulta, accion, fecha_hora, datos_anteriores, datos_nuevos) 
+    VALUES ('Consulta', NEW.id_consulta, 'actualizar', NOW(), 
+    CONCAT('motivo:', OLD.motivo, ', diagnostico:', OLD.diagnostico, ', tratamiento:', OLD.tratamiento, ', id_cita:', OLD.id_cita), 
+    CONCAT('motivo:', NEW.motivo, ', diagnostico:', NEW.diagnostico, ', tratamiento:', NEW.tratamiento, ', id_cita:', NEW.id_cita));
+END $$
+
+
+-- Trigger para insertar en ConsultaSinCita
+CREATE TRIGGER insertar_consulta_sin_cita
+AFTER INSERT ON ConsultaSinCita FOR EACH ROW
+BEGIN
+    INSERT INTO Auditoria (tabla_afectada, id_consultasincita, accion, fecha_hora, datos_nuevos) 
+    VALUES ('ConsultaSinCita', NEW.id_consulta, 'insertar', NOW(), 
+    CONCAT('folio:', NEW.folio, ', fecha:', NEW.fecha, ', hora:', NEW.hora, ', motivo:', NEW.motivo, ', id_medico:', NEW.id_medico, ', id_paciente:', NEW.id_paciente));
+END $$
+
+-- Trigger para actualizar en ConsultaSinCita
+CREATE TRIGGER actualizar_consulta_sin_cita
+AFTER UPDATE ON ConsultaSinCita FOR EACH ROW
+BEGIN
+    INSERT INTO Auditoria (tabla_afectada, id_consultasincita, accion, fecha_hora, datos_anteriores, datos_nuevos) 
+    VALUES ('ConsultaSinCita', NEW.id_consulta, 'actualizar', NOW(), 
+    CONCAT('folio:', OLD.folio, ', fecha:', OLD.fecha, ', hora:', OLD.hora, ', motivo:', OLD.motivo, ', id_medico:', OLD.id_medico, ', id_paciente:', OLD.id_paciente), 
+    CONCAT('folio:', NEW.folio, ', fecha:', NEW.fecha, ', hora:', NEW.hora, ', motivo:', NEW.motivo, ', id_medico:', NEW.id_medico, ', id_paciente:', NEW.id_paciente));
+END $$
+
 
 DELIMITER ;
 
@@ -195,7 +205,6 @@ BEGIN
     DECLARE direccionID INT;
     DECLARE mensaje_error VARCHAR(255);
     
-    -- Manejo de errores
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
     BEGIN
         ROLLBACK;
@@ -203,7 +212,6 @@ BEGIN
         SELECT mensaje_error AS mensaje;
     END;
     
-    -- Iniciar la transacción
     START TRANSACTION;
 
     -- Insertar en la tabla Usuarios
@@ -232,6 +240,5 @@ BEGIN
 END$$
 
 DELIMITER ;
-
 
 
