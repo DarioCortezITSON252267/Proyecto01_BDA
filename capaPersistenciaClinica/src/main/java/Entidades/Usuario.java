@@ -6,48 +6,28 @@ package Entidades;
 
 /**
  *
- * @author Usuario
+ * @author Todos
  */
 public class Usuario {
     
-//    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-//    nombre VARCHAR(100) NOT NULL,
-//    apellido_paterno VARCHAR(100) NOT NULL,
-//    apellido_materno VARCHAR(100),
-//    telefono VARCHAR(20),
-//    correo VARCHAR(100) UNIQUE
     private int id_usuario;
-    private String nombre;
-    private String apellido_paterno;
-    private String apellido_materno;
-    private String telefono;
-    private String correo;
-   
+    private String usuario;
+    private String contraseña;
+    private String tipo_usuario; 
 
-    // constructor vacio
+    // Constructor vacío
     public Usuario() {
     }
 
-    // constructor con todo
-    public Usuario(int id_usuario, String nombre, String apellido_paterno, String apellido_materno, String telefono, String correo) {
+    // Constructor con todos los atributos
+    public Usuario(int id_usuario, String usuario, String contraseña, String tipo_usuario) {
         this.id_usuario = id_usuario;
-        this.nombre = nombre;
-        this.apellido_paterno = apellido_paterno;
-        this.apellido_materno = apellido_materno;
-        this.telefono = telefono;
-        this.correo = correo;
+        this.usuario = usuario;
+        this.contraseña = contraseña;
+        this.tipo_usuario = tipo_usuario;
     }
 
-    // constructor con todo menos el id
-    public Usuario(String nombre, String apellido_paterno, String apellido_materno, String telefono, String correo) {
-        this.nombre = nombre;
-        this.apellido_paterno = apellido_paterno;
-        this.apellido_materno = apellido_materno;
-        this.telefono = telefono;
-        this.correo = correo;
-    }
-
-    // gets y sets
+    // Getters y Setters
     public int getId_usuario() {
         return id_usuario;
     }
@@ -56,49 +36,33 @@ public class Usuario {
         this.id_usuario = id_usuario;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
-    public String getApellido_paterno() {
-        return apellido_paterno;
+    public String getContraseña() {
+        return contraseña;
     }
 
-    public void setApellido_paterno(String apellido_paterno) {
-        this.apellido_paterno = apellido_paterno;
+    public void setContraseña(String contraseña) {
+        this.contraseña = contraseña;
     }
 
-    public String getApellido_materno() {
-        return apellido_materno;
+    public String getTipo_usuario() {
+        return tipo_usuario;
     }
 
-    public void setApellido_materno(String apellido_materno) {
-        this.apellido_materno = apellido_materno;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
+    public void setTipo_usuario(String tipo_usuario) {
+        this.tipo_usuario = tipo_usuario;
     }
 
     @Override
     public String toString() {
-        return "Usuario{" + "id_usuario=" + id_usuario + ", nombre=" + nombre + ", apellido_paterno=" + apellido_paterno + ", apellido_materno=" + apellido_materno + ", telefono=" + telefono + ", correo=" + correo + '}';
+        return "Usuario{" + "id_usuario=" + id_usuario + ", usuario='" + usuario + '\'' + ", contraseña='" + contraseña + '\'' +
+        ", tipo_usuario='" + tipo_usuario + '\'' + '}';
     }
-    
 }

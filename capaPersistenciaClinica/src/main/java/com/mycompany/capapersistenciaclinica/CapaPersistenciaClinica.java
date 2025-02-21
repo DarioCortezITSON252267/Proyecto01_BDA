@@ -11,25 +11,31 @@ import Entidades.Direccion;
 import Entidades.Paciente;
 import Entidades.Usuario;
 import Exception.PersistenciaException;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Scanner;
 
+
+
 /**
  *
- * @author Angel
+ * @author Todos
  */
 public class CapaPersistenciaClinica {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
+        // Crear la conexión a la base de datos
         IConexionBD conexion = new ConexionBD();
         IPacienteDAO pacienteDAO = new PacienteDAO(conexion);
 
         System.out.println("Ingresar los datos del paciente");
 
         // Capturar datos del Usuario
+        System.out.print("Usuario: ");
+        String usuario = scanner.nextLine();
+        System.out.print("Contraseña: ");
+        String contraseña = scanner.nextLine();
         System.out.print("Nombre: ");
         String nombre = scanner.nextLine();
         System.out.print("Apellido Paterno: ");
@@ -44,10 +50,10 @@ public class CapaPersistenciaClinica {
         // Capturar fecha de nacimiento
         System.out.print("Fecha de Nacimiento (YYYY-MM-DD): ");
         String fechaNacimientoStr = scanner.nextLine();
-        Date fechaNacimiento = null;
+        LocalDate fechaNacimiento = null;
         try {
-            fechaNacimiento = Date.valueOf(fechaNacimientoStr);
-        } catch (IllegalArgumentException e) {
+            fechaNacimiento = LocalDate.parse(fechaNacimientoStr);
+        } catch (Exception e) {
             System.out.println("Error: Formato de fecha incorrecto. Use YYYY-MM-DD.");
             return;
         }
@@ -70,20 +76,36 @@ public class CapaPersistenciaClinica {
         }
 
         // Crear objetos Usuario y Dirección
-        Usuario usuario = new Usuario(nombre, apellidoPaterno, apellidoMaterno, telefono, correo);
-        Direccion direccion = new Direccion(calle, numero, colonia, codigoPostal);
+        Usuario usuarioObj = new Usuario();
+        usuarioObj.setUsuario(usuario);
+        usuarioObj.setContraseña(contraseña);
+    
+
+        Direccion direccion = new Direccion();
+        direccion.setCalle(calle);
+        direccion.setNumero(numero);
+        direccion.setColonia(colonia);
+        direccion.setCodigo_postal(codigoPostal);
 
         // Crear objeto Paciente con Usuario y Dirección
-        Paciente paciente = new Paciente(LocalDate.of(2002,10,8), direccion, usuario);
+        Paciente paciente = new Paciente();
+        paciente.setFecha_nacimiento(fechaNacimiento);
+        paciente.setNombre(nombre);
+        paciente.setApellido_paterno(apellidoPaterno);
+        paciente.setApellido_materno(apellidoMaterno);
+        paciente.setTelefono(telefono);
+        paciente.setCorreo(correo);
+        paciente.setUsuario(usuarioObj);
+        paciente.setDireccion(direccion);
 
         // Intentar registrar el paciente
         try {
             pacienteDAO.registrarPaciente(paciente);
-            System.out.println(" Paciente registrado correctamente.");
+            System.out.println("Paciente registrado correctamente.");
         } catch (PersistenciaException e) {
-            System.out.println(" Error al registrar paciente: " + e.getMessage());
+            System.out.println("Error al registrar paciente: " + e.getMessage());
+        } finally {
+            scanner.close();
         }
-
-        scanner.close();
     }
 }

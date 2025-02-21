@@ -6,7 +6,7 @@ package Entidades;
 
 /**
  *
- * @author Usuario
+ * @author Todos
  */
 public class Direccion {
 
@@ -15,26 +15,20 @@ public class Direccion {
     private String numero;
     private String colonia;
     private int codigo_postal;
+    private int id_usuario;
 
     // Constructor vacío
     public Direccion() {
     }
 
-    // Constructor con todos los campos (sin id_direccion)
-    public Direccion(String calle, String numero, String colonia, int codigo_postal) {
-        this.calle = calle;
-        this.numero = numero;
-        this.colonia = colonia;
-        this.codigo_postal = codigo_postal;
-    }
-
-    // Constructor con id incluido
-    public Direccion(int id_direccion, String calle, String numero, String colonia, int codigo_postal) {
+    // Constructor con todos los atributos
+    public Direccion(int id_direccion, String calle, String numero, String colonia, int codigo_postal, int id_usuario) {
         this.id_direccion = id_direccion;
         this.calle = calle;
         this.numero = numero;
         this.colonia = colonia;
         this.codigo_postal = codigo_postal;
+        this.id_usuario = id_usuario;
     }
 
     // Getters y Setters
@@ -78,15 +72,18 @@ public class Direccion {
         this.codigo_postal = codigo_postal;
     }
 
+    public int getId_usuario() {
+        return id_usuario;
+    }
+
+    public void setId_usuario(int id_usuario) {
+        this.id_usuario = id_usuario;
+    }
+
     @Override
     public String toString() {
-        return "Direccion{" +
-                "id_direccion=" + id_direccion +
-                ", calle='" + calle + '\'' +
-                ", numero='" + numero + '\'' +
-                ", colonia='" + colonia + '\'' +
-                ", codigo_postal=" + codigo_postal +
-                '}';
+        return "Direccion{" + "id_direccion=" + id_direccion + ", calle='" + calle + '\'' + ", numero='" + numero + '\'' +
+        ", colonia='" + colonia + '\'' + ", codigo_postal=" + codigo_postal + ", id_usuario=" + id_usuario + '}';
     }
 }
 
