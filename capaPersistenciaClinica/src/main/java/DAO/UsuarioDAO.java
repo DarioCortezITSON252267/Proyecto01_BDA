@@ -6,7 +6,7 @@ package DAO;
 
 /**
  *
- * @author UsuarioDAO
+ * @author Todos
  */
 public class UsuarioDAO {
     

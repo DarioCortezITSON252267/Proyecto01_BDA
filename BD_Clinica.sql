@@ -167,9 +167,6 @@ END $$
 
 DELIMITER ;
 
-INSERT INTO Usuarios(nombre, apellido_paterno, apellido_materno, telefono, correo) 
-VALUES ('Angel','Servin de la mora','Vazquez','6441545454','angel.ser@gmail.com');
-
 INSERT INTO Usuarios (usuario, contraseña, tipo_usuario)
 VALUES ('angel.ser', 'contraseña123', 'paciente');
 
