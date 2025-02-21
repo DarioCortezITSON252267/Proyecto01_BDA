@@ -4,6 +4,7 @@
  */
 package DTO;
 
+import Entidades.Direccion;
 import java.time.LocalDate;
 
 /**
@@ -12,6 +13,7 @@ import java.time.LocalDate;
  */
 public class PacienteNuevoDTO {
 
+
     private String nombre;
     private String apellidoPaterno;
     private String apellidoMaterno;
@@ -19,12 +21,12 @@ public class PacienteNuevoDTO {
     private LocalDate fechaNacimiento;
     private String correo;
     private String contrasenia;
-    
-    public PacienteNuevoDTO(){
-        
+    private Direccion direccion; // 🏠 Se agrega la dirección
+
+    public PacienteNuevoDTO() {
     }
 
-    public PacienteNuevoDTO(String nombre, String apellidoPaterno, String apellidoMaterno, String telefono, LocalDate fechaNacimiento, String correo, String contrasenia) {
+    public PacienteNuevoDTO(String nombre, String apellidoPaterno, String apellidoMaterno, String telefono, LocalDate fechaNacimiento, String correo, String contrasenia, Direccion direccion) {
         this.nombre = nombre;
         this.apellidoPaterno = apellidoPaterno;
         this.apellidoMaterno = apellidoMaterno;
@@ -32,6 +34,7 @@ public class PacienteNuevoDTO {
         this.fechaNacimiento = fechaNacimiento;
         this.correo = correo;
         this.contrasenia = contrasenia;
+        this.direccion = direccion;
     }
 
     public String getNombre() {
@@ -89,12 +92,26 @@ public class PacienteNuevoDTO {
     public void setContrasenia(String contrasenia) {
         this.contrasenia = contrasenia;
     }
-    
+
+    public Direccion getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(Direccion direccion) {
+        this.direccion = direccion;
+    }
 
     @Override
     public String toString() {
-        return "PacienteNuevoDTO{" + "nombre=" + nombre + ", apellidoPaterno=" + apellidoPaterno + ", apellidoMaterno=" + apellidoMaterno + ", telefono=" + telefono + ", fechaNacimiento=" + fechaNacimiento + ", correo=" + correo + '}';
+        return "PacienteNuevoDTO{" +
+                "nombre='" + nombre + '\'' +
+                ", apellidoPaterno='" + apellidoPaterno + '\'' +
+                ", apellidoMaterno='" + apellidoMaterno + '\'' +
+                ", telefono='" + telefono + '\'' +
+                ", fechaNacimiento=" + fechaNacimiento +
+                ", correo='" + correo + '\'' +
+                ", direccion=" + direccion +
+                '}';
     }
-    
     
 }

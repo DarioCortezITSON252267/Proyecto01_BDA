@@ -8,7 +8,9 @@ import Conexion.IConexionBD;
 import DAO.IPacienteDAO;
 import DAO.PacienteDAO;
 import DTO.PacienteNuevoDTO;
+import Entidades.Direccion;
 import Entidades.Paciente;
+import Entidades.Usuario;
 import Exception.NegocioException;
 import Exception.PersistenciaException;
 import Mapper.PacienteMapper;
@@ -22,57 +24,113 @@ import java.util.regex.Pattern;
  * @author chris
  */
 public class PacienteBO {
-
-    IPacienteDAO pacienteDAO;
+    private final IPacienteDAO pacienteDAO;
+    private final PacienteMapper pacienteMapper;
+    private static final Logger logger = Logger.getLogger(PacienteBO.class.getName());
 
     public PacienteBO(IConexionBD conexion) {
         this.pacienteDAO = new PacienteDAO(conexion);
+        this.pacienteMapper = new PacienteMapper();
     }
 
-    public boolean registrarPaciente(PacienteNuevoDTO pacienteNuevo) throws NegocioException {
+    public boolean registrarPaciente(PacienteNuevoDTO paciNuevo) throws NegocioException {
+        if (paciNuevo == null)
+            throw new NegocioException("El paciente no puede ser nulo.");
 
-        if (pacienteNuevo == null) {
-            throw new NegocioException("El paciente no puede ser nulo");
+        // **Validación de correo**
+        String correo = paciNuevo.getCorreo();
+          if (correo.length() > 150)
+            throw new NegocioException("No se permiten correos con más de 150 caracteres.");
+        if (!Pattern.matches("^[^@\\s]+@[^@\\s]+\\.com$", correo))
+            throw new NegocioException("El correo ingresado no es válido.");
+        if (correo.split("@")[0].length() < 2)
+            throw new NegocioException("El correo debe tener al menos dos caracteres antes del '@'");
+
+        // **Validación de contraseña**
+        String password = paciNuevo.getContrasenia();
+        if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$"))
+            throw new NegocioException("La contraseña debe contener al menos una mayúscula, una minúscula y un número.");
+         if (password.contains(" "))
+            throw new NegocioException("La contraseña no debe contener espacios.");
+        if (password.equalsIgnoreCase(correo))
+            throw new NegocioException("La contraseña no puede ser igual al correo.");
+
+        // **Validación de nombre y apellidos**
+        String nombre = paciNuevo.getNombre();
+        String apellidoP = paciNuevo.getApellidoPaterno();
+        String apellidoM = paciNuevo.getApellidoMaterno();
+        if (!validarNombreApellido(nombre, "nombre") ||
+            !validarNombreApellido(apellidoP, "apellido paterno") ||
+            !validarNombreApellido(apellidoM, "apellido materno")) {
+            throw new NegocioException("Nombre o apellidos inválidos.");
         }
 
-        // Validaciones de negocio
-        if (pacienteNuevo.getNombre() == null || pacienteNuevo.getNombre().isBlank()) {
-            throw new NegocioException("El nombre es obligatorio");
-        }
-        
-        if (pacienteNuevo.getApellidoPaterno() == null || pacienteNuevo.getApellidoPaterno().trim().isEmpty()) {
-            throw new NegocioException("El apellido paterno es obligatorio.");
-        }
+        // **Validación de teléfono**
+        String telefono = paciNuevo.getTelefono();
+        if (telefono == null || telefono.trim().isEmpty())
+            throw new NegocioException("El teléfono no puede estar vacío.");
+        if (!telefono.matches("^\\d{10}$"))
+            throw new NegocioException("El teléfono debe contener exactamente 10 dígitos numéricos.");
 
-        if (pacienteNuevo.getTelefono() == null || pacienteNuevo.getTelefono().length() != 10) {
-            throw new NegocioException("El teléfono debe tener 10 dígitos");
-        }
-
-        if (pacienteNuevo.getFechaNacimiento().isAfter(LocalDate.now())) {
-            throw new NegocioException("La fecha de nacimiento no puede ser futura");
-        }
-
-        //Validacion de contraseña menor a 20 caracteres
-        if (pacienteNuevo.getContrasenia().length() > 20) {
-            throw new NegocioException("La contraseña no debe tener mas de 20 caracteres");
-        }
-
-        //Validacion de que no se admiten caracteres especiales
-        if (!Pattern.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$", pacienteNuevo.getNombre())) {
-            throw new NegocioException("No se admiten caracteres especiales en el nombre");
-        }
+        // **Validación de fecha de nacimiento**
+        LocalDate fechaN = paciNuevo.getFechaNacimiento();
+        if (fechaN == null)
+            throw new NegocioException("La fecha de nacimiento no puede estar vacía.");
+        if (fechaN.isAfter(LocalDate.now()))
+            throw new NegocioException("La fecha de nacimiento no puede estar después de la fecha actual.");
 
 
-        // Convertir DTO a entidad
-        PacienteMapper convertidor = new PacienteMapper();
-        Paciente paciente = convertidor.toEntity(pacienteNuevo);
+        // **Validación de dirección**
+        Direccion direccion = paciNuevo.getDireccion();
+        if (direccion == null)
+            throw new NegocioException("La dirección no puede estar vacía.");
+        if (!validarDireccion(direccion))
+            throw new NegocioException("La dirección contiene datos inválidos.");
 
+
+
+
+        // **Convertir DTO a entidad y registrar**
+        Paciente paciente = pacienteMapper.toEntityNuevo(paciNuevo, usuario);
         try {
             pacienteDAO.registrarPaciente(paciente);
             return true;
         } catch (PersistenciaException ex) {
-            Logger.getLogger(PacienteBO.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, "Error al registrar paciente en la base de datos", ex);
             throw new NegocioException("Hubo un error al guardar en la base de datos", ex);
         }
+    }
+
+
+    private boolean validarNombreApellido(String valor, String tipo) {
+        if (valor == null || valor.trim().isEmpty()) {
+            return false;
+        }
+        if (!valor.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")) {
+            return false;
+        }
+        if (valor.length() < 2 || valor.length() > 50) {
+            return false;
+        }
+        if (!valor.trim().equals(valor)) {
+            return false;
+        }
+        return true;
+    }
+
+   
+    private boolean validarDireccion(Direccion direccion) {
+        if (direccion.getCalle() == null || direccion.getCalle().trim().isEmpty() ||
+            direccion.getNumero() == null || direccion.getNumero().trim().isEmpty() ||
+            direccion.getColonia() == null || direccion.getColonia().trim().isEmpty() ||
+            direccion.getCodigo_postal() < 10000 || direccion.getCodigo_postal() > 99999) {
+            return false;
+        }
+        if (!direccion.getCalle().matches("^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ #,-.]+$") ||
+            !direccion.getNumero().matches("^[0-9A-Za-z]+$") ||
+            !direccion.getColonia().matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")) {
+            return false;
+        }
+        return true;
     }
 }

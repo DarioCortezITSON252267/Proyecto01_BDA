@@ -4,32 +4,41 @@
  */
 package Mapper;
 
+import DTO.PacienteNuevoDTO;
+import Entidades.Direccion;
+import Entidades.Paciente;
+import Entidades.Usuario;
+
 /**
  *
  * @author chris
  */
 public class PacienteMapper {
-       public Paciente toEntity(PacienteNuevoDTO pacienteNuevo) {
+
+    public Paciente toEntityNuevo(PacienteNuevoDTO pacienteNuevo, Usuario usuario) {
         return new Paciente(
-            pacienteNuevo.getNombre(),
-            pacienteNuevo.getApellidoPaterno(),
-            pacienteNuevo.getApellidoMaterno(),
-            pacienteNuevo.getTelefono(),
-            pacienteNuevo.getFechaNacimiento(),
-            pacienteNuevo.getCorreoElectronico(),
-            pacienteNuevo.getDireccion() // Asumiendo que la dirección ya es un objeto Direccion
+                0, // ID inicializado en 0 hasta que se registre en la BD
+                pacienteNuevo.getFechaNacimiento(),
+                pacienteNuevo.getNombre(),
+                pacienteNuevo.getApellidoPaterno(),
+                pacienteNuevo.getApellidoMaterno(),
+                pacienteNuevo.getTelefono(),
+                pacienteNuevo.getCorreo(),
+                usuario, // Ahora recibe un usuario ya creado
+                pacienteNuevo.getDireccion() // Se añade la dirección
         );
     }
 
     public PacienteNuevoDTO toDTO(Paciente paciente) {
         return new PacienteNuevoDTO(
-            paciente.getNombre(),
-            paciente.getApellidoPaterno(),
-            paciente.getApellidoMaterno(),
-            paciente.getTelefono(),
-            paciente.getFechaNacimiento(),
-            paciente.getCorreoElectronico(),
-            paciente.getDireccion() // Si la dirección es un objeto, asegúrate de incluir su mapeo en DTO
+                paciente.getNombre(),
+                paciente.getApellido_paterno(),
+                paciente.getApellido_materno(),
+                paciente.getTelefono(),
+                paciente.getFecha_nacimiento(),
+                paciente.getCorreo(),
+                paciente.getUsuario().getContraseña(),
+                paciente.getDireccion() // Se agrega la dirección
         );
-    } 
+    }
 }

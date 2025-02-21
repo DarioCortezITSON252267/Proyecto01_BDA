@@ -26,6 +26,12 @@ public class Usuario {
         this.contraseña = contraseña;
         this.tipo_usuario = tipo_usuario;
     }
+    //CONSTRUCTOR QUE SOLO RECIBE USUARIO Y CONTRASEÑA
+    public Usuario(String usuario, String contraseña) {
+    this.usuario = usuario;
+    this.contraseña = contraseña;
+    this.tipo_usuario = "Paciente"; // O algún valor por defecto
+}
 
     // Getters y Setters
     public int getId_usuario() {
