@@ -170,32 +170,28 @@ DELIMITER ;
 INSERT INTO Usuarios(nombre, apellido_paterno, apellido_materno, telefono, correo) 
 VALUES ('Angel','Servin de la mora','Vazquez','6441545454','angel.ser@gmail.com');
 
-INSERT INTO Direcciones(calle, numero, colonia, codigo_postal) 
-VALUES('itson',3211,'Villa itson',543533);
+INSERT INTO Usuarios (usuario, contraseña, tipo_usuario)
+VALUES ('angel.ser', 'contraseña123', 'paciente');
 
-INSERT INTO Pacientes(fecha_nacimiento, id_usuario, id_direccion) 
-VALUES ('2025-11-07',1,1);
+INSERT INTO Direcciones (calle, numero, colonia, codigo_postal, id_usuario)
+VALUES ('itson', '3211', 'Villa itson', 543533, 1);
 
 
-INSERT INTO Usuarios(nombre, apellido_paterno, apellido_materno, telefono, correo) 
-VALUES ('Angel','Servin de la mora','Vazquez','6441545454','angel.ser@gmail.com');
-
-INSERT INTO Direcciones(calle, numero, colonia, codigo_postal) 
-VALUES('itson',3211,'Villa itson',543533);
-
-INSERT INTO Pacientes(fecha_nacimiento, id_usuario, id_direccion) 
-VALUES ('2025-11-07',1,1);
+INSERT INTO Pacientes (fecha_nacimiento, nombre, apellido_paterno, apellido_materno, telefono, id_usuario)
+VALUES ('2000-11-07', 'Angel', 'Servin de la mora', 'Vazquez', '6441545454', 1);
 
 DELIMITER $$
 
 CREATE PROCEDURE RegistrarPaciente(
-    IN p_nombre VARCHAR(100),
-    IN p_apellido_paterno VARCHAR(100),
-    IN p_apellido_materno VARCHAR(100),
+    IN p_usuario VARCHAR(50),
+    IN p_contraseña VARCHAR(100),
+    IN p_nombre VARCHAR(50),
+    IN p_apellido_paterno VARCHAR(50),
+    IN p_apellido_materno VARCHAR(50),
     IN p_telefono VARCHAR(20),
     IN p_correo VARCHAR(100),
     IN p_fecha_nacimiento DATE,
-    IN p_calle VARCHAR(50),
+    IN p_calle VARCHAR(100),
     IN p_numero VARCHAR(10),
     IN p_colonia VARCHAR(50),
     IN p_codigo_postal INT
@@ -204,41 +200,39 @@ BEGIN
     DECLARE usuarioID INT;
     DECLARE direccionID INT;
     DECLARE mensaje_error VARCHAR(255);
-    
+
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
     BEGIN
         ROLLBACK;
         SET mensaje_error = 'Error: No se pudo registrar el paciente';
         SELECT mensaje_error AS mensaje;
     END;
-    
+
     START TRANSACTION;
 
     -- Insertar en la tabla Usuarios
-    INSERT INTO Usuarios (nombre, apellido_paterno, apellido_materno, telefono, correo)
-    VALUES (p_nombre, p_apellido_paterno, p_apellido_materno, p_telefono, p_correo);
+    INSERT INTO Usuarios (usuario, contraseña, tipo_usuario)
+    VALUES (p_usuario, p_contraseña, 'paciente');
 
     -- Obtener el ID del usuario recién insertado
     SET usuarioID = LAST_INSERT_ID();
 
     -- Insertar en la tabla Direcciones
-    INSERT INTO Direcciones (calle, numero, colonia, codigo_postal)
-    VALUES (p_calle, p_numero, p_colonia, p_codigo_postal);
+    INSERT INTO Direcciones (calle, numero, colonia, codigo_postal, id_usuario)
+    VALUES (p_calle, p_numero, p_colonia, p_codigo_postal, usuarioID);
 
     -- Obtener el ID de la dirección recién insertada
     SET direccionID = LAST_INSERT_ID();
 
     -- Insertar en la tabla Pacientes
-    INSERT INTO Pacientes (fecha_nacimiento, id_usuario, id_direccion)
-    VALUES (p_fecha_nacimiento, usuarioID, direccionID);
+    INSERT INTO Pacientes (fecha_nacimiento, nombre, apellido_paterno, apellido_materno, telefono, correo, id_usuario)
+    VALUES (p_fecha_nacimiento, p_nombre, p_apellido_paterno, p_apellido_materno, p_telefono, p_correo, usuarioID);
 
     -- Confirmar la transacción
     COMMIT;
 
     SELECT 'Paciente registrado exitosamente' AS mensaje;
-
 END$$
 
 DELIMITER ;
-
 
