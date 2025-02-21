@@ -2,140 +2,196 @@
 CREATE DATABASE IF NOT EXISTS clinica;
 USE clinica;
 
--- Crear tabla USUARIOS
+-- Tabla USUARIOS
 CREATE TABLE Usuarios (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL,
-    apellido_paterno VARCHAR(50) NOT NULL,
-    apellido_materno VARCHAR(50) NOT NULL
+    usuario VARCHAR(50) UNIQUE NOT NULL,
+    contraseña VARCHAR(100) NOT NULL,
+    tipo_usuario ENUM('paciente', 'medico') NOT NULL
 );
 
--- Crear tabla PACIENTES
+-- Tabla DIRECCIONES
+CREATE TABLE Direcciones (
+    id_direccion INT AUTO_INCREMENT PRIMARY KEY,
+    calle VARCHAR(100) NOT NULL,
+    numero VARCHAR(10) NOT NULL,
+    colonia VARCHAR(50) NOT NULL,
+    codigo_postal INT NOT NULL,
+    id_usuario INT UNIQUE NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE
+);
+
+
+-- Tabla PACIENTES
 CREATE TABLE Pacientes (
     id_paciente INT AUTO_INCREMENT PRIMARY KEY,
-    edad INT NOT NULL,
     fecha_nacimiento DATE NOT NULL,
-    direccion VARCHAR(200) NOT NULL,
-    telefonos VARCHAR(10) NOT NULL,
-    id_usuario INT NOT NULL,
-    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+    nombre VARCHAR(50) NOT NULL,
+    apellido_paterno VARCHAR(50) NOT NULL,
+    apellido_materno VARCHAR(50) NOT NULL,
+    correo VARCHAR(100) UNIQUE NULL,
+    telefono VARCHAR(20) NOT NULL,
+    id_usuario INT UNIQUE NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE
 );
 
--- Crear tabla MEDICOS
+-- Tabla MÉDICOS
 CREATE TABLE Medicos (
     id_medico INT AUTO_INCREMENT PRIMARY KEY,
-    especialidad VARCHAR(20) NOT NULL,
-    cedula VARCHAR(20) NOT NULL,
-    id_usuario INT NOT NULL,
-    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+    especialidad VARCHAR(50) NOT NULL,
+    cedula VARCHAR(20) UNIQUE NOT NULL,
+    id_usuario INT UNIQUE NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE
 );
--- Crear tabla Horarios
+
+-- Tabla HORARIOS
 CREATE TABLE Horarios (
     id_horario INT AUTO_INCREMENT PRIMARY KEY,
     horaInicial TIME NOT NULL,
     horaFinal TIME NOT NULL,
     dias VARCHAR(50) NOT NULL,
-	id_medico INT NOT NULL,
-    FOREIGN KEY (id_medico) REFERENCES Medicos(id_medico) ON DELETE CASCADE ON UPDATE CASCADE
+    id_medico INT NOT NULL,
+    FOREIGN KEY (id_medico) REFERENCES Medicos(id_medico) ON DELETE CASCADE
 );
 
--- Crear tabla CITAS
+-- Tabla CITAS
 CREATE TABLE Cita (
     id_cita INT AUTO_INCREMENT PRIMARY KEY,
-    estado VARCHAR(20) NOT NULL,
+    estado ENUM('pendiente', 'confirmada', 'cancelada') NOT NULL DEFAULT 'pendiente',
     fechahora DATETIME NOT NULL,
+    nota TEXT NULL,
     id_paciente INT NOT NULL,
     id_medico INT NOT NULL,
-    FOREIGN KEY (id_paciente) REFERENCES Pacientes(id_paciente) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_medico) REFERENCES Medicos(id_medico) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (id_paciente) REFERENCES Pacientes(id_paciente) ON DELETE CASCADE,
+    FOREIGN KEY (id_medico) REFERENCES Medicos(id_medico) ON DELETE CASCADE
 );
 
--- Crear tabla CONSULTA
+-- Tabla CONSULTA
 CREATE TABLE Consulta (
     id_consulta INT AUTO_INCREMENT PRIMARY KEY,
+    motivo TEXT NOT NULL,
     diagnostico TEXT NOT NULL,
     tratamiento TEXT NOT NULL,
-    motivo TEXT NOT NULL,
-     id_medico INT NOT NULL,
-    id_cita INT NOT NULL,
-    FOREIGN KEY (id_medico) REFERENCES Medicos(id_medico) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_cita) REFERENCES Cita(id_cita) ON DELETE CASCADE ON UPDATE CASCADE
+    id_cita INT UNIQUE NOT NULL,
+    FOREIGN KEY (id_cita) REFERENCES Cita(id_cita) ON DELETE CASCADE
 );
 
--- Crear tabla CONSULTASINCITA
+-- Tabla CONSULTA SIN CITA
 CREATE TABLE ConsultaSinCita (
     id_consulta INT AUTO_INCREMENT PRIMARY KEY,
-    folio VARCHAR(20) NOT NULL, 
+    folio VARCHAR(20) UNIQUE NOT NULL, 
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
+    motivo TEXT NOT NULL,
     id_medico INT NOT NULL,
     id_paciente INT NOT NULL,
-    FOREIGN KEY (id_medico) REFERENCES Medicos(id_medico) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_paciente) REFERENCES Pacientes(id_paciente) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (id_medico) REFERENCES Medicos(id_medico) ON DELETE CASCADE,
+    FOREIGN KEY (id_paciente) REFERENCES Pacientes(id_paciente) ON DELETE CASCADE
 );
--- Insertar usuarios (Médicos)
-INSERT INTO Usuarios (nombre, apellido_paterno, apellido_materno) VALUES
-('Gregory', 'House', 'Laurie'),
-('Ana', 'López', 'Martínez'),
-('Javier', 'Ramírez', 'Díaz'),
-('María', 'González', 'Fernández'),
-('Fernando', 'Torres', 'Sánchez');
 
--- Insertar médicos asociados a los usuarios
-INSERT INTO Medicos (especialidad, cedula,id_usuario) VALUES
-('Neurología', '12345678',1),
-('General', '87654321',2),
-('Hematologia', '23456789',3),
-('General', '34567890',4),
-('Cardiologia', '45678901',5);
+-- Tabla Auditoria
+CREATE TABLE Auditoria (
+    id_auditoria INT AUTO_INCREMENT PRIMARY KEY,
+    tabla_afectada ENUM('Cita', 'Consulta', 'ConsultaSinCita') NOT NULL,
+    accion ENUM('insertar', 'actualizar', 'eliminar') NOT NULL,
+    fecha_hora DATETIME NOT NULL,
+    datos_anteriores TEXT NULL, 
+    datos_nuevos TEXT NULL,
+	id_cita INT NULL,
+    id_consulta INT NULL,
+    id_consultasincita INT NULL
+);
 
--- Insertar horarios de los médicos
-INSERT INTO Horarios (horaInicial, horaFinal, dias, id_medico) VALUES
-('08:00:00', '14:00:00', 'Lunes a Viernes', 1),
-('09:00:00', '15:00:00', 'Lunes a Sábado', 2),
-('10:00:00', '16:00:00', 'Martes a Jueves', 3),
-('12:00:00', '18:00:00', 'Miércoles a Viernes', 4),
-('14:00:00', '20:00:00', 'Lunes, Miércoles y Viernes', 5);
+-- TRIGGERS PARA AUDITORÍA
+DELIMITER $$
+
+-- Trigger para insertar en Cita
+CREATE TRIGGER insertar_cita
+AFTER INSERT ON Cita FOR EACH ROW
+BEGIN
+    INSERT INTO Auditoria (tabla_afectada, id_cita, accion, fecha_hora, datos_nuevos) 
+    VALUES ('Cita', NEW.id_cita, 'insertar', NOW(), 
+    CONCAT('estado:', NEW.estado, ', fechahora:', NEW.fechahora, ', id_paciente:', NEW.id_paciente, ', id_medico:', NEW.id_medico, ', nota:', NEW.nota));
+END $$
+
+-- Trigger para actualizar en Cita
+CREATE TRIGGER actualizar_cita
+AFTER UPDATE ON Cita FOR EACH ROW
+BEGIN
+    INSERT INTO Auditoria (tabla_afectada, id_cita, accion, fecha_hora, datos_anteriores, datos_nuevos) 
+    VALUES ('Cita', NEW.id_cita, 'actualizar', NOW(), 
+    CONCAT('estado:', OLD.estado, ', fechahora:', OLD.fechahora, ', id_paciente:', OLD.id_paciente, ', id_medico:', OLD.id_medico, ', nota:', OLD.nota), 
+    CONCAT('estado:', NEW.estado, ', fechahora:', NEW.fechahora, ', id_paciente:', NEW.id_paciente, ', id_medico:', NEW.id_medico, ', nota:', NEW.nota));
+END $$
 
 
--- Verificar Usuarios
-SELECT * FROM Usuarios;
+-- Trigger para insertar en Consulta
+CREATE TRIGGER insertar_consulta
+AFTER INSERT ON Consulta FOR EACH ROW
+BEGIN
+    INSERT INTO Auditoria (tabla_afectada, id_consulta, accion, fecha_hora, datos_nuevos) 
+    VALUES ('Consulta', NEW.id_consulta, 'insertar', NOW(), 
+    CONCAT('motivo:', NEW.motivo, ', diagnostico:', NEW.diagnostico, ', tratamiento:', NEW.tratamiento, ', id_cita:', NEW.id_cita));
+END $$
 
--- Verificar Medicos
-SELECT * FROM Medicos;
+-- Trigger para actualizar en Consulta
+CREATE TRIGGER actualizar_consulta
+AFTER UPDATE ON Consulta FOR EACH ROW
+BEGIN
+    INSERT INTO Auditoria (tabla_afectada, id_consulta, accion, fecha_hora, datos_anteriores, datos_nuevos) 
+    VALUES ('Consulta', NEW.id_consulta, 'actualizar', NOW(), 
+    CONCAT('motivo:', OLD.motivo, ', diagnostico:', OLD.diagnostico, ', tratamiento:', OLD.tratamiento, ', id_cita:', OLD.id_cita), 
+    CONCAT('motivo:', NEW.motivo, ', diagnostico:', NEW.diagnostico, ', tratamiento:', NEW.tratamiento, ', id_cita:', NEW.id_cita));
+END $$
 
--- Verificar Horarios
-SELECT * FROM Horarios;
+
+-- Trigger para insertar en ConsultaSinCita
+CREATE TRIGGER insertar_consulta_sin_cita
+AFTER INSERT ON ConsultaSinCita FOR EACH ROW
+BEGIN
+    INSERT INTO Auditoria (tabla_afectada, id_consultasincita, accion, fecha_hora, datos_nuevos) 
+    VALUES ('ConsultaSinCita', NEW.id_consulta, 'insertar', NOW(), 
+    CONCAT('folio:', NEW.folio, ', fecha:', NEW.fecha, ', hora:', NEW.hora, ', motivo:', NEW.motivo, ', id_medico:', NEW.id_medico, ', id_paciente:', NEW.id_paciente));
+END $$
+
+-- Trigger para actualizar en ConsultaSinCita
+CREATE TRIGGER actualizar_consulta_sin_cita
+AFTER UPDATE ON ConsultaSinCita FOR EACH ROW
+BEGIN
+    INSERT INTO Auditoria (tabla_afectada, id_consultasincita, accion, fecha_hora, datos_anteriores, datos_nuevos) 
+    VALUES ('ConsultaSinCita', NEW.id_consulta, 'actualizar', NOW(), 
+    CONCAT('folio:', OLD.folio, ', fecha:', OLD.fecha, ', hora:', OLD.hora, ', motivo:', OLD.motivo, ', id_medico:', OLD.id_medico, ', id_paciente:', OLD.id_paciente), 
+    CONCAT('folio:', NEW.folio, ', fecha:', NEW.fecha, ', hora:', NEW.hora, ', motivo:', NEW.motivo, ', id_medico:', NEW.id_medico, ', id_paciente:', NEW.id_paciente));
+END $$
+
+
+DELIMITER ;
 
 INSERT INTO Usuarios(nombre, apellido_paterno, apellido_materno, telefono, correo) 
 VALUES ('Angel','Servin de la mora','Vazquez','6441545454','angel.ser@gmail.com');
 
-INSERT INTO Direcciones(calle, numero, colonia, codigo_postal) 
-VALUES('itson',3211,'Villa itson',543533);
+INSERT INTO Usuarios (usuario, contraseña, tipo_usuario)
+VALUES ('angel.ser', 'contraseña123', 'paciente');
 
-INSERT INTO Pacientes(fecha_nacimiento, id_usuario, id_direccion) 
-VALUES ('2025-11-07',1,1);
+INSERT INTO Direcciones (calle, numero, colonia, codigo_postal, id_usuario)
+VALUES ('itson', '3211', 'Villa itson', 543533, 1);
 
 
-INSERT INTO Usuarios(nombre, apellido_paterno, apellido_materno, telefono, correo) 
-VALUES ('Angel','Servin de la mora','Vazquez','6441545454','angel.ser@gmail.com');
-
-INSERT INTO Direcciones(calle, numero, colonia, codigo_postal) 
-VALUES('itson',3211,'Villa itson',543533);
-
-INSERT INTO Pacientes(fecha_nacimiento, id_usuario, id_direccion) 
-VALUES ('2025-11-07',1,1);
+INSERT INTO Pacientes (fecha_nacimiento, nombre, apellido_paterno, apellido_materno, telefono, id_usuario)
+VALUES ('2000-11-07', 'Angel', 'Servin de la mora', 'Vazquez', '6441545454', 1);
 
 DELIMITER $$
 
 CREATE PROCEDURE RegistrarPaciente(
-    IN p_nombre VARCHAR(100),
-    IN p_apellido_paterno VARCHAR(100),
-    IN p_apellido_materno VARCHAR(100),
+    IN p_usuario VARCHAR(50),
+    IN p_contraseña VARCHAR(100),
+    IN p_nombre VARCHAR(50),
+    IN p_apellido_paterno VARCHAR(50),
+    IN p_apellido_materno VARCHAR(50),
     IN p_telefono VARCHAR(20),
     IN p_correo VARCHAR(100),
     IN p_fecha_nacimiento DATE,
-    IN p_calle VARCHAR(50),
+    IN p_calle VARCHAR(100),
     IN p_numero VARCHAR(10),
     IN p_colonia VARCHAR(50),
     IN p_codigo_postal INT
@@ -144,44 +200,39 @@ BEGIN
     DECLARE usuarioID INT;
     DECLARE direccionID INT;
     DECLARE mensaje_error VARCHAR(255);
-    
-    -- Manejo de errores
+
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
     BEGIN
         ROLLBACK;
         SET mensaje_error = 'Error: No se pudo registrar el paciente';
         SELECT mensaje_error AS mensaje;
     END;
-    
-    -- Iniciar la transacción
+
     START TRANSACTION;
 
     -- Insertar en la tabla Usuarios
-    INSERT INTO Usuarios (nombre, apellido_paterno, apellido_materno, telefono, correo)
-    VALUES (p_nombre, p_apellido_paterno, p_apellido_materno, p_telefono, p_correo);
+    INSERT INTO Usuarios (usuario, contraseña, tipo_usuario)
+    VALUES (p_usuario, p_contraseña, 'paciente');
 
     -- Obtener el ID del usuario recién insertado
     SET usuarioID = LAST_INSERT_ID();
 
     -- Insertar en la tabla Direcciones
-    INSERT INTO Direcciones (calle, numero, colonia, codigo_postal)
-    VALUES (p_calle, p_numero, p_colonia, p_codigo_postal);
+    INSERT INTO Direcciones (calle, numero, colonia, codigo_postal, id_usuario)
+    VALUES (p_calle, p_numero, p_colonia, p_codigo_postal, usuarioID);
 
     -- Obtener el ID de la dirección recién insertada
     SET direccionID = LAST_INSERT_ID();
 
     -- Insertar en la tabla Pacientes
-    INSERT INTO Pacientes (fecha_nacimiento, id_usuario, id_direccion)
-    VALUES (p_fecha_nacimiento, usuarioID, direccionID);
+    INSERT INTO Pacientes (fecha_nacimiento, nombre, apellido_paterno, apellido_materno, telefono, correo, id_usuario)
+    VALUES (p_fecha_nacimiento, p_nombre, p_apellido_paterno, p_apellido_materno, p_telefono, p_correo, usuarioID);
 
     -- Confirmar la transacción
     COMMIT;
 
     SELECT 'Paciente registrado exitosamente' AS mensaje;
-
 END$$
 
 DELIMITER ;
-
-
 
