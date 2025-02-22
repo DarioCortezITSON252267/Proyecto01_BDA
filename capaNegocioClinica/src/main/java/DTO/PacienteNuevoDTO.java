@@ -21,7 +21,7 @@ public class PacienteNuevoDTO {
     private LocalDate fechaNacimiento;
     private String correo;
     private String contrasenia;
-    private Direccion direccion; // 🏠 Se agrega la dirección
+    private Direccion direccion; //  Se agrega la dirección
 
     public PacienteNuevoDTO() {
     }

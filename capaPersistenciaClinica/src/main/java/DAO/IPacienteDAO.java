@@ -16,5 +16,7 @@ public interface IPacienteDAO {
     //    public Activista agregarActivista(Activista activista) throws PersistenciaException;
     public Paciente registrarPaciente(Paciente paciente) throws PersistenciaException;
     
+    public Paciente editarPaciente(Paciente paciente) throws PersistenciaException;
+    
 
 } 

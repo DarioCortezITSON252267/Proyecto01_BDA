@@ -14,7 +14,7 @@ public class Direccion {
     private String calle;
     private String numero;
     private String colonia;
-    private int codigo_postal;
+    private String codigo_postal;
     private int id_usuario;
 
     // Constructor vacío
@@ -22,7 +22,7 @@ public class Direccion {
     }
 
     // Constructor con todos los atributos
-    public Direccion(int id_direccion, String calle, String numero, String colonia, int codigo_postal, int id_usuario) {
+    public Direccion(int id_direccion, String calle, String numero, String colonia, String codigo_postal, int id_usuario) {
         this.id_direccion = id_direccion;
         this.calle = calle;
         this.numero = numero;
@@ -64,11 +64,11 @@ public class Direccion {
         this.colonia = colonia;
     }
 
-    public int getCodigo_postal() {
+    public String getCodigo_postal() {
         return codigo_postal;
     }
 
-    public void setCodigo_postal(int codigo_postal) {
+    public void setCodigo_postal(String codigo_postal) {
         this.codigo_postal = codigo_postal;
     }
 

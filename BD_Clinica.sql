@@ -1,6 +1,6 @@
--- Crear la base de datos
-CREATE DATABASE IF NOT EXISTS clinica;
-USE clinica;
+CREATE DATABASE Clinica;
+USE Clinica;
+
 
 -- Tabla USUARIOS
 CREATE TABLE Usuarios (
@@ -16,7 +16,7 @@ CREATE TABLE Direcciones (
     calle VARCHAR(100) NOT NULL,
     numero VARCHAR(10) NOT NULL,
     colonia VARCHAR(50) NOT NULL,
-    codigo_postal INT NOT NULL,
+    codigo_postal VARCHAR(5) NOT NULL,
     id_usuario INT UNIQUE NOT NULL,
     FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE
 );
@@ -171,7 +171,7 @@ INSERT INTO Usuarios (usuario, contraseña, tipo_usuario)
 VALUES ('angel.ser', 'contraseña123', 'paciente');
 
 INSERT INTO Direcciones (calle, numero, colonia, codigo_postal, id_usuario)
-VALUES ('itson', '3211', 'Villa itson', 543533, 1);
+VALUES ('itson', '3211', 'Villa itson', 54333, 1);
 
 
 INSERT INTO Pacientes (fecha_nacimiento, nombre, apellido_paterno, apellido_materno, telefono, id_usuario)
@@ -191,7 +191,7 @@ CREATE PROCEDURE RegistrarPaciente(
     IN p_calle VARCHAR(100),
     IN p_numero VARCHAR(10),
     IN p_colonia VARCHAR(50),
-    IN p_codigo_postal INT
+    IN p_codigo_postal VARCHAR(5)
 )
 BEGIN
     DECLARE usuarioID INT;
@@ -232,4 +232,55 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+-- Actualizar un paciente
+DELIMITER //
+
+CREATE PROCEDURE actualizarUnPaciente(
+    IN id_usuarioNuevo INT,
+    IN contraseniaNueva VARCHAR(100),
+    IN fechaNacimientoNuevo DATE,
+    IN nombreNuevo VARCHAR(50),
+    IN apellidoPaternoNuevo VARCHAR(50),
+    IN apellidoMaternoNuevo VARCHAR(50),
+    IN telefonoNuevo VARCHAR(20),
+    IN correoNuevo VARCHAR(100),
+    IN calleNueva VARCHAR(100),
+    IN numeroNuevo VARCHAR(20),
+    IN coloniaNueva VARCHAR(50),
+    IN codigoPostalNuevo VARCHAR(5)
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    BEGIN
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+
+    UPDATE Usuarios
+    SET contraseña = contraseniaNueva
+    WHERE id_usuario = id_usuarioNuevo;
+
+    UPDATE Direcciones
+    SET calle = calleNueva,
+        numero = numeroNuevo,
+        colonia = coloniaNueva,
+        codigo_postal = codigoPostalNuevo
+    WHERE id_usuario = id_usuarioNuevo;
+
+    UPDATE Pacientes
+    SET nombre = nombreNuevo,
+        apellido_paterno = apellidoPaternoNuevo,
+        apellido_materno = apellidoMaternoNuevo,
+        telefono = telefonoNuevo,
+        correo = correoNuevo,
+        fecha_nacimiento = fechaNacimientoNuevo
+    WHERE id_usuario = id_usuarioNuevo;
+
+    COMMIT;
+END //
+
+DELIMITER ;
+
 
