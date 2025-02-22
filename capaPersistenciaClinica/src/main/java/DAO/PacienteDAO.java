@@ -5,7 +5,9 @@
 package DAO;
 
 import Conexion.IConexionBD;
+import Entidades.Direccion;
 import Entidades.Paciente;
+import Entidades.Usuario;
 import Exception.PersistenciaException;
 import java.sql.*;
 import java.time.LocalDate;
@@ -48,7 +50,7 @@ public Paciente registrarPaciente(Paciente paciente) throws PersistenciaExceptio
         cs.setString(9, paciente.getDireccion().getCalle()); // Calle
         cs.setString(10, paciente.getDireccion().getNumero()); // Número de casa
         cs.setString(11, paciente.getDireccion().getColonia()); // Colonia
-        cs.setInt(12, paciente.getDireccion().getCodigo_postal()); // Código postal
+        cs.setString(12, paciente.getDireccion().getCodigo_postal()); // Código postal
 
         cs.execute();
         logger.log(Level.INFO, "Paciente registrado exitosamente");
@@ -60,4 +62,39 @@ public Paciente registrarPaciente(Paciente paciente) throws PersistenciaExceptio
 
     return paciente; // Retorna el paciente registrado
   }
+
+    @Override
+    public Paciente editarPaciente(Paciente paciente) throws PersistenciaException {
+       Usuario usuario = paciente.getUsuario();
+    Direccion direccion = paciente.getDireccion();
+    
+    String sentenciaSQLActualizar = "CALL actualizarUnPaciente(?,?,?,?,?,?,?,?,?,?,?,?)";
+    
+    try (Connection con = conexion.crearConexion();
+         CallableStatement stm = con.prepareCall(sentenciaSQLActualizar)) {
+        
+        stm.setInt(1, paciente.getId_paciente());
+        stm.setString(2, usuario.getContraseña());
+        stm.setDate(3, Date.valueOf(paciente.getFecha_nacimiento())); // Conversión de LocalDate a SQL Date
+        stm.setString(4, paciente.getNombre());
+        stm.setString(5, paciente.getApellido_paterno());
+        stm.setString(6, paciente.getApellido_materno());
+        stm.setString(7, paciente.getTelefono());
+        stm.setString(8, paciente.getCorreo());
+        stm.setString(9, direccion.getCalle());
+        stm.setString(10, direccion.getNumero());
+        stm.setString(11, direccion.getColonia());
+        stm.setString(12,direccion.getCodigo_postal());
+        
+        
+        stm.executeUpdate();
+
+    } catch (SQLException ex) {
+        Logger.getLogger(PacienteDAO.class.getName()).log(Level.SEVERE, null, ex);
+        throw new PersistenciaException("Error al actualizar al paciente", ex);
+    }
+    return paciente;
+    }
+    
+    
 }
