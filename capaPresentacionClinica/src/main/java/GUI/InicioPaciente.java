@@ -33,7 +33,7 @@ public class InicioPaciente extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         BtnRegistrar = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnConfirmar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         btnRegresar = new javax.swing.JButton();
@@ -77,12 +77,12 @@ public class InicioPaciente extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setBackground(new java.awt.Color(153, 153, 255));
-        jButton3.setForeground(new java.awt.Color(0, 0, 0));
-        jButton3.setText("Confirmar");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnConfirmar.setBackground(new java.awt.Color(153, 153, 255));
+        btnConfirmar.setForeground(new java.awt.Color(0, 0, 0));
+        btnConfirmar.setText("Confirmar");
+        btnConfirmar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnConfirmarActionPerformed(evt);
             }
         });
 
@@ -141,7 +141,7 @@ public class InicioPaciente extends javax.swing.JFrame {
                 .addGap(81, 81, 81)
                 .addComponent(BtnRegistrar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton3)
+                .addComponent(btnConfirmar)
                 .addGap(69, 69, 69))
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -160,7 +160,7 @@ public class InicioPaciente extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BtnRegistrar)
-                    .addComponent(jButton3))
+                    .addComponent(btnConfirmar))
                 .addGap(21, 21, 21))
         );
 
@@ -196,9 +196,14 @@ public class InicioPaciente extends javax.swing.JFrame {
         // Cerrar la ventana actual (InicioSesion)
         this.dispose();    }//GEN-LAST:event_BtnRegistrarActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
+        PerfilPaciente nuevaVentana = new PerfilPaciente();
+
+        // Hacer visible la nueva ventana
+        nuevaVentana.setVisible(true);
+
+        // Cerrar la ventana actual (InicioSesion)
+        this.dispose();         this.dispose();     }//GEN-LAST:event_btnConfirmarActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
         InicioSesion nuevaVentana = new InicioSesion();
@@ -215,9 +220,9 @@ public class InicioPaciente extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnRegistrar;
+    private javax.swing.JButton btnConfirmar;
     private javax.swing.JButton btnRegresar;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

@@ -4,6 +4,8 @@
  */
 package GUI;
 
+import java.io.File;
+
 /**
  *
  * @author chris
@@ -138,7 +140,7 @@ public class InicioSesion extends javax.swing.JFrame {
     }//GEN-LAST:event_selcnActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String seleccion =  selcn.getSelectedItem().toString(); // Obtener la selección del ComboBox
+        String seleccion = selcn.getSelectedItem().toString(); // Obtener la selección del ComboBox
 
         if ("Medico".equals(seleccion)) {
             new InicioMedico().setVisible(true); // Abre la ventana de Médico
@@ -176,6 +178,9 @@ public class InicioSesion extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+        File file = new File("src/imagenes/miImagen.png");
+        System.out.println("Ruta Absoluta: " + file.getAbsolutePath());
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
