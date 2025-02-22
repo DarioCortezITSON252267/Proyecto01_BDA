@@ -364,7 +364,7 @@ public class RegistroPaciente extends javax.swing.JFrame {
     }//GEN-LAST:event_CampoDeApellidoPActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
-        
+
         InicioPaciente nuevaVentana = new InicioPaciente();
 
         // Hacer visible la nueva ventana
@@ -414,60 +414,65 @@ public class RegistroPaciente extends javax.swing.JFrame {
     }//GEN-LAST:event_CampoDeNumeroActionPerformed
 
     private void BtnRegistrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRegistrar1ActionPerformed
-            try {
-        // Obtener datos de los campos de texto
-        String nombre = CampoDeNombre.getText().trim();
-        String apellidoPaterno = CampoDeApellidoP.getText().trim();
-        String apellidoMaterno = CampoDeApellidoM.getText().trim();
-        String telefono = CampoDeTelefono.getText().trim();
-        String correo = CampoDeCorreo.getText().trim();
-        String contrasenia = new String(CampoDeContraseña.getPassword()).trim();
-        
-        // Convertir la fecha ingresada
-        LocalDate fechaNacimiento = LocalDate.parse(CampoDeFechaNac.getText().trim());
-        
-        // Obtener datos de la dirección
-        String calle = CampoDeCalle.getText().trim();
-        String numero = CampoDeNumero.getText().trim();
-        String colonia = CampoDeColonia.getText().trim();
-        String codigoPostal = CampoDeCodifoPostal.getText().trim();
-        
-        // Crear el objeto Dirección
-        Direccion direccion = new Direccion(calle, numero, colonia, codigoPostal);
-        
-        // Crear el DTO de paciente con los datos recopilados
-        PacienteNuevoDTO pacienteNuevo = new PacienteNuevoDTO(
-            nombre, 
-            apellidoPaterno, 
-            apellidoMaterno, 
-            telefono, 
-            fechaNacimiento, 
-            correo, 
-            contrasenia, 
-            direccion
-        );
-        
-        // Crear la conexión y la capa de negocio
-        IConexionBD conexion = new ConexionBD(); // Asegúrate de que esta clase esté implementada correctamente
-        PacienteBO pacienteBO = new PacienteBO(conexion);
-        
-        // Llamar al método de negocio para registrar el paciente
-        boolean registrado = pacienteBO.registrarPaciente(pacienteNuevo);
-        
-        if (registrado) {
-            JOptionPane.showMessageDialog(this, "Paciente registrado exitosamente.");
-            // Redirigir a la pantalla de inicio del paciente
-            InicioPaciente inicio = new InicioPaciente();
-            inicio.setVisible(true);
-            this.dispose(); // Cierra la ventana actual solo si el registro fue exitoso
-        } else {
-            JOptionPane.showMessageDialog(this, "No se pudo registrar el paciente. Intenta de nuevo.");
+        try {
+            // Obtener datos de los campos de texto
+            String nombre = CampoDeNombre.getText().trim();
+            String apellidoPaterno = CampoDeApellidoP.getText().trim();
+            String apellidoMaterno = CampoDeApellidoM.getText().trim();
+            String telefono = CampoDeTelefono.getText().trim();
+            String correo = CampoDeCorreo.getText().trim();
+            String contrasenia = new String(CampoDeContraseña.getPassword()).trim();
+
+            // Convertir la fecha ingresada
+            LocalDate fechaNacimiento = LocalDate.parse(CampoDeFechaNac.getText().trim());
+
+            // Obtener datos de la dirección
+            String calle = CampoDeCalle.getText().trim();
+            String numero = CampoDeNumero.getText().trim();
+            String colonia = CampoDeColonia.getText().trim();
+            String codigoPostal = CampoDeCodifoPostal.getText().trim();
+
+            // Crear el objeto Dirección
+            Direccion direccion = new Direccion(calle, numero, colonia, codigoPostal);
+
+            //  Permitir apellido materno vacío o nulo
+            if (apellidoMaterno.isEmpty()) {
+                apellidoMaterno = null;
+            }
+
+            // Crear el DTO de paciente con los datos recopilados
+            PacienteNuevoDTO pacienteNuevo = new PacienteNuevoDTO(
+                    nombre,
+                    apellidoPaterno,
+                    apellidoMaterno, // Puede ser null ahora
+                    telefono,
+                    fechaNacimiento,
+                    correo,
+                    contrasenia,
+                    direccion
+            );
+
+            // Crear la conexión y la capa de negocio
+            IConexionBD conexion = new ConexionBD(); // Asegúrate de que esta clase esté implementada correctamente
+            PacienteBO pacienteBO = new PacienteBO(conexion);
+
+            // Llamar al método de negocio para registrar el paciente
+            boolean registrado = pacienteBO.registrarPaciente(pacienteNuevo);
+
+            if (registrado) {
+                JOptionPane.showMessageDialog(this, "Paciente registrado exitosamente.");
+                // Redirigir a la pantalla de inicio del paciente
+                InicioPaciente inicio = new InicioPaciente();
+                inicio.setVisible(true);
+                this.dispose(); // Cierra la ventana actual solo si el registro fue exitoso
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo registrar el paciente. Intenta de nuevo.");
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al registrar el paciente: " + ex.getMessage());
+            ex.printStackTrace();
         }
-    } catch (Exception ex) {
-        JOptionPane.showMessageDialog(this, "Error al registrar el paciente: " + ex.getMessage());
-        ex.printStackTrace();
         // No cerramos la ventana para que el usuario pueda corregir sus datos
-    }
     }//GEN-LAST:event_BtnRegistrar1ActionPerformed
 
     /**
