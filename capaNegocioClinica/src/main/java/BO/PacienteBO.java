@@ -145,18 +145,18 @@ public class PacienteBO {
         return true;
     }
 
-    private boolean validarDireccion(Direccion direccion) {
-        if (direccion.getCalle() == null || direccion.getCalle().trim().isEmpty() ||
-            direccion.getNumero() == null || direccion.getNumero().trim().isEmpty() ||
-            direccion.getColonia() == null || direccion.getColonia().trim().isEmpty() ||
-            direccion.getCodigo_postal() < 10000 || direccion.getCodigo_postal() > 99999) {
-            return false;
-        }
-        if (!direccion.getCalle().matches("^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ #,-.]+$") ||
-            !direccion.getNumero().matches("^[0-9A-Za-z]+$") ||
-            !direccion.getColonia().matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")) {
-            return false;
-        }
-        return true;
+   private boolean validarDireccion(Direccion direccion) {
+    if (direccion.getCalle() == null || direccion.getCalle().trim().isEmpty() ||
+        direccion.getNumero() == null || direccion.getNumero().trim().isEmpty() ||
+        direccion.getColonia() == null || direccion.getColonia().trim().isEmpty() ||
+        direccion.getCodigo_postal() == null || !direccion.getCodigo_postal().matches("^[0-9]{5}$")) {
+        return false;
     }
+    if (!direccion.getCalle().matches("^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ #,-.]+$") ||
+        !direccion.getNumero().matches("^[0-9A-Za-z]+$") ||
+        !direccion.getColonia().matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")) {
+        return false;
+    }
+    return true;
+}
 }

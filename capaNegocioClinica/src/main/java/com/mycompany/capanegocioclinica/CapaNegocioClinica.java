@@ -23,7 +23,7 @@ public class CapaNegocioClinica {
     public static void main(String[] args) {
      try {
             // Crear una dirección
-            Direccion direccion = new Direccion(0, "Calle Falsa", "123", "Colonia Centro", 12345, 0);
+            Direccion direccion = new Direccion(0, "Calle Falsa", "123", "Colonia Centro", "12345", 0);
             
             // Crear un nuevo paciente DTO
             PacienteNuevoDTO pacienteNuevo = new PacienteNuevoDTO(
