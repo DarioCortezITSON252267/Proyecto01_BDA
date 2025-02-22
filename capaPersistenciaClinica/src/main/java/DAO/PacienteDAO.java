@@ -95,4 +95,6 @@ public Paciente registrarPaciente(Paciente paciente) throws PersistenciaExceptio
     }
     return paciente;
     }
+    
+    
 }
