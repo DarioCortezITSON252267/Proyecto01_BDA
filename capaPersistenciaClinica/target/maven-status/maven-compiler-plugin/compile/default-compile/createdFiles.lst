@@ -1,6 +1,5 @@
 Entidades\ConsultaSinCita.class
 Conexion\ConexionBD.class
-DAO\CitaDAO.class
 DAO\UsuarioDAO.class
 Exception\PersistenciaException.class
 Entidades\Medico.class
@@ -9,7 +8,6 @@ Conexion\IConexionBD.class
 DAO\MedicoDAO.class
 com\mycompany\capapersistenciaclinica\CapaPersistenciaClinica.class
 Entidades\Direccion.class
-DAO\ICitaDAO.class
 Entidades\Paciente.class
 DAO\IMedicoDAO.class
 DAO\PacienteDAO.class

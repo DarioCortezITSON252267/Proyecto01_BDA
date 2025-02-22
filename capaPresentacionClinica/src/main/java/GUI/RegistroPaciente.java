@@ -4,6 +4,14 @@
  */
 package GUI;
 
+import BO.PacienteBO;
+import Conexion.ConexionBD;
+import Conexion.IConexionBD;
+import DTO.PacienteNuevoDTO;
+import Entidades.Direccion;
+import java.time.LocalDate;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author chris
@@ -48,13 +56,13 @@ public class RegistroPaciente extends javax.swing.JFrame {
         CampoDeFechaNac = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         CampoDeContraseña = new javax.swing.JPasswordField();
-        CampoDeCalle = new javax.swing.JPasswordField();
-        CampoDeNumero = new javax.swing.JTextField();
+        CampoDeCalle = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
         CampoDeColonia = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         CampoDeCodifoPostal = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
+        CampoDeNumero = new javax.swing.JTextField();
 
         jButton2.setBackground(new java.awt.Color(51, 153, 0));
         jButton2.setForeground(new java.awt.Color(0, 0, 0));
@@ -196,11 +204,9 @@ public class RegistroPaciente extends javax.swing.JFrame {
         });
 
         CampoDeCalle.setBackground(new java.awt.Color(255, 255, 255));
-
-        CampoDeNumero.setBackground(new java.awt.Color(255, 255, 255));
-        CampoDeNumero.addActionListener(new java.awt.event.ActionListener() {
+        CampoDeCalle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CampoDeNumeroActionPerformed(evt);
+                CampoDeCalleActionPerformed(evt);
             }
         });
 
@@ -229,6 +235,13 @@ public class RegistroPaciente extends javax.swing.JFrame {
         jLabel13.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(0, 0, 0));
         jLabel13.setText("C.P.");
+
+        CampoDeNumero.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeNumero.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CampoDeNumeroActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -265,14 +278,14 @@ public class RegistroPaciente extends javax.swing.JFrame {
                                     .addComponent(CampoDeTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(CampoDeFechaNac, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                                    .addComponent(CampoDeFechaNac)
                                     .addComponent(jLabel10)
                                     .addComponent(jLabel9)
-                                    .addComponent(CampoDeCorreo, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                                    .addComponent(CampoDeCorreo)
                                     .addComponent(jLabel8)
                                     .addComponent(jLabel7)
                                     .addComponent(CampoDeContraseña)
-                                    .addComponent(CampoDeCalle))))))
+                                    .addComponent(CampoDeCalle, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap(63, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -316,14 +329,13 @@ public class RegistroPaciente extends javax.swing.JFrame {
                         .addGap(28, 28, 28)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(CampoDeNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel11)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(CampoDeColonia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(CampoDeColonia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(CampoDeNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel13)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -352,8 +364,61 @@ public class RegistroPaciente extends javax.swing.JFrame {
     }//GEN-LAST:event_CampoDeApellidoPActionPerformed
 
     private void BtnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRegistrarActionPerformed
+            try {
+        // Obtener datos de los campos de texto (asegúrate de que los nombres de los campos coinciden)
+        String nombre = CampoDeNombre.getText().trim();
+        String apellidoPaterno = CampoDeApellidoP.getText().trim();
+        String apellidoMaterno = CampoDeApellidoM.getText().trim();
+        String telefono = CampoDeTelefono.getText().trim();
+        String correo = CampoDeCorreo.getText().trim();
+        String contrasenia = new String(CampoDeContraseña.getPassword()).trim();
+        
+        // Convertir la fecha ingresada (asegúrate de que el formato es "YYYY-MM-DD")
+        LocalDate fechaNacimiento = LocalDate.parse(CampoDeFechaNac.getText().trim());
+        
+        // Obtener datos de la dirección
+        String calle = CampoDeCalle.getText().trim();
+        String numero = CampoDeNumero.getText().trim();
+        String colonia = CampoDeColonia.getText().trim();
+        String codigoPostal = CampoDeCodifoPostal.getText().trim();
+        
+        // Crear el objeto Dirección usando el constructor sin ID
+        Direccion direccion = new Direccion(calle, numero, colonia, codigoPostal);
+        
+        // Crear el DTO de paciente con los datos recopilados
+        PacienteNuevoDTO pacienteNuevo = new PacienteNuevoDTO(
+            nombre, 
+            apellidoPaterno, 
+            apellidoMaterno, 
+            telefono, 
+            fechaNacimiento, 
+            correo, 
+            contrasenia, 
+            direccion
+        );
+        
+        // Crear la conexión y la capa de negocio
+        IConexionBD conexion = new ConexionBD(); // Asegúrate de que esta clase esté implementada correctamente
+        PacienteBO pacienteBO = new PacienteBO(conexion);
+        
+        // Llamar al método de negocio para registrar el paciente (se aplican validaciones internas)
+        boolean registrado = pacienteBO.registrarPaciente(pacienteNuevo);
+        
+        if (registrado) {
+            JOptionPane.showMessageDialog(this, "Paciente registrado exitosamente.");
+            // Opcional: abrir la siguiente pantalla, por ejemplo, InicioPaciente
+            InicioPaciente inicio = new InicioPaciente();
+            inicio.setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo registrar el paciente.");
+        }
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "Error al registrar el paciente: " + ex.getMessage());
+        ex.printStackTrace();
+    }
         // Crear una nueva instancia de la ventana InicioPaciente
-        RegistroPaciente nuevaVentana = new RegistroPaciente();
+        PerfilPaciente nuevaVentana = new PerfilPaciente();
 
         // Hacer visible la nueva ventana
         nuevaVentana.setVisible(true);
@@ -395,9 +460,9 @@ public class RegistroPaciente extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_CampoDeNombreActionPerformed
 
-    private void CampoDeNumeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeNumeroActionPerformed
+    private void CampoDeCalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeCalleActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_CampoDeNumeroActionPerformed
+    }//GEN-LAST:event_CampoDeCalleActionPerformed
 
     private void CampoDeColoniaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeColoniaActionPerformed
         // TODO add your handling code here:
@@ -407,6 +472,10 @@ public class RegistroPaciente extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_CampoDeCodifoPostalActionPerformed
 
+    private void CampoDeNumeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeNumeroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CampoDeNumeroActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -415,7 +484,7 @@ public class RegistroPaciente extends javax.swing.JFrame {
     private javax.swing.JButton BtnRegistrar;
     private javax.swing.JTextField CampoDeApellidoM;
     private javax.swing.JTextField CampoDeApellidoP;
-    private javax.swing.JPasswordField CampoDeCalle;
+    private javax.swing.JTextField CampoDeCalle;
     private javax.swing.JTextField CampoDeCodifoPostal;
     private javax.swing.JTextField CampoDeColonia;
     private javax.swing.JPasswordField CampoDeContraseña;

@@ -30,6 +30,14 @@ public class Direccion {
         this.codigo_postal = codigo_postal;
         this.id_usuario = id_usuario;
     }
+    
+        // Constructor sin ID (para nuevos registros)
+    public Direccion(String calle, String numero, String colonia, String codigo_postal) {
+        this.calle = calle;
+        this.numero = numero;
+        this.colonia = colonia;
+        this.codigo_postal = codigo_postal;
+    }
 
     // Getters y Setters
     public int getId_direccion() {
