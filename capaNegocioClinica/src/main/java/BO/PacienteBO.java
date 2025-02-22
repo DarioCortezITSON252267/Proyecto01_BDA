@@ -14,6 +14,7 @@ import Entidades.Usuario;
 import Exception.NegocioException;
 import Exception.PersistenciaException;
 import Mapper.PacienteMapper;
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,7 +40,9 @@ public class PacienteBO {
 
         // **Validación de correo**
         String correo = paciNuevo.getCorreo();
-          if (correo.length() > 150)
+        if (correo == null || correo.trim().isEmpty())
+            throw new NegocioException("El correo no puede estar vacío.");
+        if (correo.length() > 150)
             throw new NegocioException("No se permiten correos con más de 150 caracteres.");
         if (!Pattern.matches("^[^@\\s]+@[^@\\s]+\\.com$", correo))
             throw new NegocioException("El correo ingresado no es válido.");
@@ -48,9 +51,15 @@ public class PacienteBO {
 
         // **Validación de contraseña**
         String password = paciNuevo.getContrasenia();
+        if (password == null || password.trim().isEmpty())
+            throw new NegocioException("La contraseña no puede estar vacía.");
+        if (password.length() > 20)
+            throw new NegocioException("No se permiten contraseñas con más de 20 caracteres.");
         if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$"))
             throw new NegocioException("La contraseña debe contener al menos una mayúscula, una minúscula y un número.");
-         if (password.contains(" "))
+        if (password.matches(".*(.)\\1{2,}.*"))
+            throw new NegocioException("La contraseña no puede contener secuencias repetitivas.");
+        if (password.contains(" "))
             throw new NegocioException("La contraseña no debe contener espacios.");
         if (password.equalsIgnoreCase(correo))
             throw new NegocioException("La contraseña no puede ser igual al correo.");
@@ -78,7 +87,9 @@ public class PacienteBO {
             throw new NegocioException("La fecha de nacimiento no puede estar vacía.");
         if (fechaN.isAfter(LocalDate.now()))
             throw new NegocioException("La fecha de nacimiento no puede estar después de la fecha actual.");
-
+        int edad = LocalDate.now().getYear() - fechaN.getYear();
+        if (edad < 0 || edad > 120)
+            throw new NegocioException("La edad debe estar entre 0 y 120 años.");
 
         // **Validación de dirección**
         Direccion direccion = paciNuevo.getDireccion();
@@ -87,8 +98,13 @@ public class PacienteBO {
         if (!validarDireccion(direccion))
             throw new NegocioException("La dirección contiene datos inválidos.");
 
+        // **Encriptar contraseña**
+        String contraseniaEncriptada = encriptarContrasenia(password);
+        paciNuevo.setContrasenia(contraseniaEncriptada);
+        logger.log(Level.INFO, "Contraseña encriptada correctamente.");
 
-
+        // **Crear usuario**
+        Usuario usuario = new Usuario(0, correo, contraseniaEncriptada, "Paciente");
 
         // **Convertir DTO a entidad y registrar**
         Paciente paciente = pacienteMapper.toEntityNuevo(paciNuevo, usuario);
@@ -101,6 +117,17 @@ public class PacienteBO {
         }
     }
 
+    private String encriptarContrasenia(String contrasenia) throws NegocioException {
+        try {
+            return BCrypt.withDefaults().hashToString(12, contrasenia.toCharArray());
+        } catch (Exception e) {
+            throw new NegocioException("Error al encriptar contraseña: " + e.getMessage());
+        }
+    }
+
+    public boolean verificarContrasenia(String contraseniaIngresada, String contraseniaEncriptada) {
+        return BCrypt.verifyer().verify(contraseniaIngresada.toCharArray(), contraseniaEncriptada).verified;
+    }
 
     private boolean validarNombreApellido(String valor, String tipo) {
         if (valor == null || valor.trim().isEmpty()) {
@@ -118,7 +145,6 @@ public class PacienteBO {
         return true;
     }
 
-   
     private boolean validarDireccion(Direccion direccion) {
         if (direccion.getCalle() == null || direccion.getCalle().trim().isEmpty() ||
             direccion.getNumero() == null || direccion.getNumero().trim().isEmpty() ||
