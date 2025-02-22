@@ -117,7 +117,8 @@ public class PacienteBO {
         }
     }
 
-    private String encriptarContrasenia(String contrasenia) throws NegocioException {
+   
+ private String encriptarContrasenia(String contrasenia) throws NegocioException {
         try {
             return BCrypt.withDefaults().hashToString(12, contrasenia.toCharArray());
         } catch (Exception e) {
@@ -159,4 +160,25 @@ public class PacienteBO {
     }
     return true;
 }
+   public boolean verificarCredenciales(String correo, String contrasenia) throws NegocioException {
+    try {
+        // Obtener el paciente por su correo
+        Paciente paciente = pacienteDAO.obtenerPacientePorCorreo(correo);
+
+        // Si el paciente no existe, credenciales inválidas
+        if (paciente == null || paciente.getUsuario() == null) {
+            return false;
+        }
+
+        // Obtener la contraseña encriptada almacenada
+        String contraseniaEncriptada = paciente.getUsuario().getContraseña();
+
+        // Verificar la contraseña usando BCrypt
+        return BCrypt.verifyer().verify(contrasenia.toCharArray(), contraseniaEncriptada).verified;
+
+    } catch (PersistenciaException e) {
+        throw new NegocioException("Error al verificar credenciales: " + e.getMessage());
+    }
+   }
+   
 }

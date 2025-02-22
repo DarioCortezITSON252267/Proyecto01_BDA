@@ -4,6 +4,13 @@
  */
 package GUI;
 
+import BO.PacienteBO;
+import Conexion.ConexionBD;
+import Conexion.IConexionBD;
+import DAO.PacienteDAO;
+import Exception.NegocioException;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author chris
@@ -27,70 +34,41 @@ public class InicioPaciente extends javax.swing.JFrame {
     private void initComponents() {
 
         jButton2 = new javax.swing.JButton();
+        BtnRegistrar1 = new javax.swing.JButton();
+        btnRegresar1 = new javax.swing.JButton();
+        btnRegresar = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        CampoDeCorreo = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        BtnRegistrar = new javax.swing.JButton();
-        btnConfirmar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        btnRegresar = new javax.swing.JButton();
+        btnRegresar2 = new javax.swing.JButton();
+        btnConfirmar1 = new javax.swing.JButton();
+        BtnRegistrar2 = new javax.swing.JButton();
+        CampoDeContraseña = new javax.swing.JPasswordField();
 
         jButton2.setBackground(new java.awt.Color(51, 153, 0));
         jButton2.setForeground(new java.awt.Color(0, 0, 0));
         jButton2.setText("Confirmar");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setBackground(new java.awt.Color(153, 255, 204));
-
-        jLabel2.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel2.setText("Contraseña");
-
-        jTextField1.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        BtnRegistrar1.setBackground(new java.awt.Color(153, 153, 255));
+        BtnRegistrar1.setForeground(new java.awt.Color(0, 0, 0));
+        BtnRegistrar1.setText("Registrarse");
+        BtnRegistrar1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                BtnRegistrar1ActionPerformed(evt);
             }
         });
 
-        jTextField2.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        btnRegresar1.setBackground(new java.awt.Color(153, 153, 255));
+        btnRegresar1.setForeground(new java.awt.Color(0, 0, 0));
+        btnRegresar1.setText("Regresar");
+        btnRegresar1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                btnRegresar1ActionPerformed(evt);
             }
         });
-
-        jLabel4.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel4.setText("Usuario");
-
-        BtnRegistrar.setBackground(new java.awt.Color(153, 153, 255));
-        BtnRegistrar.setForeground(new java.awt.Color(0, 0, 0));
-        BtnRegistrar.setText("Registrarse");
-        BtnRegistrar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnRegistrarActionPerformed(evt);
-            }
-        });
-
-        btnConfirmar.setBackground(new java.awt.Color(153, 153, 255));
-        btnConfirmar.setForeground(new java.awt.Color(0, 0, 0));
-        btnConfirmar.setText("Confirmar");
-        btnConfirmar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConfirmarActionPerformed(evt);
-            }
-        });
-
-        jPanel2.setBackground(new java.awt.Color(0, 204, 204));
-
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setText("Bienvenido");
 
         btnRegresar.setBackground(new java.awt.Color(153, 153, 255));
         btnRegresar.setForeground(new java.awt.Color(0, 0, 0));
@@ -101,16 +79,50 @@ public class InicioPaciente extends javax.swing.JFrame {
             }
         });
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPanel1.setBackground(new java.awt.Color(153, 255, 204));
+
+        jLabel2.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel2.setText("Contraseña");
+
+        CampoDeCorreo.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeCorreo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CampoDeCorreoActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel4.setText("Usuario");
+
+        jPanel2.setBackground(new java.awt.Color(0, 204, 204));
+
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel3.setText("Bienvenido");
+
+        btnRegresar2.setBackground(new java.awt.Color(153, 153, 255));
+        btnRegresar2.setForeground(new java.awt.Color(0, 0, 0));
+        btnRegresar2.setText("Regresar");
+        btnRegresar2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegresar2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnRegresar)
-                .addGap(87, 87, 87)
+                .addGap(25, 25, 25)
+                .addComponent(btnRegresar2)
+                .addGap(81, 81, 81)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(149, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -120,30 +132,50 @@ public class InicioPaciente extends javax.swing.JFrame {
                 .addContainerGap(34, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnRegresar)
-                .addGap(22, 22, 22))
+                .addComponent(btnRegresar2)
+                .addGap(24, 24, 24))
         );
+
+        btnConfirmar1.setBackground(new java.awt.Color(153, 153, 255));
+        btnConfirmar1.setForeground(new java.awt.Color(0, 0, 0));
+        btnConfirmar1.setText("Confirmar");
+        btnConfirmar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmar1ActionPerformed(evt);
+            }
+        });
+
+        BtnRegistrar2.setBackground(new java.awt.Color(153, 153, 255));
+        BtnRegistrar2.setForeground(new java.awt.Color(0, 0, 0));
+        BtnRegistrar2.setText("Registrarse");
+        BtnRegistrar2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRegistrar2ActionPerformed(evt);
+            }
+        });
+
+        CampoDeContraseña.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeContraseña.setForeground(new java.awt.Color(0, 0, 0));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(77, 77, 77)
+                .addComponent(BtnRegistrar2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnConfirmar1)
+                .addGap(73, 73, 73))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(130, 130, 130)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel4)
                     .addComponent(jLabel2)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jTextField1)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(118, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(81, 81, 81)
-                .addComponent(BtnRegistrar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnConfirmar)
-                .addGap(69, 69, 69))
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(CampoDeCorreo, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                    .addComponent(CampoDeContraseña))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -152,15 +184,15 @@ public class InicioPaciente extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(CampoDeCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
-                .addGap(8, 8, 8)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
+                .addGap(42, 42, 42)
+                .addComponent(CampoDeContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(BtnRegistrar)
-                    .addComponent(btnConfirmar))
+                    .addComponent(btnConfirmar1)
+                    .addComponent(BtnRegistrar2))
                 .addGap(21, 21, 21))
         );
 
@@ -178,15 +210,50 @@ public class InicioPaciente extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void CampoDeCorreoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeCorreoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_CampoDeCorreoActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void btnConfirmar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmar1ActionPerformed
+        // Obtener los datos ingresados por el usuario
+        String correo = CampoDeCorreo.getText();
+        String contrasenia = new String(CampoDeContraseña.getText());
+
+        try {
+            // Crear instancias necesarias para la validación
+
+            IConexionBD conexionBD = new ConexionBD();
+
+            // Pasar la conexión a PacienteDAO
+            PacienteDAO pacienteDAO = new PacienteDAO(conexionBD);
+
+            //  Pasar la conexión a PacienteBO en lugar de pacienteDAO
+            PacienteBO pacienteBO = new PacienteBO(conexionBD);
+
+            // Verificar credenciales
+            boolean esValido = pacienteBO.verificarCredenciales(correo, contrasenia);
+
+            if (esValido) {
+                JOptionPane.showMessageDialog(this, "Inicio de sesión exitoso", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+                // Abrir la ventana del perfil del paciente
+                PerfilPaciente nuevaVentana = new PerfilPaciente();
+                nuevaVentana.setVisible(true);
+                this.dispose(); // Cerrar la ventana actual
+            } else {
+                JOptionPane.showMessageDialog(this, "Correo o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (NegocioException e) {
+            JOptionPane.showMessageDialog(this, "Error al verificar credenciales: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnConfirmar1ActionPerformed
+
+    private void BtnRegistrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRegistrar1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_BtnRegistrar1ActionPerformed
 
-    private void BtnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRegistrarActionPerformed
+    private void BtnRegistrar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRegistrar2ActionPerformed
         // Crear una nueva instancia de la ventana InicioPaciente
         RegistroPaciente nuevaVentana = new RegistroPaciente();
 
@@ -194,16 +261,22 @@ public class InicioPaciente extends javax.swing.JFrame {
         nuevaVentana.setVisible(true);
 
         // Cerrar la ventana actual (InicioSesion)
-        this.dispose();    }//GEN-LAST:event_BtnRegistrarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_BtnRegistrar2ActionPerformed
 
-    private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
-        PerfilPaciente nuevaVentana = new PerfilPaciente();
+    private void btnRegresar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresar1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRegresar1ActionPerformed
+
+    private void btnRegresar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresar2ActionPerformed
+        InicioSesion nuevaVentana = new InicioSesion();
 
         // Hacer visible la nueva ventana
         nuevaVentana.setVisible(true);
 
         // Cerrar la ventana actual (InicioSesion)
-        this.dispose();         this.dispose();     }//GEN-LAST:event_btnConfirmarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnRegresar2ActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
         InicioSesion nuevaVentana = new InicioSesion();
@@ -212,23 +285,27 @@ public class InicioPaciente extends javax.swing.JFrame {
         nuevaVentana.setVisible(true);
 
         // Cerrar la ventana actual (InicioSesion)
-        this.dispose();    }//GEN-LAST:event_btnRegresarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnRegresarActionPerformed
 
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton BtnRegistrar;
-    private javax.swing.JButton btnConfirmar;
+    private javax.swing.JButton BtnRegistrar1;
+    private javax.swing.JButton BtnRegistrar2;
+    private javax.swing.JPasswordField CampoDeContraseña;
+    private javax.swing.JTextField CampoDeCorreo;
+    private javax.swing.JButton btnConfirmar1;
     private javax.swing.JButton btnRegresar;
+    private javax.swing.JButton btnRegresar1;
+    private javax.swing.JButton btnRegresar2;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 }
