@@ -27,7 +27,7 @@ public class CitaDAO implements ICitaDAO {
     }
 
     @Override
-    public List<String> verHistorialCitas(int idPaciente) throws PersistenciaException {
+    public List<String> verHistorialCitas(int idPaciente) throws PersistenciaException {  // PACIENTE
         List<String> historial = new ArrayList<>();
         String sql = "CALL VerHistorialCitas(?)";
 

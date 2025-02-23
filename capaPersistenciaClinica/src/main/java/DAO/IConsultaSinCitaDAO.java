@@ -14,6 +14,6 @@ import Exception.PersistenciaException;
  */
 public interface IConsultaSinCitaDAO {
     
-     public ConsultaSinCita agregarConsultaSinCita(ConsultaSinCita consultaSinCita) throws PersistenciaException;
+    void agendarCitaSinConsulta(String nota, int idPaciente) throws PersistenciaException;
      
 }

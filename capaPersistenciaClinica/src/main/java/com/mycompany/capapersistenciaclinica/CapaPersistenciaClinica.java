@@ -6,6 +6,8 @@ package com.mycompany.capapersistenciaclinica;
 import Conexion.ConexionBD;
 import Conexion.IConexionBD;
 import DAO.CitaDAO;
+import DAO.ConsultaSinCitaDAO;
+import DAO.IConsultaSinCitaDAO;
 import DAO.IPacienteDAO;
 import DAO.MedicoDAO;
 import DAO.PacienteDAO;
@@ -262,11 +264,8 @@ public class CapaPersistenciaClinica {
 //            scanner.close();
 //        }
 //      
-
-
 //        AQUI ES LA PRUEBA PARA VER LA AGENDA DEL MEDICO 
 //        PERO NO ESTA LISTO ELMETODO TODAVIA
-
 //        System.out.print("Ingrese el ID del médico para ver su agenda: ");
 //        int idMedico = scanner.nextInt();
 //
@@ -289,5 +288,26 @@ public class CapaPersistenciaClinica {
 //
 //        scanner.close();
 //    }
+        IConsultaSinCitaDAO consultaDAO = new ConsultaSinCitaDAO(conexion);
+        System.out.println("=== Agendar Consulta Sin Cita ===");
+
+        // Solicitar ID del paciente
+        System.out.print("Ingrese ID del paciente: ");
+        int idPaciente = scanner.nextInt();
+        scanner.nextLine(); // Consumir el salto de línea
+
+        System.out.print("Ingrese motivo de la consulta: ");
+        String nota = scanner.nextLine();
+
+        try {
+            // Llamar al método para agendar la consulta sin cita
+            consultaDAO.agendarCitaSinConsulta(nota, idPaciente);
+            System.out.println("Consulta sin cita registrada correctamente con un médico de Medicina General.");
+        } catch (PersistenciaException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        scanner.close();
     }
+
 }
