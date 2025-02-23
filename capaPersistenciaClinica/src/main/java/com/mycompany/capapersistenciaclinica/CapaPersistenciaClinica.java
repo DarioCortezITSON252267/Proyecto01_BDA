@@ -242,23 +242,52 @@ public class CapaPersistenciaClinica {
 //            scanner.close();
 //        }
 //    }
-        System.out.print("Ingrese su ID de médico para ver su historial de citas: ");
-        int idMedico = scanner.nextInt();
+//        Aqui revisamos que el medico pueda ver el historial de citas
+//        System.out.print("Ingrese su ID de médico para ver su historial de citas: ");
+//        int idMedico = scanner.nextInt();
+//
+//        try {
+//            List<String> historial = citaDAO.verHistorialCitasMedico(idMedico);
+//            if (historial.isEmpty()) {
+//                System.out.println("No se encontraron citas para el médico.");
+//            } else {
+//                System.out.println("Historial de Citas del Médico:");
+//                for (String cita : historial) {
+//                    System.out.println(cita);
+//                }
+//            }
+//        } catch (PersistenciaException e) {
+//            System.err.println("Error: " + e.getMessage());
+//        } finally {
+//            scanner.close();
+//        }
+//      
 
-        try {
-            List<String> historial = citaDAO.verHistorialCitasMedico(idMedico);
-            if (historial.isEmpty()) {
-                System.out.println("No se encontraron citas para el médico.");
-            } else {
-                System.out.println("Historial de Citas del Médico:");
-                for (String cita : historial) {
-                    System.out.println(cita);
-                }
-            }
-        } catch (PersistenciaException e) {
-            System.err.println("Error: " + e.getMessage());
-        } finally {
-            scanner.close();
-        }
+
+//        AQUI ES LA PRUEBA PARA VER LA AGENDA DEL MEDICO 
+//        PERO NO ESTA LISTO ELMETODO TODAVIA
+
+//        System.out.print("Ingrese el ID del médico para ver su agenda: ");
+//        int idMedico = scanner.nextInt();
+//
+//        try {
+//            // Obtener la agenda del médico
+//            List<String> agenda = medicoDAO.verAgendaMedico(idMedico);
+//
+//            // Mostrar los resultados
+//            if (agenda.isEmpty()) {
+//                System.out.println("No hay citas futuras para el médico con ID " + idMedico);
+//            } else {
+//                System.out.println("Agenda del médico con ID " + idMedico + ":");
+//                for (String cita : agenda) {
+//                    System.out.println(cita);
+//                }
+//            }
+//        } catch (PersistenciaException e) {
+//            System.out.println("Error al obtener la agenda: " + e.getMessage());
+//        }
+//
+//        scanner.close();
+//    }
     }
 }

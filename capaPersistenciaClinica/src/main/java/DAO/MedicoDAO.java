@@ -8,7 +8,11 @@ import Conexion.IConexionBD;
 import Exception.PersistenciaException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,4 +47,34 @@ public class MedicoDAO implements IMedicoDAO {
             throw new PersistenciaException("Error al desactivar el médico", ex);
         }
     }
+    
+//      ESTE METODO NO ESTA FUNCIONANDO TODAVIA
+    
+//    @Override
+//    public List<String> verAgendaMedico(int idMedico) throws PersistenciaException {
+//        List<String> agenda = new ArrayList<>();
+//        String sql = "CALL VerAgendaFuturaMedico(?)";
+//
+//        try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
+//            cs.setInt(1, idMedico);
+//            ResultSet rs = cs.executeQuery();
+//
+//            while (rs.next()) {
+//                int idCita = rs.getInt("id_cita");
+//                String estado = rs.getString("estado");
+//                Timestamp fechahora = rs.getTimestamp("fechahora");
+//                String nota = rs.getString("nota");
+//                int idPaciente = rs.getInt("id_paciente");
+//                String pacienteNombre = rs.getString("paciente_nombre");
+//                String pacienteApellido = rs.getString("paciente_apellido");
+//                String pacienteUsuario = rs.getString("paciente_usuario");
+//
+//                agenda.add("Cita ID: " + idCita + ", Estado: " + estado + ", Fecha y Hora: " + fechahora + ", Nota: " + nota
+//                        + ", Paciente ID: " + idPaciente + ", Nombre: " + pacienteNombre + " " + pacienteApellido + ", Usuario: " + pacienteUsuario);
+//            }
+//        } catch (SQLException ex) {
+//            throw new PersistenciaException("Error al obtener la agenda futura del médico", ex);
+//        }
+//        return agenda;
+//    }
 }
