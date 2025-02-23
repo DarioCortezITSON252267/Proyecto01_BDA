@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public class ConexionBD implements IConexionBD{
     
     final String USUARIO = "root";
-    final String PASS = "itson";
+    final String PASS = "Angel.240831";
     final String CADENA_CONEXION = "jdbc:mysql://localhost:3306/Clinica";
 
     @Override
