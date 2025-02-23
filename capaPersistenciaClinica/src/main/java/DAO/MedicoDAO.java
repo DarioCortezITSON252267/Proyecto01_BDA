@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  *
  * @author Angel
  */
-public class MedicoDAO implements IMedicoDAO{
+public class MedicoDAO implements IMedicoDAO {
 
     private IConexionBD conexion; // Atributo conexión que se usará en toda la clase
     private static final Logger logger = Logger.getLogger(PacienteDAO.class.getName());
@@ -25,12 +25,12 @@ public class MedicoDAO implements IMedicoDAO{
         this.conexion = conexion;
     }
 
-   @Override
+    @Override
     public boolean desactivarMedico(int idMedico) throws PersistenciaException {
-        String sql = "{CALL DesactivarMedico(?)}"; // 1 parámetro
+        String sql = "CALL DesactivarMedico(?)"; // 1 parámetro
 
         try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
-            
+
             // Establecer parámetros en el procedimiento almacenado
             cs.setInt(1, idMedico); // ID del médico a desactivar
 
@@ -43,5 +43,4 @@ public class MedicoDAO implements IMedicoDAO{
             throw new PersistenciaException("Error al desactivar el médico", ex);
         }
     }
-
 }

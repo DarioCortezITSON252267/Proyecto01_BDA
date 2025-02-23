@@ -29,7 +29,7 @@ public class PacienteDAO implements IPacienteDAO {
 
     @Override
     public Paciente registrarPaciente(Paciente paciente) throws PersistenciaException {
-        String sql = "{CALL RegistrarPaciente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}"; // 12 parámetros
+        String sql = "CALL RegistrarPaciente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; // 12 parámetros
 
         try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
 

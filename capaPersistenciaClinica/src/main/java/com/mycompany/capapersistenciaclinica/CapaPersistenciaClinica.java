@@ -5,6 +5,7 @@ package com.mycompany.capapersistenciaclinica;
 
 import Conexion.ConexionBD;
 import Conexion.IConexionBD;
+import DAO.CitaDAO;
 import DAO.IPacienteDAO;
 import DAO.MedicoDAO;
 import DAO.PacienteDAO;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -202,15 +204,37 @@ public class CapaPersistenciaClinica {
 //            scanner.close();
 //        }
 //    }
-        System.out.print("Ingrese su ID de médico para darse de baja: ");
-        int idMedico = scanner.nextInt();
+////      aqui se prueba el metodo para que el medico se pueda dar de baja temporalmente
+//        System.out.print("Ingrese su ID de médico para darse de baja: ");
+//        int idMedico = scanner.nextInt();
+//
+//        try {
+//            boolean resultado = medicoDAO.desactivarMedico(idMedico);
+//            if (resultado) {
+//                System.out.println("Te has dado de baja exitosamente.");
+//            } else {
+//                System.out.println("No se pudo completar la solicitud de baja.");
+//            }
+//        } catch (PersistenciaException e) {
+//            System.err.println("Error: " + e.getMessage());
+//        } finally {
+//            scanner.close();
+//        }
+//    }
+        CitaDAO citaDAO = new CitaDAO(conexion);
+
+        System.out.print("Ingrese su ID de paciente para ver su historial de citas: ");
+        int idPaciente = scanner.nextInt();
 
         try {
-            boolean resultado = medicoDAO.desactivarMedico(idMedico);
-            if (resultado) {
-                System.out.println("Te has dado de baja exitosamente.");
+            List<String> historial = citaDAO.verHistorialCitas(idPaciente);
+            if (historial.isEmpty()) {
+                System.out.println("No se encontraron citas para el paciente.");
             } else {
-                System.out.println("No se pudo completar la solicitud de baja.");
+                System.out.println("Historial de Citas:");
+                for (String cita : historial) {
+                    System.out.println(cita);
+                }
             }
         } catch (PersistenciaException e) {
             System.err.println("Error: " + e.getMessage());
