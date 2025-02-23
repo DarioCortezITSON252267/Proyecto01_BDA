@@ -14,4 +14,6 @@ import java.util.List;
 public interface ICitaDAO {
     
       List<String> verHistorialCitas(int idPaciente) throws PersistenciaException;
+      
+      List<String> verHistorialCitasMedico(int idMedico) throws PersistenciaException;
 }

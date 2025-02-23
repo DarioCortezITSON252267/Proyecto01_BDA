@@ -223,15 +223,34 @@ public class CapaPersistenciaClinica {
 //    }
         CitaDAO citaDAO = new CitaDAO(conexion);
 
-        System.out.print("Ingrese su ID de paciente para ver su historial de citas: ");
-        int idPaciente = scanner.nextInt();
+//        System.out.print("Ingrese su ID de paciente para ver su historial de citas: ");
+//        int idPaciente = scanner.nextInt();
+//
+//        try {
+//            List<String> historial = citaDAO.verHistorialCitas(idPaciente);
+//            if (historial.isEmpty()) {
+//                System.out.println("No se encontraron citas para el paciente.");
+//            } else {
+//                System.out.println("Historial de Citas:");
+//                for (String cita : historial) {
+//                    System.out.println(cita);
+//                }
+//            }
+//        } catch (PersistenciaException e) {
+//            System.err.println("Error: " + e.getMessage());
+//        } finally {
+//            scanner.close();
+//        }
+//    }
+        System.out.print("Ingrese su ID de médico para ver su historial de citas: ");
+        int idMedico = scanner.nextInt();
 
         try {
-            List<String> historial = citaDAO.verHistorialCitas(idPaciente);
+            List<String> historial = citaDAO.verHistorialCitasMedico(idMedico);
             if (historial.isEmpty()) {
-                System.out.println("No se encontraron citas para el paciente.");
+                System.out.println("No se encontraron citas para el médico.");
             } else {
-                System.out.println("Historial de Citas:");
+                System.out.println("Historial de Citas del Médico:");
                 for (String cita : historial) {
                     System.out.println(cita);
                 }

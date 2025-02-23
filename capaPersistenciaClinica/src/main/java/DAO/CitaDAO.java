@@ -52,4 +52,33 @@ public class CitaDAO implements ICitaDAO {
         }
         return historial;
     }
+
+    @Override
+    public List<String> verHistorialCitasMedico(int idMedico) throws PersistenciaException {
+        List<String> historial = new ArrayList<>();
+        String sql = "CALL VerHistorialCitasMedico(?)";
+
+        try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
+            cs.setInt(1, idMedico);
+            ResultSet rs = cs.executeQuery();
+
+            while (rs.next()) {
+                int idCita = rs.getInt("id_cita");
+                String estado = rs.getString("estado");
+                Timestamp fechahora = rs.getTimestamp("fechahora");
+                String nota = rs.getString("nota");
+                int idPaciente = rs.getInt("id_paciente");
+                String pacienteNombre = rs.getString("paciente_nombre");
+                String pacienteApellido = rs.getString("paciente_apellido");
+                String pacienteUsuario = rs.getString("paciente_usuario");
+
+                historial.add("Cita ID: " + idCita + ", Estado: " + estado + ", Fecha y Hora: " + fechahora + ", Nota: " + nota
+                        + ", Paciente ID: " + idPaciente + ", Nombre: " + pacienteNombre + " " + pacienteApellido + ", Usuario: " + pacienteUsuario);
+            }
+        } catch (SQLException ex) {
+            throw new PersistenciaException("Error al obtener el historial de citas del médico", ex);
+        }
+        return historial;
+    }
+
 }
