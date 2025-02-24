@@ -160,25 +160,32 @@ public class PacienteBO {
     }
     return true;
 }
-   public boolean verificarCredenciales(String correo, String contrasenia) throws NegocioException {
+public int obtenerIdPacientePorCredenciales(String correo, String contrasenia) throws NegocioException {
     try {
         // Obtener el paciente por su correo
         Paciente paciente = pacienteDAO.obtenerPacientePorCorreo(correo);
 
         // Si el paciente no existe, credenciales inválidas
         if (paciente == null || paciente.getUsuario() == null) {
-            return false;
+            return -1; // Usuario no encontrado
         }
 
         // Obtener la contraseña encriptada almacenada
         String contraseniaEncriptada = paciente.getUsuario().getContraseña();
 
         // Verificar la contraseña usando BCrypt
-        return BCrypt.verifyer().verify(contrasenia.toCharArray(), contraseniaEncriptada).verified;
+        boolean credencialesValidas = BCrypt.verifyer().verify(contrasenia.toCharArray(), contraseniaEncriptada).verified;
+
+        if (credencialesValidas) {
+                return paciente.getId_paciente(); // Retornar el ID del paciente si las credenciales son correctas
+        } else {
+            return -1; // Credenciales incorrectas
+        }
 
     } catch (PersistenciaException e) {
         throw new NegocioException("Error al verificar credenciales: " + e.getMessage());
     }
-   }
+}
+
    
 }

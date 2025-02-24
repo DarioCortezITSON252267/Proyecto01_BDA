@@ -8,9 +8,11 @@ import Conexion.IConexionBD;
 import Exception.PersistenciaException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,17 +40,24 @@ public class CitaDAO implements ICitaDAO {
             while (rs.next()) {
                 int idCita = rs.getInt("id_cita");
                 String estado = rs.getString("estado");
-                Timestamp fechahora = rs.getTimestamp("fechahora");
-                String nota = rs.getString("nota");
-                int idMedico = rs.getInt("id_medico");
-                String especialidad = rs.getString("especialidad");
-                String medico = rs.getString("medico");
 
-                historial.add("Cita ID: " + idCita + ", Estado: " + estado + ", Fecha y Hora: " + fechahora + ", Nota: " + nota
-                        + ", Médico ID: " + idMedico + ", Especialidad: " + especialidad + ", Médico: " + medico);
+                // ✅ Manejo correcto de fecha y hora
+                Timestamp timestamp = rs.getTimestamp("fechahora");
+                LocalDateTime fechaHora = timestamp.toLocalDateTime();
+
+                String nota = rs.getString("nota");
+                int idMedico = rs.getInt("id_medico"); // Corrección aquí
+                String especialidad = rs.getString("especialidad");
+
+                historial.add("Cita ID: " + idCita
+                        + ", Estado: " + estado
+                        + ", Fecha y Hora: " + fechaHora
+                        + ", Nota: " + (nota != null ? nota : "Sin nota")
+                        + ", Médico ID: " + idMedico
+                        + ", Especialidad: " + especialidad);
             }
         } catch (SQLException ex) {
-            throw new PersistenciaException("Error al obtener el historial de citas", ex);
+            ex.printStackTrace();
         }
         return historial;
     }
@@ -79,6 +88,50 @@ public class CitaDAO implements ICitaDAO {
             throw new PersistenciaException("Error al obtener el historial de citas del médico", ex);
         }
         return historial;
+    }
+
+    @Override
+    public void agendarCita(int idPaciente, int idMedico, LocalDateTime fechaHora, String estado, String nota) throws PersistenciaException {
+        String sql = "CALL AgendarCita(?, ?, ?, ?, ?)";
+
+        try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
+
+            // Asignar parámetros
+            cs.setInt(1, idPaciente);
+            cs.setInt(2, idMedico);
+            cs.setTimestamp(3, Timestamp.valueOf(fechaHora));
+            cs.setString(4, estado);
+            cs.setString(5, nota);
+
+            // Ejecutar el procedimiento almacenado
+            cs.execute();
+
+            System.out.println("Cita agendada correctamente.");
+
+        } catch (SQLException ex) {
+            throw new PersistenciaException("Error al agendar la cita: " + ex.getMessage(), ex);
+        }
+
+    }
+
+    @Override
+    public int obtenerMedicoPorEspecialidad(String especialidad) throws PersistenciaException {
+        String sql = "SELECT id_medico FROM Medicos WHERE especialidad = ? ORDER BY RAND() LIMIT 1";
+
+        try (Connection con = conexion.crearConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, especialidad);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("id_medico");
+            } else {
+                return -1; // No hay médicos disponibles
+            }
+
+        } catch (SQLException ex) {
+            throw new PersistenciaException("Error al obtener médico por especialidad: " + ex.getMessage(), ex);
+        }
     }
 
 }

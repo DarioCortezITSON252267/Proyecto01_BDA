@@ -16,6 +16,17 @@ public class PerfilPaciente extends javax.swing.JFrame {
     public PerfilPaciente() {
         initComponents();
     }
+    private int idPaciente; // Almacena el ID del paciente
+
+    public PerfilPaciente(int idPaciente) {
+        this.idPaciente = idPaciente; // Guardar el ID
+        initComponents();
+    }
+
+    // Método opcional para acceder al ID del paciente en otras partes del código
+    public int getIdPaciente() {
+        return idPaciente;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

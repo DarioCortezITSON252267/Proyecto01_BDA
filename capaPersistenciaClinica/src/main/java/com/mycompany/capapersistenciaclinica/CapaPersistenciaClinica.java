@@ -6,6 +6,7 @@ package com.mycompany.capapersistenciaclinica;
 import Conexion.ConexionBD;
 import Conexion.IConexionBD;
 import DAO.CitaDAO;
+import DAO.CitaDAO;
 import DAO.ConsultaSinCitaDAO;
 import DAO.IConsultaSinCitaDAO;
 import DAO.IPacienteDAO;

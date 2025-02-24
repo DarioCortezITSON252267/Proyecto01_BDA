@@ -5,10 +5,15 @@
 package GUI;
 
 import BO.PacienteBO;
+import BO.SesionUsuario;
 import Conexion.ConexionBD;
 import Conexion.IConexionBD;
 import DAO.PacienteDAO;
+import Entidades.Paciente;
 import Exception.NegocioException;
+import Exception.PersistenciaException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -23,6 +28,7 @@ public class InicioPaciente extends javax.swing.JFrame {
     public InicioPaciente() {
         initComponents();
     }
+    private int idPacienteActual; // Variable para almacenar el ID del paciente
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -156,6 +162,11 @@ public class InicioPaciente extends javax.swing.JFrame {
 
         CampoDeContraseña.setBackground(new java.awt.Color(255, 255, 255));
         CampoDeContraseña.setForeground(new java.awt.Color(0, 0, 0));
+        CampoDeContraseña.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CampoDeContraseñaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -215,38 +226,35 @@ public class InicioPaciente extends javax.swing.JFrame {
     }//GEN-LAST:event_CampoDeCorreoActionPerformed
 
     private void btnConfirmar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmar1ActionPerformed
-        // Obtener los datos ingresados por el usuario
-        String correo = CampoDeCorreo.getText();
-        String contrasenia = new String(CampoDeContraseña.getText());
+    // Obtener los datos ingresados por el usuario
+    String correo = CampoDeCorreo.getText();
+    String contrasenia = new String(CampoDeContraseña.getPassword()); // Usar getPassword() correctamente
 
-        try {
-            // Crear instancias necesarias para la validación
+    try {
+        // Crear instancias necesarias para la validación
+        IConexionBD conexionBD = new ConexionBD();
+        PacienteDAO pacienteDAO = new PacienteDAO(conexionBD);
+        PacienteBO pacienteBO = new PacienteBO(conexionBD);
 
-            IConexionBD conexionBD = new ConexionBD();
+        // Verificar credenciales y obtener el ID del paciente
+        int idPaciente = pacienteBO.obtenerIdPacientePorCredenciales(correo, contrasenia);
 
-            // Pasar la conexión a PacienteDAO
-            PacienteDAO pacienteDAO = new PacienteDAO(conexionBD);
+        if (idPaciente > 0) { // Si el ID es mayor a 0, las credenciales son válidas
+            SesionUsuario.idPaciente = idPaciente; // Guardar en la sesión global
 
-            //  Pasar la conexión a PacienteBO en lugar de pacienteDAO
-            PacienteBO pacienteBO = new PacienteBO(conexionBD);
+            JOptionPane.showMessageDialog(this, "Inicio de sesión exitoso", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
-            // Verificar credenciales
-            boolean esValido = pacienteBO.verificarCredenciales(correo, contrasenia);
-
-            if (esValido) {
-                JOptionPane.showMessageDialog(this, "Inicio de sesión exitoso", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-
-                // Abrir la ventana del perfil del paciente
-                PerfilPaciente nuevaVentana = new PerfilPaciente();
-                nuevaVentana.setVisible(true);
-                this.dispose(); // Cerrar la ventana actual
-            } else {
-                JOptionPane.showMessageDialog(this, "Correo o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-        } catch (NegocioException e) {
-            JOptionPane.showMessageDialog(this, "Error al verificar credenciales: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            // Abrir la ventana del perfil del paciente
+            PerfilPaciente nuevaVentana = new PerfilPaciente();
+            nuevaVentana.setVisible(true);
+            this.dispose(); // Cerrar la ventana actual
+        } else {
+            JOptionPane.showMessageDialog(this, "Correo o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
         }
+
+    } catch (NegocioException e) {
+        JOptionPane.showMessageDialog(this, "Error al verificar credenciales: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_btnConfirmar1ActionPerformed
 
     private void BtnRegistrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRegistrar1ActionPerformed
@@ -287,6 +295,10 @@ public class InicioPaciente extends javax.swing.JFrame {
         // Cerrar la ventana actual (InicioSesion)
         this.dispose();
     }//GEN-LAST:event_btnRegresarActionPerformed
+
+    private void CampoDeContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeContraseñaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CampoDeContraseñaActionPerformed
 
     /**
      * @param args the command line arguments
