@@ -239,11 +239,10 @@ END$$
 
 DELIMITER ;
 
--- Actualizar un paciente
-DELIMITER //
+
+DELIMITER $$
 
 CREATE PROCEDURE actualizarUnPaciente(
-    IN id_usuarioNuevo INT,
     IN contraseniaNueva VARCHAR(100),
     IN fechaNacimientoNuevo DATE,
     IN nombreNuevo VARCHAR(50),
@@ -266,32 +265,30 @@ BEGIN
 
     UPDATE Usuarios
     SET contraseña = contraseniaNueva
-    WHERE id_usuario = id_usuarioNuevo;
+    WHERE id_usuario = (SELECT id_usuario FROM Pacientes WHERE correo = correoNuevo);
 
     UPDATE Direcciones
     SET calle = calleNueva,
         numero = numeroNuevo,
         colonia = coloniaNueva,
         codigo_postal = codigoPostalNuevo
-    WHERE id_usuario = id_usuarioNuevo;
+    WHERE id_usuario = (SELECT id_usuario FROM Pacientes WHERE correo = correoNuevo);
 
     UPDATE Pacientes
     SET nombre = nombreNuevo,
         apellido_paterno = apellidoPaternoNuevo,
-        apellido_materno = IF(apellidoMaternoNuevo = '', NULL, apellidoMaternoNuevo), -- Convierte '' en NULL
+        apellido_materno = IF(apellidoMaternoNuevo = '', NULL, apellidoMaternoNuevo),
         telefono = telefonoNuevo,
-        correo = correoNuevo,
         fecha_nacimiento = fechaNacimientoNuevo
-    WHERE id_usuario = id_usuarioNuevo;
+    WHERE correo = correoNuevo;
 
     COMMIT;
 
+END$$
 
-END //
+DELIMITER ;
 
 DELIMITER $$
-
-
 CREATE PROCEDURE VerHistorialCitas(IN idPaciente INT)
 BEGIN
     SELECT 
