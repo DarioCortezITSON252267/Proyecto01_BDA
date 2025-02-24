@@ -61,41 +61,48 @@ public class PacienteDAO implements IPacienteDAO {
         return paciente; // Retorna el paciente registrado
     }
 
-    @Override
-    public Paciente editarPaciente(Paciente paciente) throws PersistenciaException {
-        Usuario usuario = paciente.getUsuario();
-        Direccion direccion = paciente.getDireccion();
-
-        // Asegurarse de que el ID del paciente no se cambie
-        String sentenciaSQLActualizar = "CALL actualizarPacientePorId(?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
-        try (Connection con = conexion.crearConexion(); CallableStatement stm = con.prepareCall(sentenciaSQLActualizar)) {
-
-            // Establecer los parámetros del procedimiento almacenado
-            stm.setInt(1, paciente.getId_paciente());  // ID del paciente como parámetro
-            stm.setString(2, usuario.getContraseña());
-            stm.setDate(3, Date.valueOf(paciente.getFecha_nacimiento())); // Conversión de LocalDate a SQL Date
-            stm.setString(4, paciente.getNombre());
-            stm.setString(5, paciente.getApellido_paterno());
-            stm.setString(6, paciente.getApellido_materno());
-            stm.setString(7, paciente.getTelefono());
-            stm.setString(8, paciente.getCorreo());
-            stm.setString(9, direccion.getCalle());
-            stm.setString(10, direccion.getNumero());
-            stm.setString(11, direccion.getColonia());
-            stm.setString(12, direccion.getCodigo_postal());
-
-            // Ejecutar la actualización
-            stm.executeUpdate();
-
-            System.out.println("Paciente actualizado correctamente.");
-
-        } catch (SQLException ex) {
-            Logger.getLogger(PacienteDAO.class.getName()).log(Level.SEVERE, null, ex);
-            throw new PersistenciaException("Error al actualizar al paciente", ex);
-        }
-        return paciente;
+@Override
+public Paciente editarPaciente(Paciente paciente) throws PersistenciaException {
+    // Verifica que el paciente tenga un usuario asociado
+    if (paciente.getUsuario() == null) {
+        System.out.println("El paciente no tiene un usuario asignado.");
+        return paciente;  // O realizar otra acción si lo consideras necesario
     }
+
+    String sql = "CALL actualizarPaciente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; // Procedimiento almacenado para actualizar
+
+    try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
+        // Convertir la fecha de LocalDate a java.sql.Date
+        Date fechaNacimiento = Date.valueOf(paciente.getFecha_nacimiento());
+
+        // Establecer los parámetros en el procedimiento almacenado
+        cs.setInt(1, paciente.getId_paciente());  // ID del paciente
+        cs.setString(2, paciente.getUsuario().getUsuario());  // Usuario
+        cs.setString(3, paciente.getUsuario().getContraseña());  // Contraseña
+        cs.setString(4, paciente.getNombre());  // Nombre
+        cs.setString(5, paciente.getApellido_paterno());  // Apellido Paterno
+        cs.setString(6, paciente.getApellido_materno());  // Apellido Materno
+        cs.setString(7, paciente.getTelefono());  // Teléfono
+        cs.setString(8, paciente.getCorreo());  // Correo
+        cs.setDate(9, fechaNacimiento);  // Fecha de nacimiento
+        cs.setString(10, paciente.getDireccion().getCalle());  // Calle
+        cs.setString(11, paciente.getDireccion().getNumero());  // Número de casa
+        cs.setString(12, paciente.getDireccion().getColonia());  // Colonia
+        cs.setString(13, paciente.getDireccion().getCodigo_postal());  // Código postal
+
+        // Ejecutar la consulta
+        cs.execute();
+        logger.log(Level.INFO, "Paciente actualizado exitosamente");
+
+    } catch (SQLException ex) {
+        logger.log(Level.SEVERE, "Error al actualizar el paciente", ex);
+        throw new PersistenciaException("Error al actualizar el paciente", ex);
+    }
+
+    // Retorna el paciente actualizado después de la modificación
+    return paciente;
+}
+
 
     //OBTENEMOS CONTRASEÑA ENCRIPATADA DEL SQL
     public Paciente obtenerPacientePorCorreo(String correo) throws PersistenciaException {

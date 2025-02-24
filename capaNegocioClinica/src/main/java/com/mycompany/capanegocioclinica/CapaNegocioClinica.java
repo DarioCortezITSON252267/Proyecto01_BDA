@@ -54,27 +54,57 @@ public class CapaNegocioClinica {
 //            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Error en el registro del paciente", ex);
 //        }
 
-        IConexionBD conexion = new ConexionBD();
-        CitaDAO citaDAO = new CitaDAO(conexion);
-        CitaBO citaBO = new CitaBO(citaDAO);
-
-        int idPaciente = 1; // Cambia a un ID sin citas en la BD
-
+//        IConexionBD conexion = new ConexionBD();
+//        CitaDAO citaDAO = new CitaDAO(conexion);
+//        CitaBO citaBO = new CitaBO(citaDAO);
+//
+//        int idPaciente = 1; // Cambia a un ID sin citas en la BD
+//
+//        try {
+//            List<CitaDTO> citas = citaBO.obtenerHistorialCitasPaciente(idPaciente);
+//            if (citas.isEmpty()) {
+//                System.out.println("No hay citas registradas.");
+//            } else {
+//                for (CitaDTO cita : citas) {
+//                    System.out.println("Cita ID: " + cita.getIdCita()
+//                            + " | Estado: " + cita.getEstado()
+//                            + " | Fecha: " + cita.getFechaHora()
+//                            + " | Nota: " + (cita.getNota() != null ? cita.getNota() : "Sin nota")
+//                            + " | Especialidad: " + cita.getEspecialidad());
+//                }
+//            }
+//        } catch (PersistenciaException e) {
+//            System.err.println("Error al obtener historial: " + e.getMessage());
+//        }
         try {
-            List<CitaDTO> citas = citaBO.obtenerHistorialCitasPaciente(idPaciente);
-            if (citas.isEmpty()) {
-                System.out.println("No hay citas registradas.");
-            } else {
-                for (CitaDTO cita : citas) {
-                    System.out.println("Cita ID: " + cita.getIdCita()
-                            + " | Estado: " + cita.getEstado()
-                            + " | Fecha: " + cita.getFechaHora()
-                            + " | Nota: " + (cita.getNota() != null ? cita.getNota() : "Sin nota")
-                            + " | Especialidad: " + cita.getEspecialidad());
-                }
+            // Crear la implementación de la conexión a la base de datos
+            IConexionBD conexionBD = new ConexionBD();
+
+            // Crear el objeto BO con la conexión inyectada
+            PacienteBO pacienteBO = new PacienteBO(conexionBD);
+
+            // Crear el objeto PacienteNuevoDTO con datos de prueba
+            PacienteNuevoDTO pacienteNuevoDTO = new PacienteNuevoDTO();
+            pacienteNuevoDTO.setIdPaciente(1);  // Asegúrate de que este ID exista en la base de datos
+            pacienteNuevoDTO.setCorreo("juan.perez@example.com");
+            pacienteNuevoDTO.setNombre("Juan");
+            pacienteNuevoDTO.setApellidoPaterno("Perez");
+            pacienteNuevoDTO.setApellidoMaterno("Gomez");
+            pacienteNuevoDTO.setTelefono("1234567890");
+            pacienteNuevoDTO.setFechaNacimiento(LocalDate.of(1990, 5, 15));
+            pacienteNuevoDTO.setDireccion(new Direccion("Calle Falsa 123", "Ciudad", "Estado", "12345"));
+
+            // Llamar al método editarPaciente con el DTO
+            boolean resultado = pacienteBO.editarPaciente(pacienteNuevoDTO);
+
+            // Mostrar el resultado
+            if (resultado) {
+                System.out.println("Paciente editado correctamente.");
             }
-        } catch (PersistenciaException e) {
-            System.err.println("Error al obtener historial: " + e.getMessage());
+
+        } catch (NegocioException e) {
+            // Manejo de excepciones
+            System.out.println("Error: " + e.getMessage());
         }
     }
 }

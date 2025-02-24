@@ -4,10 +4,17 @@
  */
 package DAO;
 
+import Entidades.Usuario;
+import Exception.PersistenciaException;
+
 /**
  *
  * @author Usuario
  */
 public interface IUsuarioDAO {
+    public Usuario crearUsuario(Usuario usuario) throws PersistenciaException;
     
+    public Usuario obtenerUsuarioPorNombre(String nombreUsuario) throws PersistenciaException;
+    
+    public Usuario actualizarUsuario(Usuario usuario) throws PersistenciaException;
 }
