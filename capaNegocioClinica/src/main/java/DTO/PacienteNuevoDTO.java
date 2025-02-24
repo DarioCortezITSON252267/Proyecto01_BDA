@@ -13,7 +13,7 @@ import java.time.LocalDate;
  */
 public class PacienteNuevoDTO {
 
-
+    private int idPaciente;  // Agregado para identificar al paciente en la actualización
     private String nombre;
     private String apellidoPaterno;
     private String apellidoMaterno;
@@ -21,12 +21,14 @@ public class PacienteNuevoDTO {
     private LocalDate fechaNacimiento;
     private String correo;
     private String contrasenia;
-    private Direccion direccion; //  Se agrega la dirección
+    private Direccion direccion; // Se agrega la dirección
 
     public PacienteNuevoDTO() {
     }
 
-    public PacienteNuevoDTO(String nombre, String apellidoPaterno, String apellidoMaterno, String telefono, LocalDate fechaNacimiento, String correo, String contrasenia, Direccion direccion) {
+    public PacienteNuevoDTO(int idPaciente, String nombre, String apellidoPaterno, String apellidoMaterno, 
+                             String telefono, LocalDate fechaNacimiento, String correo, String contrasenia, Direccion direccion) {
+        this.idPaciente = idPaciente;
         this.nombre = nombre;
         this.apellidoPaterno = apellidoPaterno;
         this.apellidoMaterno = apellidoMaterno;
@@ -35,6 +37,26 @@ public class PacienteNuevoDTO {
         this.correo = correo;
         this.contrasenia = contrasenia;
         this.direccion = direccion;
+    }
+    public PacienteNuevoDTO(String nombre, String apellidoPaterno, String apellidoMaterno, String telefono, LocalDate fechaNacimiento, String correo, String contrasenia, Direccion direccion) {
+    this.nombre = nombre;
+    this.apellidoPaterno = apellidoPaterno;
+    this.apellidoMaterno = apellidoMaterno;  // Este campo puede ser null
+    this.telefono = telefono;
+    this.fechaNacimiento = fechaNacimiento;
+    this.correo = correo;
+    this.contrasenia = contrasenia;
+    this.direccion = direccion;
+}
+
+
+    // Getter y Setter para idPaciente
+    public int getIdPaciente() {
+        return idPaciente;
+    }
+
+    public void setIdPaciente(int idPaciente) {
+        this.idPaciente = idPaciente;
     }
 
     public String getNombre() {
@@ -104,14 +126,15 @@ public class PacienteNuevoDTO {
     @Override
     public String toString() {
         return "PacienteNuevoDTO{" +
-                "nombre='" + nombre + '\'' +
+                "idPaciente=" + idPaciente +
+                ", nombre='" + nombre + '\'' +
                 ", apellidoPaterno='" + apellidoPaterno + '\'' +
                 ", apellidoMaterno='" + apellidoMaterno + '\'' +
                 ", telefono='" + telefono + '\'' +
                 ", fechaNacimiento=" + fechaNacimiento +
                 ", correo='" + correo + '\'' +
+                ", contrasenia='" + contrasenia + '\'' +
                 ", direccion=" + direccion +
                 '}';
     }
-    
 }

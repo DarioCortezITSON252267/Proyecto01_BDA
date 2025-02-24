@@ -66,22 +66,26 @@ public class PacienteDAO implements IPacienteDAO {
         Usuario usuario = paciente.getUsuario();
         Direccion direccion = paciente.getDireccion();
 
-        String sentenciaSQLActualizar = "CALL actualizarUnPaciente(?,?,?,?,?,?,?,?,?)";
+        // Asegurarse de que el ID del paciente no se cambie
+        String sentenciaSQLActualizar = "CALL actualizarPacientePorId(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try (Connection con = conexion.crearConexion(); CallableStatement stm = con.prepareCall(sentenciaSQLActualizar)) {
 
-            stm.setString(1, usuario.getContraseña());
-            stm.setDate(2, Date.valueOf(paciente.getFecha_nacimiento())); // Conversión de LocalDate a SQL Date
-            stm.setString(3, paciente.getNombre());
-            stm.setString(4, paciente.getApellido_paterno());
-            stm.setString(5, paciente.getApellido_materno());
-            stm.setString(6, paciente.getTelefono());
-            stm.setString(7, paciente.getCorreo());
-            stm.setString(8, direccion.getCalle());
-            stm.setString(9, direccion.getNumero());
-            stm.setString(10, direccion.getColonia());
-            stm.setString(11, direccion.getCodigo_postal());
+            // Establecer los parámetros del procedimiento almacenado
+            stm.setInt(1, paciente.getId_paciente());  // ID del paciente como parámetro
+            stm.setString(2, usuario.getContraseña());
+            stm.setDate(3, Date.valueOf(paciente.getFecha_nacimiento())); // Conversión de LocalDate a SQL Date
+            stm.setString(4, paciente.getNombre());
+            stm.setString(5, paciente.getApellido_paterno());
+            stm.setString(6, paciente.getApellido_materno());
+            stm.setString(7, paciente.getTelefono());
+            stm.setString(8, paciente.getCorreo());
+            stm.setString(9, direccion.getCalle());
+            stm.setString(10, direccion.getNumero());
+            stm.setString(11, direccion.getColonia());
+            stm.setString(12, direccion.getCodigo_postal());
 
+            // Ejecutar la actualización
             stm.executeUpdate();
 
             System.out.println("Paciente actualizado correctamente.");
