@@ -61,48 +61,45 @@ public class PacienteDAO implements IPacienteDAO {
         return paciente; // Retorna el paciente registrado
     }
 
-@Override
-public Paciente editarPaciente(Paciente paciente) throws PersistenciaException {
-    // Verifica que el paciente tenga un usuario asociado
-    if (paciente.getUsuario() == null) {
-        System.out.println("El paciente no tiene un usuario asignado.");
-        return paciente;  // O realizar otra acción si lo consideras necesario
+    @Override
+    public Paciente editarPaciente(Paciente paciente) throws PersistenciaException {
+        // Verifica que el paciente tenga un usuario asociado
+        if (paciente.getUsuario() == null) {
+            System.out.println("El paciente no tiene un usuario asignado.");
+            return paciente;  // O realizar otra acción si lo consideras necesario
+        }
+
+        String sql = "CALL actualizarPacientePorId(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; // Procedimiento almacenado para actualizar
+
+        try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
+            // Convertir la fecha de LocalDate a java.sql.Date
+            Date fechaNacimiento = Date.valueOf(paciente.getFecha_nacimiento());
+
+            // Establecer los parámetros en el procedimiento almacenado
+            cs.setInt(1, paciente.getId_paciente());  // idPaciente
+            cs.setString(2, paciente.getUsuario().getContraseña());  // contraseniaNueva
+            cs.setDate(3, Date.valueOf(paciente.getFecha_nacimiento()));  // fechaNacimientoNuevo
+            cs.setString(4, paciente.getNombre());  // nombreNuevo
+            cs.setString(5, paciente.getApellido_paterno());  // apellidoPaternoNuevo
+            cs.setString(6, paciente.getApellido_materno());  // apellidoMaternoNuevo
+            cs.setString(7, paciente.getTelefono());  // telefonoNuevo
+            cs.setString(8, paciente.getCorreo());  // correoNuevo
+            cs.setString(9, paciente.getDireccion().getCalle());  // calleNueva
+            cs.setString(10, paciente.getDireccion().getNumero());  // numeroNuevo
+            cs.setString(11, paciente.getDireccion().getColonia());  // coloniaNueva
+            cs.setString(12, paciente.getDireccion().getCodigo_postal());  // codigoPostalNuevo
+            // Ejecutar la consulta
+            cs.execute();
+            logger.log(Level.INFO, "Paciente actualizado exitosamente");
+
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error al actualizar el paciente", ex);
+            throw new PersistenciaException("Error al actualizar el paciente", ex);
+        }
+
+        // Retorna el paciente actualizado después de la modificación
+        return paciente;
     }
-
-    String sql = "CALL actualizarPaciente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; // Procedimiento almacenado para actualizar
-
-    try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
-        // Convertir la fecha de LocalDate a java.sql.Date
-        Date fechaNacimiento = Date.valueOf(paciente.getFecha_nacimiento());
-
-        // Establecer los parámetros en el procedimiento almacenado
-        cs.setInt(1, paciente.getId_paciente());  // ID del paciente
-        cs.setString(2, paciente.getUsuario().getUsuario());  // Usuario
-        cs.setString(3, paciente.getUsuario().getContraseña());  // Contraseña
-        cs.setString(4, paciente.getNombre());  // Nombre
-        cs.setString(5, paciente.getApellido_paterno());  // Apellido Paterno
-        cs.setString(6, paciente.getApellido_materno());  // Apellido Materno
-        cs.setString(7, paciente.getTelefono());  // Teléfono
-        cs.setString(8, paciente.getCorreo());  // Correo
-        cs.setDate(9, fechaNacimiento);  // Fecha de nacimiento
-        cs.setString(10, paciente.getDireccion().getCalle());  // Calle
-        cs.setString(11, paciente.getDireccion().getNumero());  // Número de casa
-        cs.setString(12, paciente.getDireccion().getColonia());  // Colonia
-        cs.setString(13, paciente.getDireccion().getCodigo_postal());  // Código postal
-
-        // Ejecutar la consulta
-        cs.execute();
-        logger.log(Level.INFO, "Paciente actualizado exitosamente");
-
-    } catch (SQLException ex) {
-        logger.log(Level.SEVERE, "Error al actualizar el paciente", ex);
-        throw new PersistenciaException("Error al actualizar el paciente", ex);
-    }
-
-    // Retorna el paciente actualizado después de la modificación
-    return paciente;
-}
-
 
     //OBTENEMOS CONTRASEÑA ENCRIPATADA DEL SQL
     public Paciente obtenerPacientePorCorreo(String correo) throws PersistenciaException {

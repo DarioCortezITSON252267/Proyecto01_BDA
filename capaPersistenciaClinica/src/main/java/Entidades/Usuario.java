@@ -32,6 +32,7 @@ public class Usuario {
     this.contraseña = contraseña;
     this.tipo_usuario = "Paciente"; // O algún valor por defecto
 }
+    
 
     // Getters y Setters
     public int getId_usuario() {

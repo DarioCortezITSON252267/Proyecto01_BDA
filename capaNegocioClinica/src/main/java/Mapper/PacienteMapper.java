@@ -31,7 +31,7 @@ public class PacienteMapper {
     }
 
     // Mapea de PacienteNuevoDTO a Paciente para la actualización de un paciente existente
-    public Paciente toEntityActualizacion(PacienteNuevoDTO pacienteNuevo) {
+   public Paciente toEntityActualizacion(PacienteNuevoDTO pacienteNuevo, Usuario usuario) {
         return new Paciente(
                 pacienteNuevo.getIdPaciente(), // Usamos el idPaciente para la actualización
                 pacienteNuevo.getFechaNacimiento(),
@@ -40,10 +40,11 @@ public class PacienteMapper {
                 pacienteNuevo.getApellidoMaterno(),
                 pacienteNuevo.getTelefono(),
                 pacienteNuevo.getCorreo(),
-                null, // Aquí no se necesita el usuario para la actualización
+                usuario, // Usamos el usuario recuperado para la actualización
                 pacienteNuevo.getDireccion() // Se mantiene la dirección para la actualización
         );
     }
+
 
     // Convierte la entidad Paciente a PacienteNuevoDTO
     public PacienteNuevoDTO toDTO(Paciente paciente) {
@@ -59,5 +60,6 @@ public class PacienteMapper {
                 paciente.getDireccion() // Se agrega la dirección
         );
     }
+    
 }
 

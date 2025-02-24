@@ -100,6 +100,8 @@ public class CapaNegocioClinica {
             // Mostrar el resultado
             if (resultado) {
                 System.out.println("Paciente editado correctamente.");
+            } else {
+                System.out.println("Hubo un error al editar el paciente.");
             }
 
         } catch (NegocioException e) {

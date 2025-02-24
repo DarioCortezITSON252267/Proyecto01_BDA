@@ -24,9 +24,9 @@ public class UsuarioDAO implements IUsuarioDAO {
     private IConexionBD conexion; // Atributo conexión que se usará en toda la clase
     private static final Logger logger = Logger.getLogger(UsuarioDAO.class.getName());
 
-    public UsuarioDAO(IConexionBD conexion) {
-        this.conexion = conexion;
-    }
+        public UsuarioDAO(IConexionBD conexion) {
+            this.conexion = conexion;
+        }
 
     // Método para crear un usuario
     @Override
@@ -90,5 +90,31 @@ public class UsuarioDAO implements IUsuarioDAO {
         }
 
         return usuario; // Retorna el usuario actualizado
+    }
+    // Método para obtener un usuario por su ID
+   public Usuario obtenerUsuarioPorId(int idPaciente) throws PersistenciaException {
+        Usuario usuario = null;
+        String query = "SELECT * FROM usuarios WHERE id_usuario = ?";
+        
+        try (Connection connection = conexion.crearConexion();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            
+            statement.setInt(1, idPaciente);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                usuario = new Usuario(
+                        resultSet.getInt("id_usuario"),
+                        resultSet.getString("usuario"),
+                        resultSet.getString("contraseña"),
+                        resultSet.getString("tipo_usuario")
+                );
+            }
+
+        } catch (SQLException ex) {
+            throw new PersistenciaException("Error al obtener el usuario por ID", ex);
+        }
+
+        return usuario;
     }
 }
