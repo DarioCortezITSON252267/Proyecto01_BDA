@@ -66,24 +66,25 @@ public class PacienteDAO implements IPacienteDAO {
         Usuario usuario = paciente.getUsuario();
         Direccion direccion = paciente.getDireccion();
 
-        String sentenciaSQLActualizar = "CALL actualizarUnPaciente(?,?,?,?,?,?,?,?,?,?,?,?)";
+        String sentenciaSQLActualizar = "CALL actualizarUnPaciente(?,?,?,?,?,?,?,?,?)";
 
         try (Connection con = conexion.crearConexion(); CallableStatement stm = con.prepareCall(sentenciaSQLActualizar)) {
 
-            stm.setInt(1, paciente.getId_paciente());
-            stm.setString(2, usuario.getContraseña());
-            stm.setDate(3, Date.valueOf(paciente.getFecha_nacimiento())); // Conversión de LocalDate a SQL Date
-            stm.setString(4, paciente.getNombre());
-            stm.setString(5, paciente.getApellido_paterno());
-            stm.setString(6, paciente.getApellido_materno());
-            stm.setString(7, paciente.getTelefono());
-            stm.setString(8, paciente.getCorreo());
-            stm.setString(9, direccion.getCalle());
-            stm.setString(10, direccion.getNumero());
-            stm.setString(11, direccion.getColonia());
-            stm.setString(12, direccion.getCodigo_postal());
+            stm.setString(1, usuario.getContraseña());
+            stm.setDate(2, Date.valueOf(paciente.getFecha_nacimiento())); // Conversión de LocalDate a SQL Date
+            stm.setString(3, paciente.getNombre());
+            stm.setString(4, paciente.getApellido_paterno());
+            stm.setString(5, paciente.getApellido_materno());
+            stm.setString(6, paciente.getTelefono());
+            stm.setString(7, paciente.getCorreo());
+            stm.setString(8, direccion.getCalle());
+            stm.setString(9, direccion.getNumero());
+            stm.setString(10, direccion.getColonia());
+            stm.setString(11, direccion.getCodigo_postal());
 
             stm.executeUpdate();
+
+            System.out.println("Paciente actualizado correctamente.");
 
         } catch (SQLException ex) {
             Logger.getLogger(PacienteDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -93,13 +94,12 @@ public class PacienteDAO implements IPacienteDAO {
     }
 
     //OBTENEMOS CONTRASEÑA ENCRIPATADA DEL SQL
-   public Paciente obtenerPacientePorCorreo(String correo) throws PersistenciaException {
-        String sql = "SELECT p.id_paciente, u.contraseña FROM Usuarios u " +
-                     "JOIN Pacientes p ON u.id_usuario = p.id_usuario " +
-                     "WHERE u.usuario = ?";
+    public Paciente obtenerPacientePorCorreo(String correo) throws PersistenciaException {
+        String sql = "SELECT p.id_paciente, u.contraseña FROM Usuarios u "
+                + "JOIN Pacientes p ON u.id_usuario = p.id_usuario "
+                + "WHERE u.usuario = ?";
 
-        try (Connection con = conexion.crearConexion();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = conexion.crearConexion(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, correo);
             try (ResultSet rs = stmt.executeQuery()) {
