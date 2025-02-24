@@ -111,7 +111,7 @@
                               <Component id="CampoDeFecha1" max="32767" attributes="0"/>
                               <Component id="CampoNotasDoctor" min="-2" pref="154" max="-2" attributes="0"/>
                               <Component id="jLabel11" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jLabel9" alignment="0" pref="155" max="32767" attributes="0"/>
+                              <Component id="jLabel9" alignment="0" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
@@ -288,7 +288,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="YYYY-MM-DD  HH-"/>
+            <Property name="text" type="java.lang.String" value="YYYY-MM-DD  HH:mm:ss"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel10">
