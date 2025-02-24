@@ -63,10 +63,10 @@ public class CapaNegocioClinica {
         try {
             List<CitaDTO> citas = citaBO.obtenerHistorialCitasPaciente(idPaciente);
             if (citas.isEmpty()) {
-                System.out.println("✅ No hay citas registradas.");
+                System.out.println("No hay citas registradas.");
             } else {
                 for (CitaDTO cita : citas) {
-                    System.out.println("🔹 Cita ID: " + cita.getIdCita()
+                    System.out.println("Cita ID: " + cita.getIdCita()
                             + " | Estado: " + cita.getEstado()
                             + " | Fecha: " + cita.getFechaHora()
                             + " | Nota: " + (cita.getNota() != null ? cita.getNota() : "Sin nota")
@@ -74,7 +74,7 @@ public class CapaNegocioClinica {
                 }
             }
         } catch (PersistenciaException e) {
-            System.err.println("⚠️ Error al obtener historial: " + e.getMessage());
+            System.err.println("Error al obtener historial: " + e.getMessage());
         }
     }
 }
