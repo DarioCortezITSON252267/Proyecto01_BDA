@@ -1,3 +1,4 @@
+ -- DROP DATABASE Clinica;
 CREATE DATABASE Clinica;
 USE Clinica;
 
@@ -28,7 +29,7 @@ CREATE TABLE Pacientes (
     fecha_nacimiento DATE NOT NULL,
     nombre VARCHAR(50) NOT NULL,
     apellido_paterno VARCHAR(50) NOT NULL,
-    apellido_materno VARCHAR(50) NOT NULL,
+    apellido_materno VARCHAR(50)  NULL,
     correo VARCHAR(100) UNIQUE NULL,
     telefono VARCHAR(20) NOT NULL,
     id_usuario INT UNIQUE NOT NULL,
@@ -177,6 +178,15 @@ VALUES ('itson', '3211', 'Villa itson', 54333, 1);
 INSERT INTO Pacientes (fecha_nacimiento, nombre, apellido_paterno, apellido_materno, telefono, id_usuario)
 VALUES ('2000-11-07', 'Angel', 'Servin de la mora', 'Vazquez', '6441545454', 1);
 
+
+INSERT INTO Usuarios (usuario, contraseña, tipo_usuario)  
+VALUES ('dr.garcia', 'clave123', 'medico');
+
+SET @id_usuario_medico = LAST_INSERT_ID();
+
+INSERT INTO Medicos (especialidad, cedula, id_usuario)  
+VALUES ('Cardiología', 'ABC123456', @id_usuario_medico);
+
 DELIMITER $$
 
 CREATE PROCEDURE RegistrarPaciente(
@@ -195,7 +205,6 @@ CREATE PROCEDURE RegistrarPaciente(
 )
 BEGIN
     DECLARE usuarioID INT;
-    DECLARE direccionID INT;
     DECLARE mensaje_error VARCHAR(255);
 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
@@ -211,21 +220,18 @@ BEGIN
     INSERT INTO Usuarios (usuario, contraseña, tipo_usuario)
     VALUES (p_usuario, p_contraseña, 'paciente');
 
-    -- Obtener el ID del usuario recién insertado
     SET usuarioID = LAST_INSERT_ID();
 
     -- Insertar en la tabla Direcciones
     INSERT INTO Direcciones (calle, numero, colonia, codigo_postal, id_usuario)
     VALUES (p_calle, p_numero, p_colonia, p_codigo_postal, usuarioID);
 
-    -- Obtener el ID de la dirección recién insertada
-    SET direccionID = LAST_INSERT_ID();
-
-    -- Insertar en la tabla Pacientes
+    -- Insertar en la tabla Pacientes (permitiendo apellido materno NULL)
     INSERT INTO Pacientes (fecha_nacimiento, nombre, apellido_paterno, apellido_materno, telefono, correo, id_usuario)
-    VALUES (p_fecha_nacimiento, p_nombre, p_apellido_paterno, p_apellido_materno, p_telefono, p_correo, usuarioID);
+    VALUES (p_fecha_nacimiento, p_nombre, p_apellido_paterno, 
+            IF(p_apellido_materno = '', NULL, p_apellido_materno), -- Convierte '' en NULL
+            p_telefono, p_correo, usuarioID);
 
-    -- Confirmar la transacción
     COMMIT;
 
     SELECT 'Paciente registrado exitosamente' AS mensaje;
@@ -272,15 +278,101 @@ BEGIN
     UPDATE Pacientes
     SET nombre = nombreNuevo,
         apellido_paterno = apellidoPaternoNuevo,
-        apellido_materno = apellidoMaternoNuevo,
+        apellido_materno = IF(apellidoMaternoNuevo = '', NULL, apellidoMaternoNuevo), -- Convierte '' en NULL
         telefono = telefonoNuevo,
         correo = correoNuevo,
         fecha_nacimiento = fechaNacimientoNuevo
     WHERE id_usuario = id_usuarioNuevo;
 
     COMMIT;
+
+
 END //
 
+DELIMITER $$
+
+
+CREATE PROCEDURE VerHistorialCitas(IN idPaciente INT)
+BEGIN
+    SELECT 
+        c.id_cita, 
+        c.estado, 
+        c.fechahora, 
+        c.nota, 
+        m.id_medico, 
+        m.especialidad
+    FROM Cita c
+    INNER JOIN Medicos m ON c.id_medico = m.id_medico
+    WHERE c.id_paciente = idPaciente
+    ORDER BY c.fechahora DESC;
+END $$
 DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE AgendarCita(
+    IN p_id_paciente INT,
+    IN p_id_medico INT,
+    IN p_fechahora DATETIME,
+    IN p_estado ENUM('pendiente', 'confirmada', 'cancelada'),
+    IN p_nota TEXT
+)
+BEGIN
+    DECLARE paciente_existe INT;
+    DECLARE medico_existe INT;
+    DECLARE mensaje_error VARCHAR(255);
+    
+    -- Manejo de errores
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    BEGIN
+        ROLLBACK;
+        SET mensaje_error = 'Error: No se pudo agendar la cita';
+        SELECT mensaje_error AS mensaje;
+    END;
+
+    -- Verificar que el paciente exista
+    SELECT COUNT(*) INTO paciente_existe FROM Pacientes WHERE id_paciente = p_id_paciente;
+    
+    -- Verificar que el médico exista
+    SELECT COUNT(*) INTO medico_existe FROM Medicos WHERE id_medico = p_id_medico;
+    
+    -- Si el paciente o el médico no existen, no se agenda la cita
+    IF paciente_existe = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: El paciente no existe';
+    END IF;
+    
+    IF medico_existe = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: El médico no existe';
+    END IF;
+    
+    -- Transacción para insertar la cita
+    START TRANSACTION;
+    
+    INSERT INTO Cita (estado, fechahora, nota, id_paciente, id_medico)
+    VALUES (p_estado, p_fechahora, p_nota, p_id_paciente, p_id_medico);
+    
+    COMMIT;
+    
+    -- Confirmación
+    SELECT 'Cita agendada exitosamente' AS mensaje;
+END $$
+
+DELIMITER ;
+
+
+INSERT INTO Cita (estado, fechahora, nota, id_paciente, id_medico)  
+VALUES ('pendiente', '2025-03-01 10:00:00', 'Primera consulta', 1, 1);
+
+INSERT INTO Cita (estado, fechahora, nota, id_paciente, id_medico)  
+VALUES ('pendiente', '2025-03-01 10:30:00', 'Segunda consulta', 2, 1);
+
+CALL VerHistorialCitas(2);
+CALL AgendarCita(1, 1, '2025-03-10 09:00:00', 'pendiente', 'Consulta de revisión');
+
+
+
+SELECT* FROM pacientes;
 
 
