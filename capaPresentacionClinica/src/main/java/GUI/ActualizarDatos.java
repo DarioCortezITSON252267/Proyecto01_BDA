@@ -4,6 +4,15 @@
  */
 package GUI;
 
+import BO.PacienteBO;
+import BO.SesionUsuario;
+import Conexion.ConexionBD;
+import Conexion.IConexionBD;
+import DTO.PacienteNuevoDTO;
+import Entidades.Direccion;
+import java.time.LocalDate;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author chris
@@ -28,39 +37,35 @@ public class ActualizarDatos extends javax.swing.JFrame {
 
         jButton2 = new javax.swing.JButton();
         jPasswordField2 = new javax.swing.JPasswordField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        Nombre = new javax.swing.JTextField();
-        ApellidoPaterno = new javax.swing.JTextField();
+        CampoDeNombre = new javax.swing.JTextField();
+        CampoDeApellidoP = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         btnRegresar = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        ApellidoMaterno = new javax.swing.JTextField();
-        Telefono = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
-        Numero = new javax.swing.JLabel();
-        Calle = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        Colonia = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        Contraseña = new javax.swing.JPasswordField();
-        Actualizar = new javax.swing.JButton();
-        CodigoPostal = new javax.swing.JPasswordField();
+        CampoDeApellidoM = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        CampoDeTelefono = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        ConfirmarContraseña = new javax.swing.JPasswordField();
+        jLabel9 = new javax.swing.JLabel();
+        CampoDeFechaNac = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        CampoDeContraseña = new javax.swing.JPasswordField();
+        CampoDeCalle = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        Correo = new javax.swing.JPasswordField();
+        CampoDeColonia = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
-        FechaNacimiento = new javax.swing.JTextField();
+        CampoDeCodifoPostal = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
+        CampoDeNumero = new javax.swing.JTextField();
+        BtnActualizar = new javax.swing.JButton();
+        jLabel14 = new javax.swing.JLabel();
+        CampoDeContraseña1 = new javax.swing.JPasswordField();
         jLabel15 = new javax.swing.JLabel();
+        CampoDeCorreo = new javax.swing.JTextField();
 
         jButton2.setBackground(new java.awt.Color(51, 153, 0));
         jButton2.setForeground(new java.awt.Color(0, 0, 0));
@@ -68,27 +73,6 @@ public class ActualizarDatos extends javax.swing.JFrame {
 
         jPasswordField2.setBackground(new java.awt.Color(255, 255, 255));
         jPasswordField2.setText("jPasswordField1");
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
-
-        jLabel14.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jLabel14.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel14.setText("Fecha Nacimiento");
-
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel6.setText("Fecha Nacimiento");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -98,33 +82,23 @@ public class ActualizarDatos extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Apellido Paterno");
 
-        Nombre.setBackground(new java.awt.Color(255, 255, 255));
-        Nombre.addActionListener(new java.awt.event.ActionListener() {
+        CampoDeNombre.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NombreActionPerformed(evt);
+                CampoDeNombreActionPerformed(evt);
             }
         });
 
-        ApellidoPaterno.setBackground(new java.awt.Color(255, 255, 255));
-        ApellidoPaterno.addActionListener(new java.awt.event.ActionListener() {
+        CampoDeApellidoP.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeApellidoP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ApellidoPaternoActionPerformed(evt);
+                CampoDeApellidoPActionPerformed(evt);
             }
         });
 
         jLabel4.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Nombre");
-
-        BtnRegistrar.setBackground(new java.awt.Color(204, 204, 204));
-        BtnRegistrar.setFont(new java.awt.Font("Century", 1, 14)); // NOI18N
-        BtnRegistrar.setForeground(new java.awt.Color(0, 0, 0));
-        BtnRegistrar.setText("Guardar");
-        BtnRegistrar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnRegistrarActionPerformed(evt);
-            }
-        });
 
         jPanel2.setBackground(new java.awt.Color(204, 255, 255));
 
@@ -149,28 +123,30 @@ public class ActualizarDatos extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnRegresar)
-                .addGap(115, 115, 115)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(133, 133, 133)
+                .addComponent(jLabel3)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(33, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnRegresar)
-                    .addComponent(jLabel3))
+                .addComponent(btnRegresar)
                 .addGap(22, 22, 22))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jLabel3)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel5.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("Apellido Materno");
 
-        ApellidoMaterno.setBackground(new java.awt.Color(255, 255, 255));
-        ApellidoMaterno.addActionListener(new java.awt.event.ActionListener() {
+        CampoDeApellidoM.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeApellidoM.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ApellidoMaternoActionPerformed(evt);
+                CampoDeApellidoMActionPerformed(evt);
             }
         });
 
@@ -178,93 +154,110 @@ public class ActualizarDatos extends javax.swing.JFrame {
         jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setText("Telefono");
 
-        jTextField4.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+        CampoDeTelefono.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeTelefono.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TelefonoActionPerformed(evt);
+                CampoDeTelefonoActionPerformed(evt);
             }
         });
-
-        jLabel7.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel7.setText("C.P");
 
         jLabel8.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel8.setText("Contraseña");
-
-        Calle.setBackground(new java.awt.Color(255, 255, 255));
-        Calle.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CalleActionPerformed(evt);
-            }
-        });
+        jLabel8.setText("Confirmar Contraseña");
 
         jLabel9.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel9.setText("Calle");
+        jLabel9.setText("Correo");
 
-        Colonia.setBackground(new java.awt.Color(255, 255, 255));
-        Colonia.addActionListener(new java.awt.event.ActionListener() {
+        CampoDeFechaNac.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeFechaNac.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ColoniaActionPerformed(evt);
+                CampoDeFechaNacActionPerformed(evt);
             }
         });
 
         jLabel10.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel10.setText("Colonia");
+        jLabel10.setText("Fecha nacimiento");
 
-        jPasswordField1.setBackground(new java.awt.Color(255, 255, 255));
-        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
+        CampoDeContraseña.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeContraseña.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordField1ActionPerformed(evt);
+                CampoDeContraseñaActionPerformed(evt);
             }
         });
 
-        Contraseña.setBackground(new java.awt.Color(255, 255, 255));
-
-        Actualizar.setBackground(new java.awt.Color(153, 153, 255));
-        Actualizar.setForeground(new java.awt.Color(0, 0, 0));
-        Actualizar.setText("Actualizar");
-        Actualizar.addActionListener(new java.awt.event.ActionListener() {
+        CampoDeCalle.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeCalle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ActualizarActionPerformed(evt);
+                CampoDeCalleActionPerformed(evt);
             }
         });
 
-        CodigoPostal.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel8.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel8.setText("Contraseña");
-
-        ConfirmarContraseña.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel11.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabel11.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel11.setText("Confirmar Contraseña");
+        jLabel11.setText("Numero");
 
-        Correo.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel12.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jLabel12.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel12.setText("Correo");
-
-        FechaNacimiento.setBackground(new java.awt.Color(255, 255, 255));
-        FechaNacimiento.addActionListener(new java.awt.event.ActionListener() {
+        CampoDeColonia.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeColonia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                FechaNacimientoActionPerformed(evt);
+                CampoDeColoniaActionPerformed(evt);
             }
         });
 
-        jLabel13.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jLabel13.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel13.setText("Telefono");
+        jLabel12.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel12.setText("Colonia");
 
-        jLabel15.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        CampoDeCodifoPostal.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeCodifoPostal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CampoDeCodifoPostalActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel13.setText("C.P.");
+
+        CampoDeNumero.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeNumero.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CampoDeNumeroActionPerformed(evt);
+            }
+        });
+
+        BtnActualizar.setBackground(new java.awt.Color(204, 204, 204));
+        BtnActualizar.setFont(new java.awt.Font("Century", 1, 14)); // NOI18N
+        BtnActualizar.setForeground(new java.awt.Color(0, 0, 0));
+        BtnActualizar.setText("Actualizar");
+        BtnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnActualizarActionPerformed(evt);
+            }
+        });
+
+        jLabel14.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel14.setText("Contraseña");
+
+        CampoDeContraseña1.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeContraseña1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CampoDeContraseña1ActionPerformed(evt);
+            }
+        });
+
+        jLabel15.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
         jLabel15.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel15.setText("Fecha Nacimiento (YYYY-MM-DD)");
+        jLabel15.setText("Calle");
+
+        CampoDeCorreo.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeCorreo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CampoDeCorreoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -274,86 +267,106 @@ public class ActualizarDatos extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(194, 194, 194)
-                        .addComponent(Actualizar))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(58, 58, 58)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel2)
-                            .addComponent(ApellidoPaterno, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ApellidoMaterno, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5)
-                            .addComponent(Telefono, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(CodigoPostal, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7)
-                            .addComponent(Correo, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel12)
-                            .addComponent(jLabel13))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(Colonia)
-                            .addComponent(jLabel10)
-                            .addComponent(jLabel9)
-                            .addComponent(Calle)
-                            .addComponent(Numero)
-                            .addComponent(jPasswordField1)
-                            .addComponent(Contraseña)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel11)
-                            .addComponent(ConfirmarContraseña)
-                            .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(FechaNacimiento))))
-                .addContainerGap(32, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(CampoDeNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel2)
+                                    .addComponent(CampoDeApellidoP, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(CampoDeApellidoM, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel6)
+                                    .addComponent(CampoDeTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(CampoDeFechaNac)
+                                    .addComponent(jLabel10)
+                                    .addComponent(jLabel9)
+                                    .addComponent(CampoDeCalle, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel11)
+                                    .addComponent(CampoDeNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel15)
+                                    .addComponent(CampoDeCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(CampoDeColonia, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel12)
+                                            .addComponent(CampoDeCodifoPostal, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel13))
+                                        .addGap(18, 18, 18)))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel14)
+                                    .addComponent(CampoDeContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(CampoDeContraseña1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel8)))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(198, 198, 198)
+                        .addComponent(BtnActualizar)))
+                .addContainerGap(73, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(CampoDeNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ApellidoPaterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel5)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(CampoDeApellidoP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(CampoDeCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(ApellidoMaterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel15))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(CampoDeApellidoM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(CampoDeCalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel11))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(CampoDeTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(CampoDeNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Colonia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(CampoDeFechaNac, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Calle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Numero)
-                        .addGap(46, 46, 46)))
+                        .addGap(142, 142, 142)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel14))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(CampoDeColonia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CampoDeContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
-                    .addComponent(jLabel15))
+                    .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Telefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(FechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addGap(28, 28, 28)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
-                .addComponent(BtnRegistrar)
-                .addGap(24, 24, 24))
+                    .addComponent(CampoDeCodifoPostal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CampoDeContraseña1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addComponent(BtnActualizar)
+                .addGap(40, 40, 40))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -370,12 +383,13 @@ public class ActualizarDatos extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void ApellidoPaternoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ApellidoPaternoActionPerformed
+    private void CampoDeApellidoPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeApellidoPActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_ApellidoPaternoActionPerformed
+    }//GEN-LAST:event_CampoDeApellidoPActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
-        PerfilPaciente nuevaVentana = new PerfilPaciente();
+
+        InicioPaciente nuevaVentana = new InicioPaciente();
 
         // Hacer visible la nueva ventana
         nuevaVentana.setVisible(true);
@@ -383,58 +397,125 @@ public class ActualizarDatos extends javax.swing.JFrame {
         // Cerrar la ventana actual (InicioSesion)
         this.dispose();    }//GEN-LAST:event_btnRegresarActionPerformed
 
-    private void ApellidoMaternoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ApellidoMaternoActionPerformed
+    private void CampoDeApellidoMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeApellidoMActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_ApellidoMaternoActionPerformed
+    }//GEN-LAST:event_CampoDeApellidoMActionPerformed
 
-    private void TelefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TelefonoActionPerformed
+    private void CampoDeTelefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeTelefonoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_TelefonoActionPerformed
+    }//GEN-LAST:event_CampoDeTelefonoActionPerformed
 
-    private void CalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CalleActionPerformed
+    private void CampoDeFechaNacActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeFechaNacActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_CalleActionPerformed
+    }//GEN-LAST:event_CampoDeFechaNacActionPerformed
 
-    private void ColoniaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ColoniaActionPerformed
+    private void CampoDeContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeContraseñaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_ColoniaActionPerformed
+    }//GEN-LAST:event_CampoDeContraseñaActionPerformed
 
-    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
+    private void CampoDeNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeNombreActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField1ActionPerformed
+    }//GEN-LAST:event_CampoDeNombreActionPerformed
 
-    private void NombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NombreActionPerformed
+    private void CampoDeCalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeCalleActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_NombreActionPerformed
+    }//GEN-LAST:event_CampoDeCalleActionPerformed
 
-    private void ActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ActualizarActionPerformed
+    private void CampoDeColoniaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeColoniaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CampoDeColoniaActionPerformed
 
+    private void CampoDeCodifoPostalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeCodifoPostalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CampoDeCodifoPostalActionPerformed
+
+    private void CampoDeNumeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeNumeroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CampoDeNumeroActionPerformed
+
+    private void BtnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnActualizarActionPerformed
+
+            try {
+        // Supongamos que el ID del paciente ya se almacenó globalmente
+        int idPaciente = SesionUsuario.idPaciente; 
+
+        // Recopilar datos de los campos de texto
+        String nombre = CampoDeNombre.getText().trim();
+        String apellidoPaterno = CampoDeApellidoP.getText().trim();
+        String apellidoMaterno = CampoDeApellidoM.getText().trim();
+        String telefono = CampoDeTelefono.getText().trim();
+        String correo = CampoDeCorreo.getText().trim();
+        String contrasenia = new String(CampoDeContraseña.getPassword()).trim();
+        // En este ejemplo, usamos el campo CampoDeFechaNac con formato "yyyy-MM-dd"
+        LocalDate fechaNacimiento = LocalDate.parse(CampoDeFechaNac.getText().trim());
         
-    }//GEN-LAST:event_ActualizarActionPerformed
+        // Recopilar datos de dirección
+        String calle = CampoDeCalle.getText().trim();
+        String numero = CampoDeNumero.getText().trim();
+        String colonia = CampoDeColonia.getText().trim();
+        String codigoPostal = CampoDeCodifoPostal.getText().trim();
 
-    private void FechaNacimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FechaNacimientoActionPerformed
-        // TODO add your handling code herea:
-        
-    }//GEN-LAST:event_FechaNacimientoActionPerformed
+        // Crear objeto Dirección
+        Direccion direccion = new Direccion(calle, numero, colonia, codigoPostal);
+
+        // Crear el DTO de paciente para actualización
+        PacienteNuevoDTO pacienteDTO = new PacienteNuevoDTO(
+                idPaciente,
+                nombre,
+                apellidoPaterno,
+                apellidoMaterno,
+                telefono,
+                fechaNacimiento,
+                correo,
+                contrasenia,
+                direccion
+        );
+
+        // Crear la conexión y la capa de negocio
+        IConexionBD conexion = new ConexionBD();
+        PacienteBO pacienteBO = new PacienteBO(conexion);
+
+        // Llamar al método de negocio para actualizar el paciente
+        boolean actualizado = pacienteBO.editarPaciente(pacienteDTO);
+
+        if(actualizado){
+            javax.swing.JOptionPane.showMessageDialog(this, "Paciente actualizado correctamente.");
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "No se pudo actualizar el paciente.");
+        }
+    } catch (Exception ex) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Error al actualizar el paciente: " + ex.getMessage());
+        ex.printStackTrace();
+    }
+
+    }//GEN-LAST:event_BtnActualizarActionPerformed
+
+    private void CampoDeContraseña1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeContraseña1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CampoDeContraseña1ActionPerformed
+
+    private void CampoDeCorreoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CampoDeCorreoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CampoDeCorreoActionPerformed
 
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Actualizar;
-    private javax.swing.JTextField ApellidoMaterno;
-    private javax.swing.JTextField ApellidoPaterno;
-    private javax.swing.JTextField Calle;
-    private javax.swing.JPasswordField CodigoPostal;
-    private javax.swing.JTextField Colonia;
-    private javax.swing.JPasswordField ConfirmarContraseña;
-    private javax.swing.JPasswordField Contraseña;
-    private javax.swing.JPasswordField Correo;
-    private javax.swing.JTextField FechaNacimiento;
-    private javax.swing.JTextField Nombre;
-    private javax.swing.JLabel Numero;
-    private javax.swing.JTextField Telefono;
+    private javax.swing.JButton BtnActualizar;
+    private javax.swing.JTextField CampoDeApellidoM;
+    private javax.swing.JTextField CampoDeApellidoP;
+    private javax.swing.JTextField CampoDeCalle;
+    private javax.swing.JTextField CampoDeCodifoPostal;
+    private javax.swing.JTextField CampoDeColonia;
+    private javax.swing.JPasswordField CampoDeContraseña;
+    private javax.swing.JPasswordField CampoDeContraseña1;
+    private javax.swing.JTextField CampoDeCorreo;
+    private javax.swing.JTextField CampoDeFechaNac;
+    private javax.swing.JTextField CampoDeNombre;
+    private javax.swing.JTextField CampoDeNumero;
+    private javax.swing.JTextField CampoDeTelefono;
     private javax.swing.JButton btnRegresar;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel10;
@@ -448,14 +529,10 @@ public class ActualizarDatos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JPasswordField jPasswordField2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
