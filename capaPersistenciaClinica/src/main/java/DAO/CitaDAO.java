@@ -28,39 +28,32 @@ public class CitaDAO implements ICitaDAO {
         this.conexion = conexion;
     }
 
-    @Override
-    public List<String> verHistorialCitas(int idPaciente) throws PersistenciaException {  // PACIENTE
-        List<String> historial = new ArrayList<>();
-        String sql = "CALL VerHistorialCitas(?)";
+@Override
+public List<String> verHistorialCitas(int idPaciente) throws PersistenciaException {
+    List<String> historial = new ArrayList<>();
+    String sql = "CALL VerHistorialCitas(?)";
 
-        try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
-            cs.setInt(1, idPaciente);
-            ResultSet rs = cs.executeQuery();
+    try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
+        cs.setInt(1, idPaciente);
+        ResultSet rs = cs.executeQuery();
 
-            while (rs.next()) {
-                int idCita = rs.getInt("id_cita");
-                String estado = rs.getString("estado");
+        while (rs.next()) {
+            int idCita = rs.getInt("id_cita");
+            String estado = rs.getString("estado");
+            Timestamp timestamp = rs.getTimestamp("fechahora");
+            LocalDateTime fechaHora = timestamp.toLocalDateTime();
+            String nota = rs.getString("nota");
+            int idMedico = rs.getInt("id_medico");
+            String especialidad = rs.getString("especialidad");
 
-                // ✅ Manejo correcto de fecha y hora
-                Timestamp timestamp = rs.getTimestamp("fechahora");
-                LocalDateTime fechaHora = timestamp.toLocalDateTime();
-
-                String nota = rs.getString("nota");
-                int idMedico = rs.getInt("id_medico"); // Corrección aquí
-                String especialidad = rs.getString("especialidad");
-
-                historial.add("Cita ID: " + idCita
-                        + ", Estado: " + estado
-                        + ", Fecha y Hora: " + fechaHora
-                        + ", Nota: " + (nota != null ? nota : "Sin nota")
-                        + ", Médico ID: " + idMedico
-                        + ", Especialidad: " + especialidad);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+            historial.add(idCita + ", " + estado + ", " + fechaHora + ", " + (nota != null ? nota : "Sin nota") + ", " + idMedico + ", " + especialidad);
         }
-        return historial;
+    } catch (SQLException ex) {
+        throw new PersistenciaException("Error al obtener historial de citas", ex);
     }
+    return historial;
+}
+
 
     @Override
     public List<String> verHistorialCitasMedico(int idMedico) throws PersistenciaException {

@@ -39,6 +39,14 @@ public class CitaDTO {
         this.pacienteApellido = pacienteApellido;
         this.pacienteUsuario = pacienteUsuario;
     }
+        public CitaDTO(int idCita, String estado, LocalDateTime fechaHora, String nota, int idMedico, String especialidad) {
+        this.idCita = idCita;
+        this.estado = estado;
+        this.fechaHora = fechaHora;
+        this.nota = nota;
+        this.idMedico = idMedico;
+        this.especialidad = especialidad;
+    }
 
     // Getters y Setters
     public int getIdCita() {
