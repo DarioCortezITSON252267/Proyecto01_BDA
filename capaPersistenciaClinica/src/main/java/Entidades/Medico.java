@@ -6,39 +6,35 @@ package Entidades;
 
 /**
  *
- * @author chris
+ * @author todos
  */
 public class Medico {
-//
-//      id_medico INT AUTO_INCREMENT PRIMARY KEY,
-//    especialidad VARCHAR(100) NOT NULL,
-//    cedula VARCHAR(50) UNIQUE NOT NULL,
-//    id_usuario INT UNIQUE NOT NULL,
+
     private int id_medico;
     private String especialidad;
     private String cedula;
-    private String id_usuario;
+    private int id_usuario;
 
-    // constructor vacio
+    // Constructor vacío
     public Medico() {
     }
 
-    // constructor con todo
-    public Medico(int id_medico, String especialidad, String cedula, String id_usuario) {
+    // Constructor con todo
+    public Medico(int id_medico, String especialidad, String cedula, int id_usuario) {
         this.id_medico = id_medico;
         this.especialidad = especialidad;
         this.cedula = cedula;
         this.id_usuario = id_usuario;
     }
     
-    // constructor con todo menos el id
-    public Medico(String especialidad, String cedula, String id_usuario) {
+    // Constructor con todo menos el id
+    public Medico(String especialidad, String cedula, int id_usuario) {
         this.especialidad = especialidad;
         this.cedula = cedula;
         this.id_usuario = id_usuario;
     }
 
-    // gets y sets
+    // Getters y Setters
     public int getId_medico() {
         return id_medico;
     }
@@ -63,11 +59,11 @@ public class Medico {
         this.cedula = cedula;
     }
 
-    public String getId_usuario() {
+    public int getId_usuario() {
         return id_usuario;
     }
 
-    public void setId_usuario(String id_usuario) {
+    public void setId_usuario(int id_usuario) {
         this.id_usuario = id_usuario;
     }
 
@@ -75,6 +71,4 @@ public class Medico {
     public String toString() {
         return "Medico{" + "id_medico=" + id_medico + ", especialidad=" + especialidad + ", cedula=" + cedula + ", id_usuario=" + id_usuario + '}';
     }
-
-    
 }

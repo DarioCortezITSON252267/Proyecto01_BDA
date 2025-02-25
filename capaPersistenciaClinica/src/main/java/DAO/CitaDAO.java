@@ -133,5 +133,7 @@ public class CitaDAO implements ICitaDAO {
             throw new PersistenciaException("Error al obtener médico por especialidad: " + ex.getMessage(), ex);
         }
     }
+    
+    
 
 }
