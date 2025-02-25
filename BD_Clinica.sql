@@ -395,5 +395,123 @@ VALUES ('pendiente', '2025-03-01 10:00:00', 'Primera consulta', 1, 1);
 VALUES ('pendiente', '2025-03-01 10:30:00', 'Segunda consulta', 2, 1);
 */
 
+-- ==================================
+--                MEDICO
+-- ==================================
+
+-- VALIDACION MEDICOS
+DELIMITER $$
+CREATE PROCEDURE ValidarMedico(
+    IN p_cedula VARCHAR(20),
+    IN p_contraseña VARCHAR(100)
+)
+BEGIN
+    SELECT u.id_usuario, u.usuario 
+    FROM Usuarios u
+    INNER JOIN Medicos m ON u.id_usuario = m.id_usuario
+    WHERE m.cedula = p_cedula AND u.contraseña = SHA2(p_contraseña, 256);
+END $$
+DELIMITER ;
+
+-- PROCEDIMIENTO DE BAJA
+DELIMITER $$
+CREATE PROCEDURE DarDeBajaMedico(
+    IN p_usuario VARCHAR(50),
+    IN p_cedula VARCHAR(20),
+    IN p_contraseña VARCHAR(100)
+)
+BEGIN
+    DECLARE v_id_medico INT;
+    DECLARE v_citas_pendientes INT;
+    DECLARE v_id_usuario INT;
+
+    -- Verificar que el usuario, cédula y contraseña coincidan
+    SELECT u.id_usuario INTO v_id_usuario
+    FROM Usuarios u
+    INNER JOIN Medicos m ON u.id_usuario = m.id_usuario
+    WHERE u.usuario = p_usuario AND m.cedula = p_cedula AND u.contraseña = SHA2(p_contraseña, 256);
+
+    -- Si no se encuentra el médico, lanzar un error
+    IF v_id_usuario IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Usuario, cédula o contraseña incorrectos.';
+    END IF;
+
+    -- Obtener el ID del médico basado en la cédula
+    SELECT id_medico INTO v_id_medico
+    FROM Medicos
+    WHERE cedula = p_cedula;
+
+    -- Verificar si hay citas pendientes
+    SELECT COUNT(*) INTO v_citas_pendientes
+    FROM Cita
+    WHERE id_medico = v_id_medico AND estado = 'pendiente';
+
+    -- Si hay citas pendientes, lanzar un error
+    IF v_citas_pendientes > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se puede dar de baja al médico porque tiene citas pendientes.';
+    ELSE
+        -- Si no hay citas pendientes, eliminar al médico
+        DELETE FROM Medicos WHERE cedula = p_cedula;
+        DELETE FROM Usuarios WHERE id_usuario = v_id_usuario;
+    END IF;
+END $$
+DELIMITER ;
+
+-- ---VER CITAS PENDIENTES
+DELIMITER $$
+CREATE PROCEDURE VerCitasPendientes(IN p_id_medico INT)
+BEGIN
+    SELECT 
+        C.id_cita,
+        C.fechahora,
+        C.nota,
+        P.nombre AS nombre_paciente,
+        P.apellido_paterno AS apellido_paciente
+    FROM 
+        Cita C
+    INNER JOIN 
+        Pacientes P ON C.id_paciente = P.id_paciente
+    WHERE 
+        C.id_medico = p_id_medico
+        AND C.estado = 'pendiente';
+END $$
+DELIMITER ;
 
 
+
+
+-- ==================================
+--          DATOS CARGADOS
+-- ==================================
+
+-- USUARIO - MEDICO
+INSERT INTO Usuarios (usuario, contraseña, tipo_usuario)
+VALUES ('Dr.House', SHA2('Housedr147', 256), 'medico'),
+('Dr.Ramirez', SHA2('Ramirez489', 256), 'medico'),
+('Dr.Hernandez', SHA2('Hernandoc219', 256), 'medico'), 
+('Dr.Suarez', SHA2('Suarezpp952', 256), 'medico'),
+('Dr.Cruz', SHA2('Cruz573', 256), 'medico'),
+('Dr.Torres', SHA2('Torres911', 256), 'medico'),
+('Dr.PEPE', SHA2('Pepe111', 256), 'medico');
+
+-- MEDICOS
+INSERT INTO Medicos (especialidad, cedula, id_usuario)
+VALUES ('Cardiología', '123456', 1),
+('Truamatismo', '654321', 2),
+('General', '987654', 3),
+('Pediatria', '456789', 4),
+('General', '147852', 5),
+('Ortopedia', '639852', 6),
+('Oncologia', '111111', 7);
+
+-- HORARIOS MEDICO
+INSERT INTO Horarios (horaInicial, horaFinal, dias, id_medico)
+VALUES ('09:00:00', '17:00:00', 'Lunes a Viernes', 1),
+('08:00:00', '14:00:00', 'Lunes, Miércoles, Viernes', 2),
+('10:00:00', '19:00:00', 'Martes y Jueves', 3),
+('07:00:00', '15:00:00', 'Lunes a Viernes', 4),
+('12:00:00', '20:00:00', 'Lunes a Sábado', 5),
+('12:00:00', '20:00:00', 'Miercoles a Lunes', 6),
+('12:00:00', '20:00:00', 'Jueves a Martes', 7);
