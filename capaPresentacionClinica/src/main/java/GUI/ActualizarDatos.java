@@ -11,6 +11,9 @@ import Conexion.IConexionBD;
 import DTO.PacienteNuevoDTO;
 import Entidades.Direccion;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -37,6 +40,11 @@ public class ActualizarDatos extends javax.swing.JFrame {
 
         jButton2 = new javax.swing.JButton();
         jPasswordField2 = new javax.swing.JPasswordField();
+        CampoDeContraseña1 = new javax.swing.JPasswordField();
+        CampoDeContraseña = new javax.swing.JPasswordField();
+        jLabel14 = new javax.swing.JLabel();
+        CampoDeCorreo = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         CampoDeNombre = new javax.swing.JTextField();
@@ -49,11 +57,7 @@ public class ActualizarDatos extends javax.swing.JFrame {
         CampoDeApellidoM = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         CampoDeTelefono = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        CampoDeFechaNac = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        CampoDeContraseña = new javax.swing.JPasswordField();
         CampoDeCalle = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
         CampoDeColonia = new javax.swing.JTextField();
@@ -62,10 +66,8 @@ public class ActualizarDatos extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
         CampoDeNumero = new javax.swing.JTextField();
         BtnActualizar = new javax.swing.JButton();
-        jLabel14 = new javax.swing.JLabel();
-        CampoDeContraseña1 = new javax.swing.JPasswordField();
         jLabel15 = new javax.swing.JLabel();
-        CampoDeCorreo = new javax.swing.JTextField();
+        CampoDeFechaNac = new javax.swing.JTextField();
 
         jButton2.setBackground(new java.awt.Color(51, 153, 0));
         jButton2.setForeground(new java.awt.Color(0, 0, 0));
@@ -73,6 +75,35 @@ public class ActualizarDatos extends javax.swing.JFrame {
 
         jPasswordField2.setBackground(new java.awt.Color(255, 255, 255));
         jPasswordField2.setText("jPasswordField1");
+
+        CampoDeContraseña1.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeContraseña1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CampoDeContraseña1ActionPerformed(evt);
+            }
+        });
+
+        CampoDeContraseña.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeContraseña.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CampoDeContraseñaActionPerformed(evt);
+            }
+        });
+
+        jLabel14.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel14.setText("Contraseña");
+
+        CampoDeCorreo.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeCorreo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CampoDeCorreoActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel9.setText("Correo");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -120,19 +151,19 @@ public class ActualizarDatos extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnRegresar)
                 .addGap(133, 133, 133)
                 .addComponent(jLabel3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(205, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(33, Short.MAX_VALUE)
                 .addComponent(btnRegresar)
-                .addGap(22, 22, 22))
+                .addGap(28, 28, 28))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jLabel3)
@@ -161,31 +192,9 @@ public class ActualizarDatos extends javax.swing.JFrame {
             }
         });
 
-        jLabel8.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel8.setText("Confirmar Contraseña");
-
-        jLabel9.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel9.setText("Correo");
-
-        CampoDeFechaNac.setBackground(new java.awt.Color(255, 255, 255));
-        CampoDeFechaNac.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CampoDeFechaNacActionPerformed(evt);
-            }
-        });
-
         jLabel10.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(0, 0, 0));
         jLabel10.setText("Fecha nacimiento");
-
-        CampoDeContraseña.setBackground(new java.awt.Color(255, 255, 255));
-        CampoDeContraseña.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CampoDeContraseñaActionPerformed(evt);
-            }
-        });
 
         CampoDeCalle.setBackground(new java.awt.Color(255, 255, 255));
         CampoDeCalle.addActionListener(new java.awt.event.ActionListener() {
@@ -237,25 +246,14 @@ public class ActualizarDatos extends javax.swing.JFrame {
             }
         });
 
-        jLabel14.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
-        jLabel14.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel14.setText("Contraseña");
-
-        CampoDeContraseña1.setBackground(new java.awt.Color(255, 255, 255));
-        CampoDeContraseña1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CampoDeContraseña1ActionPerformed(evt);
-            }
-        });
-
         jLabel15.setFont(new java.awt.Font("Century", 0, 14)); // NOI18N
         jLabel15.setForeground(new java.awt.Color(0, 0, 0));
         jLabel15.setText("Calle");
 
-        CampoDeCorreo.setBackground(new java.awt.Color(255, 255, 255));
-        CampoDeCorreo.addActionListener(new java.awt.event.ActionListener() {
+        CampoDeFechaNac.setBackground(new java.awt.Color(255, 255, 255));
+        CampoDeFechaNac.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CampoDeCorreoActionPerformed(evt);
+                CampoDeFechaNacActionPerformed(evt);
             }
         });
 
@@ -280,31 +278,27 @@ public class ActualizarDatos extends javax.swing.JFrame {
                                     .addComponent(jLabel6)
                                     .addComponent(CampoDeTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(CampoDeFechaNac)
-                                    .addComponent(jLabel10)
-                                    .addComponent(jLabel9)
-                                    .addComponent(CampoDeCalle, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel11)
-                                    .addComponent(CampoDeNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel15)
-                                    .addComponent(CampoDeCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel10)
+                                            .addComponent(CampoDeCalle, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(CampoDeNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel15)
+                                            .addComponent(jLabel11)
+                                            .addComponent(jLabel13)
+                                            .addComponent(CampoDeCodifoPostal, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(0, 0, Short.MAX_VALUE))))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(CampoDeColonia, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18))
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel12)
-                                            .addComponent(CampoDeCodifoPostal, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel13))
-                                        .addGap(18, 18, 18)))
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel14)
-                                    .addComponent(CampoDeContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(CampoDeContraseña1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel8)))))
+                                        .addComponent(jLabel12)
+                                        .addGap(158, 158, 158)))
+                                .addGap(114, 114, 114))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(198, 198, 198)
                         .addComponent(BtnActualizar)))
@@ -319,52 +313,40 @@ public class ActualizarDatos extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(CampoDeNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(CampoDeNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(CampoDeFechaNac, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(CampoDeApellidoP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(CampoDeCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
+                            .addComponent(jLabel2)
                             .addComponent(jLabel15))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(CampoDeApellidoM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(CampoDeApellidoP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(CampoDeCalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
+                            .addComponent(jLabel5)
                             .addComponent(jLabel11))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(CampoDeApellidoM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(CampoDeNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel13))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(CampoDeTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(CampoDeNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(CampoDeCodifoPostal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(CampoDeFechaNac, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel9)
-                        .addGap(142, 142, 142)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel12)
-                    .addComponent(jLabel14))
+                        .addGap(205, 205, 205)))
+                .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(CampoDeColonia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CampoDeContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel13)
-                    .addComponent(jLabel8))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(CampoDeCodifoPostal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CampoDeContraseña1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addComponent(CampoDeColonia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
                 .addComponent(BtnActualizar)
                 .addGap(40, 40, 40))
         );
@@ -389,7 +371,7 @@ public class ActualizarDatos extends javax.swing.JFrame {
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
 
-        InicioPaciente nuevaVentana = new InicioPaciente();
+        PerfilPaciente nuevaVentana = new PerfilPaciente();
 
         // Hacer visible la nueva ventana
         nuevaVentana.setVisible(true);
@@ -434,59 +416,65 @@ public class ActualizarDatos extends javax.swing.JFrame {
     }//GEN-LAST:event_CampoDeNumeroActionPerformed
 
     private void BtnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnActualizarActionPerformed
+try {
+    // Obtener el ID del paciente desde la sesión
+    int idPaciente = SesionUsuario.idPaciente; 
 
-            try {
-        // Supongamos que el ID del paciente ya se almacenó globalmente
-        int idPaciente = SesionUsuario.idPaciente; 
+    // Recopilar datos de los campos de texto
+    String nombre = CampoDeNombre.getText().trim();
+    String apellidoPaterno = CampoDeApellidoP.getText().trim();
+    String apellidoMaterno = CampoDeApellidoM.getText().trim();
+    String telefono = CampoDeTelefono.getText().trim();
 
-        // Recopilar datos de los campos de texto
-        String nombre = CampoDeNombre.getText().trim();
-        String apellidoPaterno = CampoDeApellidoP.getText().trim();
-        String apellidoMaterno = CampoDeApellidoM.getText().trim();
-        String telefono = CampoDeTelefono.getText().trim();
-        String correo = CampoDeCorreo.getText().trim();
-        String contrasenia = new String(CampoDeContraseña.getPassword()).trim();
-        // En este ejemplo, usamos el campo CampoDeFechaNac con formato "yyyy-MM-dd"
-        LocalDate fechaNacimiento = LocalDate.parse(CampoDeFechaNac.getText().trim());
-        
-        // Recopilar datos de dirección
-        String calle = CampoDeCalle.getText().trim();
-        String numero = CampoDeNumero.getText().trim();
-        String colonia = CampoDeColonia.getText().trim();
-        String codigoPostal = CampoDeCodifoPostal.getText().trim();
-
-        // Crear objeto Dirección
-        Direccion direccion = new Direccion(calle, numero, colonia, codigoPostal);
-
-        // Crear el DTO de paciente para actualización
-        PacienteNuevoDTO pacienteDTO = new PacienteNuevoDTO(
-                idPaciente,
-                nombre,
-                apellidoPaterno,
-                apellidoMaterno,
-                telefono,
-                fechaNacimiento,
-                correo,
-                contrasenia,
-                direccion
-        );
-
-        // Crear la conexión y la capa de negocio
-        IConexionBD conexion = new ConexionBD();
-        PacienteBO pacienteBO = new PacienteBO(conexion);
-
-        // Llamar al método de negocio para actualizar el paciente
-        boolean actualizado = pacienteBO.editarPaciente(pacienteDTO);
-
-        if(actualizado){
-            javax.swing.JOptionPane.showMessageDialog(this, "Paciente actualizado correctamente.");
-        } else {
-            javax.swing.JOptionPane.showMessageDialog(this, "No se pudo actualizar el paciente.");
-        }
-    } catch (Exception ex) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Error al actualizar el paciente: " + ex.getMessage());
-        ex.printStackTrace();
+    // Convertir fecha de nacimiento (manejo de errores incluido)
+    LocalDate fechaNacimiento;
+    try {
+        fechaNacimiento = LocalDate.parse(CampoDeFechaNac.getText().trim());
+    } catch (DateTimeParseException e) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Formato de fecha incorrecto. Use 'yyyy-MM-dd'.");
+        return;
     }
+
+    // Recopilar datos de dirección
+    String calle = CampoDeCalle.getText().trim();
+    String numero = CampoDeNumero.getText().trim();
+    String colonia = CampoDeColonia.getText().trim();
+    String codigoPostal = CampoDeCodifoPostal.getText().trim();
+
+    // Crear objeto Dirección
+    Direccion direccion = new Direccion(calle, numero, colonia, codigoPostal);
+
+    // Crear el DTO de paciente para actualización (sin correo ni contraseña)
+    PacienteNuevoDTO pacienteDTO = new PacienteNuevoDTO(
+            idPaciente,
+            nombre,
+            apellidoPaterno,
+            apellidoMaterno,
+            telefono,
+            fechaNacimiento,
+            direccion // Sin correo ni contraseña
+    );
+
+    // Crear la conexión y la capa de negocio
+    IConexionBD conexion = new ConexionBD();
+    PacienteBO pacienteBO = new PacienteBO(conexion);
+
+    // Llamar al método de negocio para actualizar el paciente
+    boolean actualizado = pacienteBO.editarPaciente(pacienteDTO);
+
+    // Mostrar mensaje según el resultado
+    if (actualizado) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Paciente actualizado correctamente.");
+    } else {
+        javax.swing.JOptionPane.showMessageDialog(this, "No se pudo actualizar el paciente.");
+    }
+
+} catch (NumberFormatException ex) {
+    javax.swing.JOptionPane.showMessageDialog(this, "Error: ID de paciente inválido.");
+} catch (Exception ex) {
+    javax.swing.JOptionPane.showMessageDialog(this, "Error al actualizar el paciente: " + ex.getMessage());
+    Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error en la actualización del paciente", ex);
+}
 
     }//GEN-LAST:event_BtnActualizarActionPerformed
 
@@ -529,7 +517,6 @@ public class ActualizarDatos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

@@ -213,48 +213,46 @@ public boolean editarPaciente(PacienteNuevoDTO pacienteNuevoDTO) throws NegocioE
     if (pacienteNuevoDTO == null) {
         throw new NegocioException("El paciente no puede ser nulo.");
     }
+    
+    if (pacienteNuevoDTO.getIdPaciente() <= 0) {
+        throw new NegocioException("El ID del paciente no es válido.");
+    }
 
-    // **Validación de correo**
-    String correo = pacienteNuevoDTO.getCorreo();
-    if (correo == null || correo.trim().isEmpty()) {
-        throw new NegocioException("El correo no puede estar vacío.");
+    // **Recuperar usuario existente**
+    IConexionBD conexionBD = new ConexionBD();
+    UsuarioDAO usuarioDAO = new UsuarioDAO(conexionBD);
+    Usuario usuarioExistente;
+    
+    try {
+        usuarioExistente = usuarioDAO.obtenerUsuarioPorId(pacienteNuevoDTO.getIdPaciente());
+    } catch (PersistenciaException ex) {
+        throw new NegocioException("Error al recuperar usuario: " + ex.getMessage(), ex);
     }
-    if (correo.length() > 150) {
-        throw new NegocioException("No se permiten correos con más de 150 caracteres.");
+
+    if (usuarioExistente == null) {
+        throw new NegocioException("No se encontró el usuario asociado al paciente.");
     }
-    if (!Pattern.matches("^[^@\\s]+@[^@\\s]+\\.com$", correo)) {
-        throw new NegocioException("El correo ingresado no es válido.");
-    }
-    if (correo.split("@")[0].length() < 2) {
-        throw new NegocioException("El correo debe tener al menos dos caracteres antes del '@'");
-    }
+
+    // **No permitir modificar el correo**
+    String correo = usuarioExistente.getUsuario();
 
     // **Validación de nombre y apellidos**
-    String nombre = pacienteNuevoDTO.getNombre();
-    String apellidoP = pacienteNuevoDTO.getApellidoPaterno();
-    String apellidoM = pacienteNuevoDTO.getApellidoMaterno();
-    if (!validarNombreApellido(nombre, "nombre")
-            || !validarNombreApellido(apellidoP, "apellido paterno")
-            || !validarNombreApellido(apellidoM, "apellido materno")) {
+    if (!validarNombreApellido(pacienteNuevoDTO.getNombre(), "nombre") ||
+        !validarNombreApellido(pacienteNuevoDTO.getApellidoPaterno(), "apellido paterno") ||
+        !validarNombreApellido(pacienteNuevoDTO.getApellidoMaterno(), "apellido materno")) {
         throw new NegocioException("Nombre o apellidos inválidos.");
     }
 
     // **Validación de teléfono**
     String telefono = pacienteNuevoDTO.getTelefono();
-    if (telefono == null || telefono.trim().isEmpty()) {
-        throw new NegocioException("El teléfono no puede estar vacío.");
-    }
-    if (!telefono.matches("^\\d{10}$")) {
+    if (telefono == null || telefono.trim().isEmpty() || !telefono.matches("^\\d{10}$")) {
         throw new NegocioException("El teléfono debe contener exactamente 10 dígitos numéricos.");
     }
 
     // **Validación de fecha de nacimiento**
     LocalDate fechaN = pacienteNuevoDTO.getFechaNacimiento();
-    if (fechaN == null) {
-        throw new NegocioException("La fecha de nacimiento no puede estar vacía.");
-    }
-    if (fechaN.isAfter(LocalDate.now())) {
-        throw new NegocioException("La fecha de nacimiento no puede estar después de la fecha actual.");
+    if (fechaN == null || fechaN.isAfter(LocalDate.now())) {
+        throw new NegocioException("La fecha de nacimiento no es válida.");
     }
     int edad = LocalDate.now().getYear() - fechaN.getYear();
     if (edad < 0 || edad > 120) {
@@ -262,48 +260,31 @@ public boolean editarPaciente(PacienteNuevoDTO pacienteNuevoDTO) throws NegocioE
     }
 
     // **Validación de dirección**
-    Direccion direccion = pacienteNuevoDTO.getDireccion();
-    if (direccion == null) {
-        throw new NegocioException("La dirección no puede estar vacía.");
-    }
-    if (!validarDireccion(direccion)) {
+    if (pacienteNuevoDTO.getDireccion() == null || !validarDireccion(pacienteNuevoDTO.getDireccion())) {
         throw new NegocioException("La dirección contiene datos inválidos.");
     }
 
-    // Recuperar la conexión a través de IConexionBD
-    IConexionBD conexionBD = new ConexionBD();  // La implementación de IConexionBD que usas
-
-    // Instanciar UsuarioDAO con IConexionBD
-    UsuarioDAO usuarioDAO = new UsuarioDAO(conexionBD);
-    if (pacienteNuevoDTO.getIdPaciente() <= 0) {
-    throw new NegocioException("El ID del paciente no es válido.");
-}
-
-    // Recuperar el usuario asociado antes de realizar la actualización
-    Usuario usuarioExistente = null;
-        try {
-            usuarioExistente = usuarioDAO.obtenerUsuarioPorId(pacienteNuevoDTO.getIdPaciente());
-        } catch (PersistenciaException ex) {
-            Logger.getLogger(PacienteBO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    if (usuarioExistente == null) {
-        throw new NegocioException("No se encontró el usuario asociado al paciente.");
-    }
-
-    // **Crear paciente para actualización con el usuario recuperado**
-    Paciente paciente = pacienteMapper.toEntityActualizacion(pacienteNuevoDTO, usuarioExistente);
+    // **Convertir DTO a entidad Paciente**
+    Paciente paciente = new Paciente(
+            pacienteNuevoDTO.getIdPaciente(),
+            pacienteNuevoDTO.getFechaNacimiento(),
+            pacienteNuevoDTO.getNombre(),
+            pacienteNuevoDTO.getApellidoPaterno(),
+            pacienteNuevoDTO.getApellidoMaterno(),
+            pacienteNuevoDTO.getTelefono(),
+            correo, // Se mantiene el correo original
+            usuarioExistente, // Se mantiene el usuario original
+            pacienteNuevoDTO.getDireccion()
+    );
 
     try {
-        // Llamar a pacienteDAO para actualizar los datos del paciente
         pacienteDAO.editarPaciente(paciente);
         return true;
     } catch (PersistenciaException ex) {
-        // En caso de error en la persistencia, capturamos la excepción y lanzamos una NegocioException
         logger.log(Level.SEVERE, "Error al actualizar paciente en la base de datos", ex);
         throw new NegocioException("Hubo un error al actualizar en la base de datos", ex);
     }
 }
-
 
 
 }

@@ -50,27 +50,28 @@ public class UsuarioDAO implements IUsuarioDAO {
 
     // Método para obtener un usuario por su nombre de usuario
     @Override
-    public Usuario obtenerUsuarioPorNombre(String nombreUsuario) throws PersistenciaException {
-        String sql = "SELECT * FROM Usuarios WHERE usuario = ?";
+public Usuario obtenerUsuarioPorNombre(String nombreUsuario) throws PersistenciaException {
+    String sql = "SELECT * FROM Usuarios WHERE usuario = ?";
 
-        try (Connection con = conexion.crearConexion(); PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, nombreUsuario);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    Usuario usuario = new Usuario();
-                    usuario.setId_usuario(rs.getInt("id_usuario"));
-                    usuario.setUsuario(rs.getString("usuario"));
-                    usuario.setContraseña(rs.getString("contraseña"));
-                    return usuario;
-                }
+    try (Connection con = conexion.crearConexion(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        stmt.setString(1, nombreUsuario);
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                Usuario usuario = new Usuario();
+                usuario.setId_usuario(rs.getInt("id_usuario"));
+                usuario.setUsuario(rs.getString("usuario"));
+                usuario.setContraseña(rs.getString("contraseña"));  // Asegurar que es la versión actualizada
+                return usuario;
             }
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Error al obtener usuario por nombre", ex);
-            throw new PersistenciaException("Error al obtener usuario", ex);
         }
-
-        return null; // Si no encuentra el usuario, retorna null
+    } catch (SQLException ex) {
+        logger.log(Level.SEVERE, "Error al obtener usuario por nombre", ex);
+        throw new PersistenciaException("Error al obtener usuario", ex);
     }
+
+    return null;
+}
+
 
     // Método para actualizar un usuario
     @Override

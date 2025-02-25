@@ -76,37 +76,41 @@ public class CapaNegocioClinica {
 //        } catch (PersistenciaException e) {
 //            System.err.println("Error al obtener historial: " + e.getMessage());
 //        }
-        try {
-            // Crear la implementación de la conexión a la base de datos
-            IConexionBD conexionBD = new ConexionBD();
+ try {
+    // Crear la implementación de la conexión a la base de datos
+    IConexionBD conexionBD = new ConexionBD();
 
-            // Crear el objeto BO con la conexión inyectada
-            PacienteBO pacienteBO = new PacienteBO(conexionBD);
+    // Crear el objeto BO con la conexión inyectada
+    PacienteBO pacienteBO = new PacienteBO(conexionBD);
 
-            // Crear el objeto PacienteNuevoDTO con datos de prueba
-            PacienteNuevoDTO pacienteNuevoDTO = new PacienteNuevoDTO();
-            pacienteNuevoDTO.setIdPaciente(1);  // Asegúrate de que este ID exista en la base de datos
-            pacienteNuevoDTO.setCorreo("juan.perez@example.com");
-            pacienteNuevoDTO.setNombre("Juan");
-            pacienteNuevoDTO.setApellidoPaterno("Perez");
-            pacienteNuevoDTO.setApellidoMaterno("Gomez");
-            pacienteNuevoDTO.setTelefono("1234567890");
-            pacienteNuevoDTO.setFechaNacimiento(LocalDate.of(1990, 5, 15));
-            pacienteNuevoDTO.setDireccion(new Direccion("Calle Falsa 123", "Ciudad", "Estado", "12345"));
+    // Crear el objeto PacienteNuevoDTO con nuevos datos
+    PacienteNuevoDTO pacienteNuevoDTO = new PacienteNuevoDTO();
+    pacienteNuevoDTO.setIdPaciente(1);  // Cambiar por otro ID existente en la base de datos
+    pacienteNuevoDTO.setCorreo("maria.garcia@example.com");
+    pacienteNuevoDTO.setNombre("Maria");
+    pacienteNuevoDTO.setApellidoPaterno("Garcia");
+    pacienteNuevoDTO.setApellidoMaterno("Lopez");
+    pacienteNuevoDTO.setTelefono("9876543210");
+    pacienteNuevoDTO.setFechaNacimiento(LocalDate.of(1995, 8, 20));
+    pacienteNuevoDTO.setDireccion(new Direccion("Calle Falsa 123", "456", "Colonia Centro", "12345"));
 
-            // Llamar al método editarPaciente con el DTO
-            boolean resultado = pacienteBO.editarPaciente(pacienteNuevoDTO);
 
-            // Mostrar el resultado
-            if (resultado) {
-                System.out.println("Paciente editado correctamente.");
-            } else {
-                System.out.println("Hubo un error al editar el paciente.");
-            }
+    // **Nueva contraseña**
+    pacienteNuevoDTO.setContrasenia("NuevaClaveSegura456");  
 
-        } catch (NegocioException e) {
-            // Manejo de excepciones
-            System.out.println("Error: " + e.getMessage());
-        }
+    // Llamar al método editarPaciente con el DTO
+    boolean resultado = pacienteBO.editarPaciente(pacienteNuevoDTO);
+
+    // Mostrar el resultado
+    if (resultado) {
+        System.out.println("Paciente editado correctamente.");
+    } else {
+        System.out.println("Hubo un error al editar el paciente.");
+    }
+
+} catch (NegocioException e) {
+    // Manejo de excepciones
+    System.out.println("Error: " + e.getMessage());
+}
     }
 }

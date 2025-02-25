@@ -26,9 +26,10 @@ public class PacienteNuevoDTO {
     public PacienteNuevoDTO() {
     }
 
-    public PacienteNuevoDTO(int idPaciente, String nombre, String apellidoPaterno, String apellidoMaterno, 
-                             String telefono, LocalDate fechaNacimiento, String correo, String contrasenia, Direccion direccion) {
-        this.idPaciente = idPaciente;
+    // Constructor para registrar nuevo paciente (incluye correo y contraseña)
+    public PacienteNuevoDTO(String nombre, String apellidoPaterno, String apellidoMaterno,
+            String telefono, LocalDate fechaNacimiento, String correo,
+            String contrasenia, Direccion direccion) {
         this.nombre = nombre;
         this.apellidoPaterno = apellidoPaterno;
         this.apellidoMaterno = apellidoMaterno;
@@ -38,17 +39,19 @@ public class PacienteNuevoDTO {
         this.contrasenia = contrasenia;
         this.direccion = direccion;
     }
-    public PacienteNuevoDTO(String nombre, String apellidoPaterno, String apellidoMaterno, String telefono, LocalDate fechaNacimiento, String correo, String contrasenia, Direccion direccion) {
-    this.nombre = nombre;
-    this.apellidoPaterno = apellidoPaterno;
-    this.apellidoMaterno = apellidoMaterno;  // Este campo puede ser null
-    this.telefono = telefono;
-    this.fechaNacimiento = fechaNacimiento;
-    this.correo = correo;
-    this.contrasenia = contrasenia;
-    this.direccion = direccion;
-}
 
+    // Constructor para actualizar paciente (NO incluye correo ni contraseña)
+    public PacienteNuevoDTO(int idPaciente, String nombre, String apellidoPaterno,
+            String apellidoMaterno, String telefono, LocalDate fechaNacimiento,
+            Direccion direccion) {
+        this.idPaciente = idPaciente;
+        this.nombre = nombre;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
+        this.telefono = telefono;
+        this.fechaNacimiento = fechaNacimiento;
+        this.direccion = direccion;
+    }
 
     // Getter y Setter para idPaciente
     public int getIdPaciente() {
@@ -125,16 +128,16 @@ public class PacienteNuevoDTO {
 
     @Override
     public String toString() {
-        return "PacienteNuevoDTO{" +
-                "idPaciente=" + idPaciente +
-                ", nombre='" + nombre + '\'' +
-                ", apellidoPaterno='" + apellidoPaterno + '\'' +
-                ", apellidoMaterno='" + apellidoMaterno + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", fechaNacimiento=" + fechaNacimiento +
-                ", correo='" + correo + '\'' +
-                ", contrasenia='" + contrasenia + '\'' +
-                ", direccion=" + direccion +
-                '}';
+        return "PacienteNuevoDTO{"
+                + "idPaciente=" + idPaciente
+                + ", nombre='" + nombre + '\''
+                + ", apellidoPaterno='" + apellidoPaterno + '\''
+                + ", apellidoMaterno='" + apellidoMaterno + '\''
+                + ", telefono='" + telefono + '\''
+                + ", fechaNacimiento=" + fechaNacimiento
+                + ", correo='" + correo + '\''
+                + ", contrasenia='" + contrasenia + '\''
+                + ", direccion=" + direccion
+                + '}';
     }
 }
