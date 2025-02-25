@@ -242,49 +242,78 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE PROCEDURE actualizarUnPaciente(
-    IN contraseniaNueva VARCHAR(100),
+DELIMITER $$
+
+DELIMITER $$
+
+CREATE PROCEDURE actualizarPacientePorId(
+    IN idPaciente INT,
     IN fechaNacimientoNuevo DATE,
     IN nombreNuevo VARCHAR(50),
     IN apellidoPaternoNuevo VARCHAR(50),
     IN apellidoMaternoNuevo VARCHAR(50),
     IN telefonoNuevo VARCHAR(20),
-    IN correoNuevo VARCHAR(100),
     IN calleNueva VARCHAR(100),
     IN numeroNuevo VARCHAR(20),
     IN coloniaNueva VARCHAR(50),
     IN codigoPostalNuevo VARCHAR(5)
 )
 BEGIN
+    DECLARE usuarioID INT;
+    DECLARE paciente_existe INT;
+    DECLARE mensaje_error VARCHAR(255);
+
+    -- Manejo de errores
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
     BEGIN
         ROLLBACK;
+        SET mensaje_error = 'Error: No se pudo actualizar el paciente';
+        SELECT mensaje_error AS mensaje;
     END;
+
+    -- Verificar si el paciente existe
+    SELECT COUNT(*) INTO paciente_existe
+    FROM Pacientes
+    WHERE id_paciente = idPaciente;
+
+    IF paciente_existe = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: El paciente no existe';
+    END IF;
+
+    -- Obtener el id_usuario del paciente
+    SELECT id_usuario INTO usuarioID
+    FROM Pacientes
+    WHERE id_paciente = idPaciente;
 
     START TRANSACTION;
 
-    UPDATE Usuarios
-    SET contraseña = contraseniaNueva
-    WHERE id_usuario = (SELECT id_usuario FROM Pacientes WHERE correo = correoNuevo);
-
+    -- Actualizar la dirección del usuario
     UPDATE Direcciones
     SET calle = calleNueva,
         numero = numeroNuevo,
         colonia = coloniaNueva,
         codigo_postal = codigoPostalNuevo
-    WHERE id_usuario = (SELECT id_usuario FROM Pacientes WHERE correo = correoNuevo);
+    WHERE id_usuario = usuarioID;
 
+    -- Actualizar los datos del paciente (SIN modificar correo)
     UPDATE Pacientes
     SET nombre = nombreNuevo,
         apellido_paterno = apellidoPaternoNuevo,
         apellido_materno = IF(apellidoMaternoNuevo = '', NULL, apellidoMaternoNuevo),
         telefono = telefonoNuevo,
         fecha_nacimiento = fechaNacimientoNuevo
-    WHERE correo = correoNuevo;
+    WHERE id_paciente = idPaciente;
 
     COMMIT;
 
+    SELECT 'Paciente actualizado exitosamente' AS mensaje;
 END$$
+
+DELIMITER ;
+
+
+DELIMITER ;
 
 DELIMITER ;
 
@@ -362,14 +391,9 @@ DELIMITER ;
 INSERT INTO Cita (estado, fechahora, nota, id_paciente, id_medico)  
 VALUES ('pendiente', '2025-03-01 10:00:00', 'Primera consulta', 1, 1);
 
-INSERT INTO Cita (estado, fechahora, nota, id_paciente, id_medico)  
+/* INSERT INTO Cita (estado, fechahora, nota, id_paciente, id_medico)  
 VALUES ('pendiente', '2025-03-01 10:30:00', 'Segunda consulta', 2, 1);
+*/
 
-CALL VerHistorialCitas(2);
-CALL AgendarCita(1, 1, '2025-03-10 09:00:00', 'pendiente', 'Consulta de revisión');
-
-
-
-SELECT* FROM pacientes;
 
 
