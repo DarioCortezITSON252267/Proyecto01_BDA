@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  */
 public class CapaNegocioClinica {
 
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
 //     try {
 //            // Crear una dirección
 //            Direccion direccion = new Direccion(0, "Calle Falsa", "123", "Colonia Centro", "12345", 0);
@@ -112,5 +112,5 @@ public class CapaNegocioClinica {
     // Manejo de excepciones
     System.out.println("Error: " + e.getMessage());
 }
-    }
+    }*/
 }

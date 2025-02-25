@@ -4,78 +4,86 @@
  */
 package DAO;
 
+import Conexion.ConexionBD;
 import Conexion.IConexionBD;
+import Entidades.Medico;
 import Exception.PersistenciaException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 /**
  *
- * @author Angel
+ * @author todos
  */
 public class MedicoDAO implements IMedicoDAO {
 
-    private IConexionBD conexion; // Atributo conexión que se usará en toda la clase
-    private static final Logger logger = Logger.getLogger(PacienteDAO.class.getName());
+    private final IConexionBD conexion; // Instancia de conexión
+    private static final Logger logger = Logger.getLogger(MedicoDAO.class.getName());
 
     public MedicoDAO(IConexionBD conexion) {
         this.conexion = conexion;
     }
+   
+    public boolean validarMedico(String cedula, String contraseña) {
+    String query = "CALL ValidarMedico(?, ?)"; // Llamar al procedimiento almacenado
 
-    @Override
-    public boolean desactivarMedico(int idMedico) throws PersistenciaException {
-        String sql = "CALL DesactivarMedico(?)"; // 1 parámetro
+    try (Connection conn = conexion.crearConexion();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
 
-        try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
+        stmt.setString(1, cedula);
+        stmt.setString(2, contraseña);
+        ResultSet rs = stmt.executeQuery();
+        
+         System.out.println("Cédula ingresada: " + cedula);
+        System.out.println("Contraseña ingresada: " + contraseña);
 
-            // Establecer parámetros en el procedimiento almacenado
-            cs.setInt(1, idMedico); // ID del médico a desactivar
+        return rs.next(); // Devuelve true si hay un resultado
 
-            cs.execute();
-            logger.log(Level.INFO, "Médico desactivado exitosamente");
-            return true;
+    } catch (SQLException e) {
+        logger.log(Level.SEVERE, "Error al validar médico", e);
+    } catch (PersistenciaException ex) {
+        Logger.getLogger(MedicoDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
 
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Error al desactivar el médico", ex);
-            throw new PersistenciaException("Error al desactivar el médico", ex);
-        }
+        return false;
+    }
+
+    public boolean darDeBajaMedico(String usuario, String cedula, String contraseña) {       
+        String query = "CALL DarDeBajaMedico(?, ?, ?)";
+    try (Connection conn = conexion.crearConexion();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+
+        stmt.setString(1, usuario);
+        stmt.setString(2, cedula);
+        stmt.setString(3, contraseña);
+        int rowsAffected = stmt.executeUpdate();
+        
+        System.out.println("Usuario ingresado: " + usuario);
+         System.out.println("Cédula ingresada: " + cedula);
+        System.out.println("Contraseña ingresada: " + contraseña);
+
+        return rowsAffected > 0;
+
+    } catch (SQLException e) {
+        logger.log(Level.SEVERE, "Error al dar de baja al medico", e);
+    } catch (PersistenciaException ex) {
+        Logger.getLogger(MedicoDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+        return false;    
     }
     
-    
-//      ESTE METODO NO ESTA FUNCIONANDO TODAVIA
-    
-//    @Override
-//    public List<String> verAgendaMedico(int idMedico) throws PersistenciaException {
-//        List<String> agenda = new ArrayList<>();
-//        String sql = "CALL VerAgendaFuturaMedico(?)";
-//
-//        try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
-//            cs.setInt(1, idMedico);
-//            ResultSet rs = cs.executeQuery();
-//
-//            while (rs.next()) {
-//                int idCita = rs.getInt("id_cita");
-//                String estado = rs.getString("estado");
-//                Timestamp fechahora = rs.getTimestamp("fechahora");
-//                String nota = rs.getString("nota");
-//                int idPaciente = rs.getInt("id_paciente");
-//                String pacienteNombre = rs.getString("paciente_nombre");
-//                String pacienteApellido = rs.getString("paciente_apellido");
-//                String pacienteUsuario = rs.getString("paciente_usuario");
-//
-//                agenda.add("Cita ID: " + idCita + ", Estado: " + estado + ", Fecha y Hora: " + fechahora + ", Nota: " + nota
-//                        + ", Paciente ID: " + idPaciente + ", Nombre: " + pacienteNombre + " " + pacienteApellido + ", Usuario: " + pacienteUsuario);
-//            }
-//        } catch (SQLException ex) {
-//            throw new PersistenciaException("Error al obtener la agenda futura del médico", ex);
-//        }
-//        return agenda;
-//    }
 }
+
+
+
+
+

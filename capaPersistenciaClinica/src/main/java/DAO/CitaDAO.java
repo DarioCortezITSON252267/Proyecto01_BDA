@@ -126,5 +126,7 @@ public List<String> verHistorialCitas(int idPaciente) throws PersistenciaExcepti
             throw new PersistenciaException("Error al obtener médico por especialidad: " + ex.getMessage(), ex);
         }
     }
+    
+    
 
 }
