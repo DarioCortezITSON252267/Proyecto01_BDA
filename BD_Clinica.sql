@@ -1,7 +1,10 @@
- -- DROP DATABASE Clinica;
+-- Eliminar la base de datos si existe
+DROP DATABASE IF EXISTS Clinica;
+-- Crear la base de datos
 CREATE DATABASE Clinica;
+-- Usar la base de datos
 USE Clinica;
-
+-- =================================== BASE DE DATOS
 
 -- Tabla USUARIOS
 CREATE TABLE Usuarios (
@@ -22,14 +25,13 @@ CREATE TABLE Direcciones (
     FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE
 );
 
-
 -- Tabla PACIENTES
 CREATE TABLE Pacientes (
     id_paciente INT AUTO_INCREMENT PRIMARY KEY,
     fecha_nacimiento DATE NOT NULL,
     nombre VARCHAR(50) NOT NULL,
     apellido_paterno VARCHAR(50) NOT NULL,
-    apellido_materno VARCHAR(50)  NULL,
+    apellido_materno VARCHAR(50) NULL,
     correo VARCHAR(100) UNIQUE NULL,
     telefono VARCHAR(20) NOT NULL,
     id_usuario INT UNIQUE NOT NULL,
@@ -98,12 +100,12 @@ CREATE TABLE Auditoria (
     fecha_hora DATETIME NOT NULL,
     datos_anteriores TEXT NULL, 
     datos_nuevos TEXT NULL,
-	id_cita INT NULL,
+    id_cita INT NULL,
     id_consulta INT NULL,
     id_consultasincita INT NULL
 );
+-- =================================== CREACION DE TABLAS
 
--- TRIGGERS PARA AUDITORÍA
 DELIMITER $$
 
 -- Trigger para insertar en Cita
@@ -125,7 +127,6 @@ BEGIN
     CONCAT('estado:', NEW.estado, ', fechahora:', NEW.fechahora, ', id_paciente:', NEW.id_paciente, ', id_medico:', NEW.id_medico, ', nota:', NEW.nota));
 END $$
 
-
 -- Trigger para insertar en Consulta
 CREATE TRIGGER insertar_consulta
 AFTER INSERT ON Consulta FOR EACH ROW
@@ -145,7 +146,6 @@ BEGIN
     CONCAT('motivo:', NEW.motivo, ', diagnostico:', NEW.diagnostico, ', tratamiento:', NEW.tratamiento, ', id_cita:', NEW.id_cita));
 END $$
 
-
 -- Trigger para insertar en ConsultaSinCita
 CREATE TRIGGER insertar_consulta_sin_cita
 AFTER INSERT ON ConsultaSinCita FOR EACH ROW
@@ -164,29 +164,10 @@ BEGIN
     CONCAT('folio:', OLD.folio, ', fecha:', OLD.fecha, ', hora:', OLD.hora, ', motivo:', OLD.motivo, ', id_medico:', OLD.id_medico, ', id_paciente:', OLD.id_paciente), 
     CONCAT('folio:', NEW.folio, ', fecha:', NEW.fecha, ', hora:', NEW.hora, ', motivo:', NEW.motivo, ', id_medico:', NEW.id_medico, ', id_paciente:', NEW.id_paciente));
 END $$
-
-
 DELIMITER ;
+-- =================================== CREACION DE TRIGGERS
 
-INSERT INTO Usuarios (usuario, contraseña, tipo_usuario)
-VALUES ('angel.ser', 'contraseña123', 'paciente');
-
-INSERT INTO Direcciones (calle, numero, colonia, codigo_postal, id_usuario)
-VALUES ('itson', '3211', 'Villa itson', 54333, 1);
-
-
-INSERT INTO Pacientes (fecha_nacimiento, nombre, apellido_paterno, apellido_materno, telefono, id_usuario)
-VALUES ('2000-11-07', 'Angel', 'Servin de la mora', 'Vazquez', '6441545454', 1);
-
-
-INSERT INTO Usuarios (usuario, contraseña, tipo_usuario)  
-VALUES ('dr.garcia', 'clave123', 'medico');
-
-SET @id_usuario_medico = LAST_INSERT_ID();
-
-INSERT INTO Medicos (especialidad, cedula, id_usuario)  
-VALUES ('Cardiología', 'ABC123456', @id_usuario_medico);
-
+-- Procedimiento para registrar un paciente
 DELIMITER $$
 
 CREATE PROCEDURE RegistrarPaciente(
@@ -239,11 +220,7 @@ END$$
 
 DELIMITER ;
 
-
-DELIMITER $$
-
-DELIMITER $$
-
+-- Procedimiento para actualizar un paciente
 DELIMITER $$
 
 CREATE PROCEDURE actualizarPacientePorId(
@@ -312,12 +289,9 @@ END$$
 
 DELIMITER ;
 
-
-DELIMITER ;
-
-DELIMITER ;
-
+-- Procedimiento para ver el historial de citas de un paciente
 DELIMITER $$
+
 CREATE PROCEDURE VerHistorialCitas(IN idPaciente INT)
 BEGIN
     SELECT 
@@ -332,8 +306,10 @@ BEGIN
     WHERE c.id_paciente = idPaciente
     ORDER BY c.fechahora DESC;
 END $$
+
 DELIMITER ;
 
+-- Procedimiento para agendar una cita
 DELIMITER $$
 
 CREATE PROCEDURE AgendarCita(
@@ -387,20 +363,9 @@ END $$
 
 DELIMITER ;
 
-
-INSERT INTO Cita (estado, fechahora, nota, id_paciente, id_medico)  
-VALUES ('pendiente', '2025-03-01 10:00:00', 'Primera consulta', 1, 1);
-
-/* INSERT INTO Cita (estado, fechahora, nota, id_paciente, id_medico)  
-VALUES ('pendiente', '2025-03-01 10:30:00', 'Segunda consulta', 2, 1);
-*/
-
--- ==================================
---                MEDICO
--- ==================================
-
--- VALIDACION MEDICOS
+-- Procedimiento para validar un médico
 DELIMITER $$
+
 CREATE PROCEDURE ValidarMedico(
     IN p_cedula VARCHAR(20),
     IN p_contraseña VARCHAR(100)
@@ -411,10 +376,12 @@ BEGIN
     INNER JOIN Medicos m ON u.id_usuario = m.id_usuario
     WHERE m.cedula = p_cedula AND u.contraseña = SHA2(p_contraseña, 256);
 END $$
+
 DELIMITER ;
 
--- PROCEDIMIENTO DE BAJA
+-- Procedimiento para dar de baja a un médico
 DELIMITER $$
+
 CREATE PROCEDURE DarDeBajaMedico(
     IN p_usuario VARCHAR(50),
     IN p_cedula VARCHAR(20),
@@ -457,10 +424,12 @@ BEGIN
         DELETE FROM Usuarios WHERE id_usuario = v_id_usuario;
     END IF;
 END $$
+
 DELIMITER ;
 
--- ---VER CITAS PENDIENTES
+-- Procedimiento para ver citas pendientes de un médico
 DELIMITER $$
+
 CREATE PROCEDURE VerCitasPendientes(IN p_id_medico INT)
 BEGIN
     SELECT 
@@ -477,16 +446,30 @@ BEGIN
         C.id_medico = p_id_medico
         AND C.estado = 'pendiente';
 END $$
+
 DELIMITER ;
 
+-- Procedimiento para ver la auditoría de un médico
+DELIMITER $$
 
+CREATE PROCEDURE VerAuditoriaPorMedico(IN p_cedula VARCHAR(20))
+BEGIN
+    SELECT 
+        A.fecha_hora AS hora,
+        A.id_paciente,
+        A.estado,
+        A.tabla_afectada AS tipo
+    FROM 
+        Auditoria A
+    INNER JOIN 
+        Medicos M ON A.id_medico = M.id_medico
+    WHERE 
+        M.cedula = p_cedula;
+END $$
+DELIMITER ;
+-- =================================== CREACION DE PROCEDIMIENTOS
 
-
--- ==================================
---          DATOS CARGADOS
--- ==================================
-
--- USUARIO - MEDICO
+-- Insertar usuarios médicos
 INSERT INTO Usuarios (usuario, contraseña, tipo_usuario)
 VALUES ('Dr.House', SHA2('Housedr147', 256), 'medico'),
 ('Dr.Ramirez', SHA2('Ramirez489', 256), 'medico'),
@@ -496,7 +479,7 @@ VALUES ('Dr.House', SHA2('Housedr147', 256), 'medico'),
 ('Dr.Torres', SHA2('Torres911', 256), 'medico'),
 ('Dr.PEPE', SHA2('Pepe111', 256), 'medico');
 
--- MEDICOS
+-- Insertar médicos
 INSERT INTO Medicos (especialidad, cedula, id_usuario)
 VALUES ('Cardiología', '123456', 1),
 ('Truamatismo', '654321', 2),
@@ -506,7 +489,7 @@ VALUES ('Cardiología', '123456', 1),
 ('Ortopedia', '639852', 6),
 ('Oncologia', '111111', 7);
 
--- HORARIOS MEDICO
+-- Insertar horarios de médicos
 INSERT INTO Horarios (horaInicial, horaFinal, dias, id_medico)
 VALUES ('09:00:00', '17:00:00', 'Lunes a Viernes', 1),
 ('08:00:00', '14:00:00', 'Lunes, Miércoles, Viernes', 2),
@@ -515,3 +498,17 @@ VALUES ('09:00:00', '17:00:00', 'Lunes a Viernes', 1),
 ('12:00:00', '20:00:00', 'Lunes a Sábado', 5),
 ('12:00:00', '20:00:00', 'Miercoles a Lunes', 6),
 ('12:00:00', '20:00:00', 'Jueves a Martes', 7);
+
+-- Ejemplo de registro de un paciente
+CALL RegistrarPaciente('angel.ser', 'contraseña123', 'Angel', 'Servin de la mora', 'Vazquez', '6441545454', 'angel@example.com', '2000-11-07', 'itson', '3211', 'Villa itson', '54333');
+
+-- Ejemplo de agendar una cita
+CALL AgendarCita(1, 1, '2025-03-01 10:00:00', 'pendiente', 'Primera consulta');
+
+-- Ejemplo de ver citas pendientes de un médico
+CALL VerCitasPendientes(1);
+
+-- Ejemplo de ver auditoría de un médico
+CALL VerAuditoriaPorMedico('123456');
+
+-- =================================== CREACION DE MEDICOS Y PACIENTE
