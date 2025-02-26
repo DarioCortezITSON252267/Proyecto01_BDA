@@ -16,19 +16,30 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author Todos
+ * Clase que implementa la interfaz IUsuarioDAO para gestionar las operaciones
+ * de persistencia relacionadas con la entidad Usuario en la base de datos.
  */
 public class UsuarioDAO implements IUsuarioDAO {
 
     private IConexionBD conexion; // Atributo conexión que se usará en toda la clase
     private static final Logger logger = Logger.getLogger(UsuarioDAO.class.getName());
 
-        public UsuarioDAO(IConexionBD conexion) {
-            this.conexion = conexion;
-        }
+    /**
+     * Constructor que recibe una conexión a la base de datos.
+     *
+     * @param conexion Objeto de conexión a la base de datos
+     */
+    public UsuarioDAO(IConexionBD conexion) {
+        this.conexion = conexion;
+    }
 
-    // Método para crear un usuario
+    /**
+     * Método para crear un nuevo usuario en la base de datos.
+     *
+     * @param usuario Objeto Usuario con la información a registrar
+     * @return Usuario creado
+     * @throws PersistenciaException En caso de error durante la inserción
+     */
     @Override
     public Usuario crearUsuario(Usuario usuario) throws PersistenciaException {
         String sql = "CALL crearUsuario(?, ?)"; // Procedimiento para crear un usuario
@@ -48,32 +59,43 @@ public class UsuarioDAO implements IUsuarioDAO {
         return usuario; // Retorna el usuario creado
     }
 
-    // Método para obtener un usuario por su nombre de usuario
+    /**
+     * Método para obtener un usuario por su nombre de usuario.
+     *
+     * @param nombreUsuario Nombre del usuario a buscar
+     * @return Usuario encontrado o null si no existe
+     * @throws PersistenciaException En caso de error en la consulta
+     */
     @Override
-public Usuario obtenerUsuarioPorNombre(String nombreUsuario) throws PersistenciaException {
-    String sql = "SELECT * FROM Usuarios WHERE usuario = ?";
+    public Usuario obtenerUsuarioPorNombre(String nombreUsuario) throws PersistenciaException {
+        String sql = "SELECT * FROM Usuarios WHERE usuario = ?";
 
-    try (Connection con = conexion.crearConexion(); PreparedStatement stmt = con.prepareStatement(sql)) {
-        stmt.setString(1, nombreUsuario);
-        try (ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                Usuario usuario = new Usuario();
-                usuario.setId_usuario(rs.getInt("id_usuario"));
-                usuario.setUsuario(rs.getString("usuario"));
-                usuario.setContraseña(rs.getString("contraseña"));  // Asegurar que es la versión actualizada
-                return usuario;
+        try (Connection con = conexion.crearConexion(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, nombreUsuario);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Usuario usuario = new Usuario();
+                    usuario.setId_usuario(rs.getInt("id_usuario"));
+                    usuario.setUsuario(rs.getString("usuario"));
+                    usuario.setContraseña(rs.getString("contraseña"));
+                    return usuario;
+                }
             }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error al obtener usuario por nombre", ex);
+            throw new PersistenciaException("Error al obtener usuario", ex);
         }
-    } catch (SQLException ex) {
-        logger.log(Level.SEVERE, "Error al obtener usuario por nombre", ex);
-        throw new PersistenciaException("Error al obtener usuario", ex);
+
+        return null;
     }
 
-    return null;
-}
-
-
-    // Método para actualizar un usuario
+    /**
+     * Método para actualizar la información de un usuario en la base de datos.
+     *
+     * @param usuario Objeto Usuario con la información actualizada
+     * @return Usuario actualizado
+     * @throws PersistenciaException En caso de error en la actualización
+     */
     @Override
     public Usuario actualizarUsuario(Usuario usuario) throws PersistenciaException {
         String sql = "CALL actualizarUsuario(?, ?)"; // Procedimiento para actualizar un usuario
@@ -92,14 +114,21 @@ public Usuario obtenerUsuarioPorNombre(String nombreUsuario) throws Persistencia
 
         return usuario; // Retorna el usuario actualizado
     }
-    // Método para obtener un usuario por su ID
-   public Usuario obtenerUsuarioPorId(int idPaciente) throws PersistenciaException {
+
+    /**
+     * Método para obtener un usuario por su ID.
+     *
+     * @param idPaciente ID del usuario a buscar
+     * @return Usuario encontrado o null si no existe
+     * @throws PersistenciaException En caso de error en la consulta
+     */
+    public Usuario obtenerUsuarioPorId(int idPaciente) throws PersistenciaException {
         Usuario usuario = null;
         String query = "SELECT * FROM usuarios WHERE id_usuario = ?";
-        
+
         try (Connection connection = conexion.crearConexion();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            
+
             statement.setInt(1, idPaciente);
             ResultSet resultSet = statement.executeQuery();
 
@@ -119,3 +148,4 @@ public Usuario obtenerUsuarioPorNombre(String nombreUsuario) throws Persistencia
         return usuario;
     }
 }
+

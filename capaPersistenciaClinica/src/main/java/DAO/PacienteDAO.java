@@ -16,41 +16,51 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author Todos
+ * Clase de acceso a datos para la entidad Paciente.
+ * Implementa las operaciones CRUD utilizando procedimientos almacenados.
  */
 public class PacienteDAO implements IPacienteDAO {
 
-    private IConexionBD conexion; // Atributo conexión que se usará en toda la clase
+    private IConexionBD conexion; // Conexión a la base de datos
     private static final Logger logger = Logger.getLogger(PacienteDAO.class.getName());
 
+    /**
+     * Constructor que inicializa la conexión con la base de datos.
+     * 
+     * @param conexion Objeto de conexión a la base de datos
+     */
     public PacienteDAO(IConexionBD conexion) {
         this.conexion = conexion;
     }
 
+    /**
+     * Registra un nuevo paciente en la base de datos.
+     * 
+     * @param paciente Objeto Paciente a registrar
+     * @return Paciente registrado
+     * @throws PersistenciaException Si ocurre un error al registrar el paciente
+     */
     @Override
     public Paciente registrarPaciente(Paciente paciente) throws PersistenciaException {
-        String sql = "CALL RegistrarPaciente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; // 12 parámetros
+        String sql = "CALL RegistrarPaciente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
 
-            // Convertir fecha de LocalDate a java.sql.Date
             Date fechaNacimiento = Date.valueOf(paciente.getFecha_nacimiento());
-
-            // Establecer parámetros en el procedimiento almacenado
-            cs.setString(1, paciente.getUsuario().getUsuario()); // Usuario
-            cs.setString(2, paciente.getUsuario().getContraseña()); // Contraseña
-            cs.setString(3, paciente.getNombre()); // Nombre
-            cs.setString(4, paciente.getApellido_paterno()); // Apellido Paterno
-            cs.setString(5, paciente.getApellido_materno()); // Apellido Materno
-            cs.setString(6, paciente.getTelefono()); // Teléfono
-            cs.setString(7, paciente.getCorreo()); // Correo Electrónico
-            cs.setDate(8, fechaNacimiento); // Fecha de nacimiento
-            cs.setString(9, paciente.getDireccion().getCalle()); // Calle
-            cs.setString(10, paciente.getDireccion().getNumero()); // Número de casa
-            cs.setString(11, paciente.getDireccion().getColonia()); // Colonia
-            cs.setString(12, paciente.getDireccion().getCodigo_postal()); // Código postal
-
+            
+            cs.setString(1, paciente.getUsuario().getUsuario());
+            cs.setString(2, paciente.getUsuario().getContraseña());
+            cs.setString(3, paciente.getNombre());
+            cs.setString(4, paciente.getApellido_paterno());
+            cs.setString(5, paciente.getApellido_materno());
+            cs.setString(6, paciente.getTelefono());
+            cs.setString(7, paciente.getCorreo());
+            cs.setDate(8, fechaNacimiento);
+            cs.setString(9, paciente.getDireccion().getCalle());
+            cs.setString(10, paciente.getDireccion().getNumero());
+            cs.setString(11, paciente.getDireccion().getColonia());
+            cs.setString(12, paciente.getDireccion().getCodigo_postal());
+            
             cs.execute();
             logger.log(Level.INFO, "Paciente registrado exitosamente");
 
@@ -58,50 +68,58 @@ public class PacienteDAO implements IPacienteDAO {
             logger.log(Level.SEVERE, "Error al registrar el paciente", ex);
             throw new PersistenciaException("Error al registrar el paciente", ex);
         }
-
-        return paciente; // Retorna el paciente registrado
-    }
-
-    @Override
-public Paciente editarPaciente(Paciente paciente) throws PersistenciaException {
-    if (paciente.getUsuario() == null) {
-        System.out.println("El paciente no tiene un usuario asignado.");
+        
         return paciente;
     }
 
-    String sql = "CALL actualizarPacientePorId(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    /**
+     * Edita la información de un paciente existente en la base de datos.
+     * 
+     * @param paciente Objeto Paciente con los datos actualizados
+     * @return Paciente actualizado
+     * @throws PersistenciaException Si ocurre un error al actualizar el paciente
+     */
+    @Override
+    public Paciente editarPaciente(Paciente paciente) throws PersistenciaException {
+        if (paciente.getUsuario() == null) {
+            System.out.println("El paciente no tiene un usuario asignado.");
+            return paciente;
+        }
 
-    try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
-        // Convertir la fecha a Date
-        Date fechaNacimiento = Date.valueOf(paciente.getFecha_nacimiento());
+        String sql = "CALL actualizarPacientePorId(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        // Establecer los parámetros en el procedimiento almacenado
-        cs.setInt(1, paciente.getId_paciente());
-        cs.setDate(2, fechaNacimiento);
-        cs.setString(3, paciente.getNombre());
-        cs.setString(4, paciente.getApellido_paterno());
-        cs.setString(5, paciente.getApellido_materno());
-        cs.setString(6, paciente.getTelefono());
-        cs.setString(7, paciente.getDireccion().getCalle());
-        cs.setString(8, paciente.getDireccion().getNumero());
-        cs.setString(9, paciente.getDireccion().getColonia());
-        cs.setString(10, paciente.getDireccion().getCodigo_postal());
+        try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
+            Date fechaNacimiento = Date.valueOf(paciente.getFecha_nacimiento());
+            
+            cs.setInt(1, paciente.getId_paciente());
+            cs.setDate(2, fechaNacimiento);
+            cs.setString(3, paciente.getNombre());
+            cs.setString(4, paciente.getApellido_paterno());
+            cs.setString(5, paciente.getApellido_materno());
+            cs.setString(6, paciente.getTelefono());
+            cs.setString(7, paciente.getDireccion().getCalle());
+            cs.setString(8, paciente.getDireccion().getNumero());
+            cs.setString(9, paciente.getDireccion().getColonia());
+            cs.setString(10, paciente.getDireccion().getCodigo_postal());
 
-        // Ejecutar la consulta
-        cs.execute();
-        logger.log(Level.INFO, "Paciente actualizado exitosamente");
+            cs.execute();
+            logger.log(Level.INFO, "Paciente actualizado exitosamente");
 
-    } catch (SQLException ex) {
-        logger.log(Level.SEVERE, "Error al actualizar el paciente", ex);
-        throw new PersistenciaException("Error al actualizar el paciente", ex);
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error al actualizar el paciente", ex);
+            throw new PersistenciaException("Error al actualizar el paciente", ex);
+        }
+
+        return paciente;
     }
 
-    return paciente;
-}
-
-
-
-    //OBTENEMOS CONTRASEÑA ENCRIPATADA DEL SQL
+    /**
+     * Obtiene un paciente por su correo electrónico.
+     * 
+     * @param correo Correo electrónico del paciente
+     * @return Paciente encontrado o null si no existe
+     * @throws PersistenciaException Si ocurre un error al obtener el paciente
+     */
     public Paciente obtenerPacientePorCorreo(String correo) throws PersistenciaException {
         String sql = "SELECT p.id_paciente, u.contraseña FROM Usuarios u "
                 + "JOIN Pacientes p ON u.id_usuario = p.id_usuario "
@@ -122,11 +140,9 @@ public Paciente editarPaciente(Paciente paciente) throws PersistenciaException {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(PacienteDAO.class.getName()).log(Level.SEVERE, "Error al obtener paciente por correo", ex);
+            logger.log(Level.SEVERE, "Error al obtener paciente por correo", ex);
             throw new PersistenciaException("Error al obtener paciente por correo", ex);
         }
-
-        return null; // Si no encuentra el paciente, devuelve null
+        return null;
     }
-
 }
