@@ -9,24 +9,46 @@ import Entidades.ConsultaSinCita;
 import Exception.PersistenciaException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
 /**
- *
- * @author Usuario
+ * Clase que implementa la interfaz IConsultaSinCitaDAO para gestionar las
+ * consultas sin cita en la base de datos.
+ * 
+ * Proporciona métodos para agendar consultas sin cita asociadas a un paciente.
  */
 public class ConsultaSinCitaDAO implements IConsultaSinCitaDAO {
 
-    IConexionBD conexion; // atributo conexion que se usara toda la clase. Recibiremos cualquer objeto que implemente IConexionBD
+    /**
+     * Objeto de conexión a la base de datos.
+     * Se recibe cualquier implementación de IConexionBD.
+     */
+    private final IConexionBD conexion;
+    
+    /**
+     * Logger para registrar eventos y errores de la clase.
+     */
+    private static final Logger logger = Logger.getLogger(ConsultaSinCitaDAO.class.getName());
 
+    /**
+     * Constructor de la clase ConsultaSinCitaDAO.
+     * 
+     * @param conexion Objeto que implementa IConexionBD y proporciona acceso a la base de datos.
+     */
     public ConsultaSinCitaDAO(IConexionBD conexion) {
         this.conexion = conexion;
     }
-    private static final Logger logger = Logger.getLogger(PacienteDAO.class.getName());
 
+    /**
+     * Método para agendar una consulta sin cita para un paciente.
+     * 
+     * Llama al procedimiento almacenado "AgendarCitaSinConsulta" en la base de datos.
+     * 
+     * @param nota Nota o descripción de la consulta.
+     * @param idPaciente Identificador del paciente asociado a la consulta.
+     * @throws PersistenciaException Si ocurre un error al ejecutar la operación en la base de datos.
+     */
     @Override
     public void agendarCitaSinConsulta(String nota, int idPaciente) throws PersistenciaException {
         String sqlAgendarConsulta = "CALL AgendarCitaSinConsulta(?, ?)";
@@ -47,3 +69,4 @@ public class ConsultaSinCitaDAO implements IConsultaSinCitaDAO {
         }
     }
 }
+

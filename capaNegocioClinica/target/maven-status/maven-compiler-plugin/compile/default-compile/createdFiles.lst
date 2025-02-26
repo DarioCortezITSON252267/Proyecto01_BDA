@@ -1,11 +1,13 @@
 BO\CitaBO.class
-Exception\NegocioException.class
+BO\AuditoriaBO.class
+DTO\AuditoriaDTO.class
 DTO\MedicoInicioDTO.class
 BO\SesionUsuario.class
+DTO\DireccionDTO.class
+BO\PacienteBO.class
+Exception\NegocioException.class
 com\mycompany\capanegocioclinica\CapaNegocioClinica.class
 DTO\CitaDTO.class
 BO\MedicoBO.class
-DTO\DireccionDTO.class
 DTO\PacienteNuevoDTO.class
-BO\PacienteBO.class
 Mapper\PacienteMapper.class

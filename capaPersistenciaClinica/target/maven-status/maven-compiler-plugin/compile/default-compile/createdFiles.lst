@@ -13,6 +13,8 @@ DAO\ICitaDAO.class
 Entidades\Paciente.class
 DAO\IMedicoDAO.class
 DAO\PacienteDAO.class
+DAO\AuditoriaDAO.class
+DAO\IAuditoriaDAO.class
 DAO\IPacienteDAO.class
 DAO\IUsuarioDAO.class
 DAO\IConsultaSinCitaDAO.class
