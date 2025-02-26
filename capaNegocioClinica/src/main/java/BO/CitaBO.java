@@ -9,7 +9,6 @@ import Conexion.IConexionBD;
 import DAO.ICitaDAO;
 import DTO.CitaDTO;
 import Exception.PersistenciaException;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -136,38 +135,8 @@ public class CitaBO {
 //        return idMedico; // Retorna el ID o -1 si no se encontró
 //    }
     public int obtenerMedicoPorEspecialidad(String especialidad) throws PersistenciaException {
-        return citaDAO.obtenerMedicoPorEspecialidad(especialidad);
-    }
+    return citaDAO.obtenerMedicoPorEspecialidad(especialidad);
+}
 
-    public List<CitaDTO> verHistorialCitas(int idPaciente) throws PersistenciaException {
-        List<CitaDTO> historial = new ArrayList<>();
-        String sql = "CALL VerHistorialCitas(?)";
-
-// Crear una instancia de ConexionBD
-        IConexionBD conexion = new ConexionBD();
-
-// Usar la instancia para llamar al método crearConexion()
-        try (Connection con = conexion.crearConexion(); CallableStatement cs = con.prepareCall(sql)) {
-
-            cs.setInt(1, idPaciente);
-            ResultSet rs = cs.executeQuery();
-
-            while (rs.next()) {
-                CitaDTO cita = new CitaDTO(
-                        rs.getInt("id_cita"),
-                        rs.getString("estado"),
-                        rs.getTimestamp("fechahora").toLocalDateTime(),
-                        rs.getString("nota") != null ? rs.getString("nota") : "Sin nota",
-                        rs.getInt("id_medico"),
-                        rs.getString("especialidad")
-                );
-                historial.add(cita);
-            }
-        } catch (SQLException ex) {
-            throw new PersistenciaException("Error al obtener el historial de citas", ex);
-        }
-
-        return historial;
-    }
 
 }
