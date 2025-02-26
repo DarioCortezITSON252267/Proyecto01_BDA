@@ -23,45 +23,8 @@ public class HistorialPaciente extends javax.swing.JFrame {
     }
     private int idPaciente; // Almacena el ID del paciente
 
-    public HistorialPaciente(int idPaciente) {
-        this.idPaciente = idPaciente; // Guardar el ID
-        initComponents();
-    }
-
-    // Método opcional para acceder al ID del paciente en otras partes del código
-    public int getIdPaciente() {
-        return idPaciente;
-    }
+ 
     
-    private void mostrarHistorialCitas() {
-    try {
-        ConexionBD conexion = new ConexionBD(); // Crear una instancia de la conexión
-        CitaDAO citaDAO = new CitaDAO(conexion); // Pasar la conexión al DAO
-        
-        List<String> historial = citaDAO.verHistorialCitas(idPaciente);
-
-
-        // Configurar modelo de la tabla
-        DefaultTableModel modelo = new DefaultTableModel();
-        modelo.addColumn("Cita ID");
-        modelo.addColumn("Estado");
-        modelo.addColumn("Fecha y Hora");
-        modelo.addColumn("Nota");
-        modelo.addColumn("Médico ID");
-        modelo.addColumn("Especialidad");
-
-        for (String cita : historial) {
-            String[] datos = cita.split(", "); // Dividir los datos por comas
-            modelo.addRow(datos);
-        }
-
-        jTable1.setModel(modelo); // Asignar modelo a la tabla
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
